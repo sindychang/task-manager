@@ -66,8 +66,9 @@
     .area-chip.selected{transform:scale(1.02);box-shadow:0 4px 18px rgba(0,0,0,.12)}
     .date-tag{display:inline-flex;align-items:center;gap:3px;padding:4px 10px;border-radius:var(--radius-sm);font-size:11px;font-weight:700;cursor:pointer;border:none;background:var(--border-light);color:#64748b;white-space:nowrap;min-width:78px;justify-content:center;transition:background .15s}
     .date-tag:hover{background:#e2e8f0}.date-tag.overdue{background:#fee2e2;color:#dc2626}.date-tag.today-tag{background:var(--primary-light);color:var(--primary)}
-    .popup-menu{position:absolute;right:0;top:calc(100% + 4px);background:var(--surface);border-radius:var(--radius-md);box-shadow:var(--shadow-lg);border:1px solid var(--border);z-index:50;min-width:130px;overflow:hidden;display:none}
+    .popup-menu{position:absolute;right:0;top:calc(100% + 4px);background:var(--surface);border-radius:var(--radius-md);box-shadow:var(--shadow-lg);border:1px solid var(--border);z-index:500;min-width:150px;overflow:hidden;display:none}
     .popup-menu.show{display:block}
+    .popup-menu.open-up{top:auto;bottom:calc(100% + 4px)}
     .popup-menu button{display:flex;align-items:center;gap:8px;width:100%;padding:12px 16px;border:none;background:none;font-size:14px;font-weight:500;cursor:pointer;color:var(--text-primary)}
     .popup-menu button:hover{background:var(--bg)}
     .popup-menu button.danger{color:var(--danger)}
@@ -100,25 +101,42 @@
     /* Weekend badge */
     .badge-weekend{background:#fef3c7;color:#b45309;font-size:10px;padding:2px 7px;border-radius:999px;font-weight:700;display:inline-flex;align-items:center;gap:3px}
     /* Last done info */
-    .last-done-info{font-size:11px;color:var(--text-muted);margin-top:4px;display:flex;align-items:center;gap:3px}
-    /* Batch select mode */
-    .hw-select-cb{width:22px;height:22px;border-radius:6px;border:2px solid var(--border);background:var(--surface);cursor:pointer;flex-shrink:0;display:flex;align-items:center;justify-content:center;transition:all .15s}
-    .hw-select-cb.checked{background:var(--primary);border-color:var(--primary)}
-    .hw-select-cb.checked::after{content:'';width:5px;height:9px;border:2px solid #fff;border-top:none;border-left:none;transform:rotate(40deg) translateY(-1px);display:block}
-    .hw-card-selectable{cursor:pointer;transition:box-shadow .15s,border-color .15s}
-    .hw-card-selectable.selected-card{box-shadow:0 0 0 2px var(--primary)!important;border-color:var(--primary)!important}
+    .last-done-info{font-size:11px;color:var(--text-muted);margin-top:2px;display:flex;align-items:center;gap:3px}
+    /* Housework compact row */
+    .hw-compact-row{display:grid;grid-template-columns:28px 1fr auto auto;align-items:center;gap:8px;padding:11px 14px;border-bottom:1px solid var(--border-light);transition:background .1s}
+    .hw-compact-row:last-child{border-bottom:none}
+    .hw-compact-row:active{background:var(--bg)}
+    /* Checkbox always visible */
+    .hw-cb{width:22px;height:22px;border-radius:6px;border:2px solid #d1d5db;background:var(--surface);cursor:pointer;flex-shrink:0;display:flex;align-items:center;justify-content:center;transition:all .15s}
+    .hw-cb.checked{background:var(--primary);border-color:var(--primary)}
+    .hw-cb.checked::after{content:'';width:5px;height:9px;border:2px solid #fff;border-top:none;border-left:none;transform:rotate(40deg) translateY(-1px);display:block}
     /* Floating batch action bar */
-    .float-batch-bar{position:fixed;bottom:88px;left:0;right:0;z-index:200;display:flex;justify-content:center;pointer-events:none;transition:all .25s}
+    .float-batch-bar{position:fixed;bottom:90px;left:0;right:0;z-index:200;display:flex;justify-content:center;pointer-events:none}
     .float-batch-bar.show{pointer-events:all}
-    .float-batch-inner{background:#1e293b;border-radius:16px;padding:12px 16px;display:flex;align-items:center;gap:10px;box-shadow:0 8px 32px rgba(0,0,0,.28);transform:translateY(20px);opacity:0;transition:all .25s;max-width:calc(100vw - 32px)}
+    .float-batch-inner{background:#1e293b;border-radius:18px;padding:10px 6px 10px 14px;display:flex;align-items:center;gap:6px;box-shadow:0 8px 32px rgba(0,0,0,.32);transform:translateY(24px);opacity:0;transition:transform .22s cubic-bezier(.34,1.56,.64,1),opacity .22s ease;max-width:calc(100vw - 24px);overflow-x:auto}
     .float-batch-bar.show .float-batch-inner{transform:translateY(0);opacity:1}
-    .float-batch-action{background:rgba(255,255,255,.12);color:#fff;border:none;border-radius:10px;padding:9px 14px;font-size:13px;font-weight:700;cursor:pointer;display:flex;align-items:center;gap:6px;transition:background .15s;white-space:nowrap}
-    .float-batch-action:hover{background:rgba(255,255,255,.22)}
-    .float-batch-action.danger{background:rgba(239,68,68,.2);color:#fca5a5}
-    .float-batch-count{color:#94a3b8;font-size:12px;font-weight:700;white-space:nowrap}
-    .batch-mode-toggle{display:flex;align-items:center;gap:6px;padding:6px 12px;border-radius:999px;border:1.5px solid var(--border);background:var(--surface);cursor:pointer;font-size:12px;font-weight:700;color:var(--text-secondary);transition:all .15s}
-    .batch-mode-toggle.active{background:#fee2e2;border-color:#fca5a5;color:#dc2626}
-    /* Week calendar */
+    .float-batch-count{color:#94a3b8;font-size:12px;font-weight:700;white-space:nowrap;padding-right:4px;border-right:1px solid rgba(255,255,255,.15);margin-right:2px}
+    .fba{background:rgba(255,255,255,.1);color:#fff;border:none;border-radius:10px;padding:8px 11px;font-size:12px;font-weight:700;cursor:pointer;display:flex;align-items:center;gap:5px;transition:background .13s;white-space:nowrap;flex-shrink:0}
+    .fba:hover{background:rgba(255,255,255,.2)}
+    .fba:active{transform:scale(.95)}
+    .fba-weekend{background:rgba(251,191,36,.18);color:#fde68a}
+    .fba-weekend:hover{background:rgba(251,191,36,.3)}
+    .fba-custom{background:rgba(99,102,241,.25);color:#c7d2fe}
+    .fba-custom:hover{background:rgba(99,102,241,.4)}
+    .fba-close{background:none;color:#64748b}
+    .fba-close:hover{background:rgba(255,255,255,.1);color:#fff}
+    /* Area tab bar */
+    .area-tab-bar{display:flex;gap:0;overflow-x:auto;margin-bottom:14px;background:var(--surface);border-radius:var(--radius-md);border:1px solid var(--border-light);padding:4px}
+    .area-tab-bar::-webkit-scrollbar{display:none}
+    .area-tab{padding:7px 14px;border-radius:10px;font-size:12px;font-weight:700;border:none;background:none;cursor:pointer;color:var(--text-muted);white-space:nowrap;transition:all .15s;display:flex;align-items:center;gap:5px}
+    .area-tab.active{background:var(--primary);color:#fff}
+    .area-tab .cnt{background:rgba(0,0,0,.08);border-radius:99px;padding:1px 6px;font-size:10px}
+    .area-tab.active .cnt{background:rgba(255,255,255,.25)}
+    /* Overdue notice bar (compact) */
+    .overdue-notice{display:flex;align-items:center;gap:8px;padding:9px 14px;background:#fff5f5;border:1px solid #fecaca;border-radius:var(--radius-sm);margin-bottom:10px;font-size:12px;font-weight:600;color:#dc2626}
+    /* weekend checkbox row in modal */
+    .weekend-row{display:flex;align-items:center;justify-content:space-between;padding:11px 13px;background:var(--bg);border-radius:var(--radius-sm);border:1.5px solid var(--border);margin-bottom:16px}
+    .weekend-row.active{background:#fffbeb;border-color:#fbbf24}
     .week-cal-nav{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px}
     .week-cal-nav-btn{background:var(--border-light);border:none;width:36px;height:36px;border-radius:10px;display:flex;align-items:center;justify-content:center;cursor:pointer;transition:background .15s;flex-shrink:0}
     .week-cal-nav-btn:hover{background:var(--border)}
@@ -226,37 +244,39 @@
 </div>
 
 <div id="page-housework" class="page max-w-2xl mx-auto px-4 py-6">
-  <div class="section-header mb-2">
+  <div class="section-header mb-3">
     <div class="section-icon" style="background:#fef3c7"><span class="material-symbols-outlined" style="color:#d97706">cleaning_services</span></div>
-    <div class="flex-1"><h2 class="text-lg font-bold text-gray-800">家事項目總覽</h2><p class="text-gray-400 text-xs">點擊區域篩選</p></div>
-    <button class="batch-mode-toggle" id="batch-mode-btn" onclick="toggleBatchMode()">
-      <span class="material-symbols-outlined" style="font-size:16px">checklist</span>批次選取
+    <div class="flex-1"><h2 class="text-lg font-bold text-gray-800">家事管理</h2><p style="color:var(--text-muted);font-size:11px">勾選可批次延後</p></div>
+  </div>
+
+  <div class="mb-4">
+    <button onclick="sendAllProgressToShortcut()" class="w-full py-3 text-white rounded-2xl shadow flex items-center justify-center gap-2 active:scale-95 transition-transform" style="background:linear-gradient(135deg,var(--primary),var(--accent));font-size:14px;font-weight:700;border:none;cursor:pointer">
+      <span class="material-symbols-outlined" style="font-size:20px">send_to_mobile</span>傳送今日進度至 iPhone
     </button>
   </div>
 
-  <div class="mb-5">
-    <button onclick="sendAllProgressToShortcut()" class="w-full py-4 bg-indigo-500 text-white rounded-2xl shadow-lg flex items-center justify-center gap-3 active:scale-95 transition-transform" style="background:linear-gradient(135deg,var(--primary),var(--accent))">
-      <span class="material-symbols-outlined" style="font-size:22px">send_to_mobile</span>
-      <span class="font-bold text-base">傳送今日總進度至 iPhone</span>
-    </button>
-  </div>
-
-  <div id="hw-area-chips" class="grid grid-cols-2 gap-3 mb-5"></div>
+  <!-- Area Tab Bar -->
+  <div class="area-tab-bar" id="hw-area-tab-bar"></div>
   <div id="hw-overdue-notice"></div>
-  <div id="housework-cards"></div>
+  <div class="card" style="overflow:hidden">
+    <div id="housework-list"></div>
+  </div>
 </div>
 
 <!-- Floating batch action bar -->
 <div class="float-batch-bar" id="float-batch-bar">
   <div class="float-batch-inner">
-    <span class="float-batch-count" id="batch-count-label">已選 0 項</span>
-    <button class="float-batch-action" onclick="batchToWeekend()">
-      <span class="material-symbols-outlined" style="font-size:16px">weekend</span>延後到週末
+    <span class="float-batch-count" id="batch-count-label">已選 0</span>
+    <button class="fba" onclick="batchDelay(1)">+1天</button>
+    <button class="fba" onclick="batchDelay(3)">+3天</button>
+    <button class="fba" onclick="batchDelay(7)">+7天</button>
+    <button class="fba fba-weekend" onclick="batchToWeekend()">
+      <span class="material-symbols-outlined" style="font-size:14px">weekend</span>週末
     </button>
-    <button class="float-batch-action" onclick="showBatchCustomDate()">
-      <span class="material-symbols-outlined" style="font-size:16px">calendar_month</span>自選日期
+    <button class="fba fba-custom" onclick="showBatchCustomDate()">
+      <span class="material-symbols-outlined" style="font-size:14px">calendar_month</span>指定
     </button>
-    <button class="float-batch-action danger" onclick="exitBatchMode()">
+    <button class="fba fba-close" onclick="clearSelection()">
       <span class="material-symbols-outlined" style="font-size:16px">close</span>
     </button>
   </div>
@@ -266,7 +286,7 @@
 <div class="modal-overlay" id="batchDateModal">
   <div class="modal-sheet">
     <div class="modal-handle"></div>
-    <h2 style="font-size:17px;font-weight:700;color:#1e293b;margin-bottom:4px">批次延後日期</h2>
+    <h2 style="font-size:17px;font-weight:700;color:#1e293b;margin-bottom:4px">指定延後日期</h2>
     <p style="font-size:12px;color:var(--text-muted);margin-bottom:16px" id="batch-date-subtitle"></p>
     <div class="form-group">
       <label>選擇新提醒日期</label>
@@ -733,7 +753,22 @@ function doDelayCustomInline(){
   else{housework=housework.map(h=>h.id==id?{...h,reminderDate:val}:h);}
   saveData();closeModal('delayModal');renderAll();
 }
-function togglePopup(id,e){e&&e.stopPropagation();closeAllPopups();const el=document.getElementById('popup-'+id);if(el)el.classList.toggle('show')}
+function togglePopup(id,e){
+  e&&e.stopPropagation();
+  closeAllPopups();
+  const el=document.getElementById('popup-'+id);
+  if(!el) return;
+  el.classList.remove('open-up');
+  el.classList.toggle('show');
+  if(el.classList.contains('show')){
+    // Check if menu overflows viewport bottom
+    const rect=el.getBoundingClientRect();
+    const navH=90; // bottom nav height
+    if(rect.bottom > window.innerHeight - navH){
+      el.classList.add('open-up');
+    }
+  }
+}
 function closeAllPopups(){document.querySelectorAll('.popup-menu').forEach(p=>p.classList.remove('show'))}
 
 // HELPERS & RENDERERS
@@ -955,23 +990,9 @@ function renderTasksPage(){
     }).join('');
   }
 
-  // Unscheduled section
+  // Unscheduled section — removed per user request
   const unschedEl=document.getElementById('unscheduled-section');
-  if(unschedEl){
-    const unscheduled=tasks.filter(t=>t.status!=='已完成'&&!t.plannedDate);
-    if(unscheduled.length){
-      unschedEl.innerHTML=`<div style="margin-top:12px">
-        <p style="font-size:11px;font-weight:700;color:var(--text-muted);letter-spacing:.05em;margin-bottom:6px">未排期任務</p>
-        <div class="card" style="overflow:hidden">
-          ${unscheduled.map(t=>`<div style="display:flex;align-items:center;gap:8px;padding:10px 14px;border-bottom:1px solid var(--border-light)">
-            <span class="material-symbols-outlined" style="font-size:16px;color:#cbd5e1">drag_indicator</span>
-            <p style="flex:1;font-size:13px;font-weight:600;color:var(--text-primary)">${t.title}</p>
-            <button onclick="openDelayModal('task','${t.id}')" class="date-tag" style="font-size:11px">排期</button>
-          </div>`).join('')}
-        </div>
-      </div>`;
-    } else { unschedEl.innerHTML=''; }
-  }
+  if(unschedEl) unschedEl.innerHTML='';
 
   // ── DB tabs ──
   const recurring=tasks.filter(t=>t.freqType&&t.freqType!=='none');
@@ -992,110 +1013,125 @@ document.addEventListener('click',function(e){
   }
 });
 
-// BATCH SELECT MODE (housework)
-function toggleBatchMode(){
-  hwBatchMode=!hwBatchMode;
-  hwSelected.clear();
-  const btn=document.getElementById('batch-mode-btn');
-  btn.classList.toggle('active',hwBatchMode);
-  btn.innerHTML=hwBatchMode
-    ?`<span class="material-symbols-outlined" style="font-size:16px">close</span>取消選取`
-    :`<span class="material-symbols-outlined" style="font-size:16px">checklist</span>批次選取`;
-  updateFloatBar();
-  renderHouseworkPage();
-}
-function exitBatchMode(){
-  hwBatchMode=false; hwSelected.clear();
-  const btn=document.getElementById('batch-mode-btn');
-  if(btn){btn.classList.remove('active');btn.innerHTML=`<span class="material-symbols-outlined" style="font-size:16px">checklist</span>批次選取`;}
-  updateFloatBar(); renderHouseworkPage();
-}
-function toggleHwSelect(id){
+// BATCH SELECT (always-on checkboxes, no mode toggle needed)
+function toggleHwSelect(id, e){
+  if(e) e.stopPropagation();
   if(hwSelected.has(id)) hwSelected.delete(id); else hwSelected.add(id);
-  updateFloatBar(); renderHouseworkPage();
+  updateFloatBar();
+  // update just the checkbox UI without full re-render for speed
+  const cb=document.getElementById('hwcb-'+id);
+  if(cb) cb.classList.toggle('checked', hwSelected.has(id));
+}
+function clearSelection(){
+  hwSelected.clear(); updateFloatBar();
+  document.querySelectorAll('.hw-cb').forEach(cb=>cb.classList.remove('checked'));
 }
 function updateFloatBar(){
   const bar=document.getElementById('float-batch-bar');
   const label=document.getElementById('batch-count-label');
   if(!bar) return;
-  if(hwBatchMode&&hwSelected.size>0){
+  if(hwSelected.size>0){
     bar.classList.add('show');
-    if(label) label.textContent=`已選 ${hwSelected.size} 項`;
+    if(label) label.textContent=`已選 ${hwSelected.size}`;
   } else { bar.classList.remove('show'); }
+}
+function batchDelay(days){
+  housework=housework.map(h=>hwSelected.has(h.id)?{...h,reminderDate:addD(h.reminderDate||todayStr,days)}:h);
+  saveData(); clearSelection(); renderHouseworkPage();
 }
 function batchToWeekend(){
   const target=nextWeekend(todayStr);
   housework=housework.map(h=>hwSelected.has(h.id)?{...h,reminderDate:target}:h);
-  saveData(); exitBatchMode();
+  saveData(); clearSelection(); renderHouseworkPage();
 }
 function showBatchCustomDate(){
   const sub=document.getElementById('batch-date-subtitle');
-  if(sub) sub.textContent=`將 ${hwSelected.size} 個選取項目延後到指定日期`;
+  if(sub) sub.textContent=`將 ${hwSelected.size} 個項目延後到指定日期`;
   const inp=document.getElementById('batch-custom-date-input');
-  if(inp){inp.value=nextWeekend(todayStr); inp.min=todayStr;}
+  if(inp){inp.value=nextWeekend(todayStr);inp.min=todayStr;}
   document.getElementById('batchDateModal').classList.add('open');
 }
 function applyBatchCustomDate(){
   const val=document.getElementById('batch-custom-date-input').value;
   if(!val){alert('請選擇日期');return}
   housework=housework.map(h=>hwSelected.has(h.id)?{...h,reminderDate:val}:h);
-  saveData(); closeModal('batchDateModal'); exitBatchMode();
+  saveData();closeModal('batchDateModal');clearSelection();renderHouseworkPage();
 }
+// legacy alias
+function exitBatchMode(){clearSelection();}
 
-// RENDER: Housework
-function renderHouseworkCard(h){
+// RENDER: Housework (compact row)
+function renderHouseworkRow(h){
   const col=areaColor(h.area); const dc=dtCls(h.reminderDate);
   const isSelected=hwSelected.has(h.id);
-  // Last done display
-  let lastDoneHtml='';
-  if(h.lastCompleted){
-    const days=daysBetween(h.lastCompleted,todayStr);
-    const daysLabel=days===0?'今天':days===1?'昨天':`${days} 天前`;
-    lastDoneHtml=`<div class="last-done-info"><span class="material-symbols-outlined" style="font-size:13px;color:#cbd5e1">history</span><span>上次執行：${daysLabel}，${fmtFull(h.lastCompleted)}</span></div>`;
-  }
-  const weekendBadge=h.weekendMode?`<span class="badge-weekend"><span class="material-symbols-outlined" style="font-size:11px">weekend</span>週末</span>`:'';
-  const selectCb=hwBatchMode?`<div class="hw-select-cb ${isSelected?'checked':''}" onclick="toggleHwSelect('${h.id}')"></div>`:'';
-  const cardClick=hwBatchMode?`onclick="toggleHwSelect('${h.id}')"`:'' ;
-  return `<div class="card p-4 mb-3 animate-in hw-card-selectable ${isSelected?'selected-card':''}" style="border-left:4px solid ${col.dot}" ${cardClick}>
-    <div class="flex items-start gap-2">
-      ${selectCb}
-      <div class="flex-1 min-w-0">
-        <div class="flex items-center gap-2 flex-wrap"><p class="font-semibold text-gray-800">${h.name}</p>${weekendBadge}</div>
-        ${lastDoneHtml}
-        ${h.reminderDate?`<div class="mt-2"><button class="date-tag ${dc}" onclick="${hwBatchMode?`toggleHwSelect('${h.id}')`:`openDelayModal('hw','${h.id}')`}" style="font-size:11px"><span class="material-symbols-outlined" style="font-size:12px">${dc==='overdue'?'warning':'event'}</span>${dtLbl(h.reminderDate)}</button></div>`:''}
+  const days=h.lastCompleted?daysBetween(h.lastCompleted,todayStr):null;
+  const lastDoneText=days===null?'':(days===0?'今天完成':days===1?'昨天完成':`${days}天前`);
+  const weekendBadge=h.weekendMode?`<span class="badge-weekend">週末</span>`:'';
+  return `<div class="hw-compact-row">
+    <div class="hw-cb ${isSelected?'checked':''}" id="hwcb-${h.id}" onclick="toggleHwSelect('${h.id}',event)"></div>
+    <div style="min-width:0">
+      <div style="display:flex;align-items:center;gap:6px;flex-wrap:wrap">
+        <p style="font-size:14px;font-weight:600;color:var(--text-primary);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:160px">${h.name}</p>
+        ${weekendBadge}
       </div>
-      <span class="badge" style="background:${col.bg};color:${col.dot};font-size:10px">${col.icon} ${h.area}</span>
-      ${hwBatchMode?'':`<div style="position:relative">
-        <button onclick="togglePopup('${h.id}',event)" style="background:var(--border-light);border:none;width:32px;height:32px;border-radius:8px;display:flex;align-items:center;justify-content:center;cursor:pointer"><span class="material-symbols-outlined" style="font-size:18px;color:#64748b">more_vert</span></button>
-        <div class="popup-menu" id="popup-${h.id}">
-          <button onclick="markHouseworkDone('${h.id}')"><span class="material-symbols-outlined" style="font-size:16px;color:#10b981">check_circle</span>標為完成</button>
-          <button onclick="openHouseworkModal('${h.id}')"><span class="material-symbols-outlined" style="font-size:16px;color:#6366f1">edit</span>修改</button>
-          <button onclick="openDelayModal('hw','${h.id}')"><span class="material-symbols-outlined" style="font-size:16px;color:#f59e0b">schedule</span>延後</button>
-          <button class="danger" onclick="deleteHousework('${h.id}')"><span class="material-symbols-outlined" style="font-size:16px">delete</span>刪除</button>
-        </div>
-      </div>`}
+      ${lastDoneText?`<div class="last-done-info"><span class="material-symbols-outlined" style="font-size:11px">history</span>${lastDoneText}</div>`:''}
+    </div>
+    <div>
+      ${h.reminderDate
+        ?`<button class="date-tag ${dc}" onclick="openDelayModal('hw','${h.id}')" style="font-size:11px">
+            <span class="material-symbols-outlined" style="font-size:11px">${dc==='overdue'?'warning':dc==='today-tag'?'check':'event'}</span>${dtLbl(h.reminderDate)}
+          </button>`
+        :`<button class="date-tag" onclick="openHouseworkModal('${h.id}')" style="font-size:11px;color:var(--text-muted)">未設定</button>`}
+    </div>
+    <div style="position:relative">
+      <button onclick="togglePopup('${h.id}',event)" style="background:none;border:none;width:30px;height:30px;display:flex;align-items:center;justify-content:center;cursor:pointer;border-radius:6px;transition:background .1s" onmouseenter="this.style.background='var(--border-light)'" onmouseleave="this.style.background='none'">
+        <span class="material-symbols-outlined" style="font-size:18px;color:#94a3b8">more_vert</span>
+      </button>
+      <div class="popup-menu" id="popup-${h.id}">
+        <button onclick="markHouseworkDone('${h.id}')"><span class="material-symbols-outlined" style="font-size:16px;color:#10b981">check_circle</span>標為完成</button>
+        <button onclick="openHouseworkModal('${h.id}')"><span class="material-symbols-outlined" style="font-size:16px;color:#6366f1">edit</span>修改</button>
+        <button onclick="openDelayModal('hw','${h.id}')"><span class="material-symbols-outlined" style="font-size:16px;color:#f59e0b">schedule</span>延後</button>
+        <button class="danger" onclick="deleteHousework('${h.id}')"><span class="material-symbols-outlined" style="font-size:16px">delete</span>刪除</button>
+      </div>
     </div>
   </div>`;
 }
+
 function renderHouseworkPage(){
+  // Area tab bar
   const allAreas=[...new Set(housework.map(h=>h.area))];
-  document.getElementById('hw-area-chips').innerHTML=allAreas.map(a=>{
-    const c=areaColor(a),cnt=housework.filter(h=>h.area===a).length,sel=hwAreaFilter===a;
-    return `<div class="card area-chip p-4 ${sel?'selected':''}" onclick="toggleAreaFilter('${a}')" style="background:${sel?c.bg:'#fff'};border-color:${sel?c.dot:'transparent'}">
-      <div class="flex items-center gap-2"><span style="font-size:24px">${c.icon}</span><div><p class="font-semibold text-gray-800 text-sm">${a}</p><p class="text-xs text-gray-400">${cnt} 項</p></div></div>
-    </div>`;
-  }).join('')+`<div class="card area-chip p-4 ${!hwAreaFilter?'selected':''}" onclick="toggleAreaFilter(null)" style="grid-column:span 2;text-align:center;${!hwAreaFilter?'background:#f1f5f9;border-color:#6366f1':''}">
-    <p class="font-semibold text-gray-600 text-sm">全部（${housework.length}）</p></div>`;
-  // Overdue notice (compact, just informational)
+  const tabBar=document.getElementById('hw-area-tab-bar');
+  if(tabBar){
+    tabBar.innerHTML=[null,...allAreas].map(a=>{
+      const isAll=a===null;
+      const sel=(isAll&&!hwAreaFilter)||(hwAreaFilter===a);
+      const cnt=isAll?housework.length:housework.filter(h=>h.area===a).length;
+      const col=isAll?null:areaColor(a);
+      const icon=isAll?'':'';
+      return `<button class="area-tab ${sel?'active':''}" onclick="toggleAreaFilter(${a===null?'null':`'${a}'`})" style="${sel&&!isAll?`background:${col.dot};`:''}">
+        ${isAll?'全部':`${areaColor(a).icon} ${a}`}<span class="cnt">${cnt}</span>
+      </button>`;
+    }).join('');
+  }
+
+  // Overdue notice
   const overdueHW=housework.filter(h=>h.reminderDate&&h.reminderDate<todayStr);
   const notice=document.getElementById('hw-overdue-notice');
   if(notice){
     notice.innerHTML=overdueHW.length>0
-      ?`<div class="overdue-notice"><span class="material-symbols-outlined" style="font-size:16px">warning</span>有 ${overdueHW.length} 件逾期項目，請開啟批次選取處理</div>`
-      :'';
+      ?`<div class="overdue-notice"><span class="material-symbols-outlined" style="font-size:15px">warning</span>${overdueHW.length} 件逾期 — 勾選後可批次延後</div>`:'';
   }
-  const filtered=hwAreaFilter?housework.filter(h=>h.area===hwAreaFilter):housework;
-  document.getElementById('housework-cards').innerHTML=filtered.length?filtered.map(renderHouseworkCard).join(''):`<div class="card p-6">${emptyS('此區域無家事項目')}</div>`;
+
+  // Compact list — sort: overdue first, then by date
+  const filtered=(hwAreaFilter?housework.filter(h=>h.area===hwAreaFilter):housework)
+    .slice().sort((a,b)=>{
+      if(!a.reminderDate&&!b.reminderDate) return 0;
+      if(!a.reminderDate) return 1;
+      if(!b.reminderDate) return -1;
+      return a.reminderDate.localeCompare(b.reminderDate);
+    });
+  const listEl=document.getElementById('housework-list');
+  if(listEl) listEl.innerHTML=filtered.length?filtered.map(renderHouseworkRow).join(''):`<div style="padding:32px 16px;text-align:center;color:var(--text-muted);font-size:13px">此區域無家事項目</div>`;
 }
 function toggleAreaFilter(a){hwAreaFilter=hwAreaFilter===a?null:a;renderHouseworkPage()}
 
