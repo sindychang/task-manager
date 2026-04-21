@@ -19,7 +19,7 @@
     :root{
       --primary:#5b52e8;--primary-light:#ede9fe;--primary-dark:#4338ca;
       --accent:#7c3aed;
-      --success:#10b981;--warning:#f59e0b;--danger:#ef4444;--danger-light:#fee2e2;
+      --success:#10b981;--warning:#d97706;--danger:#dc2626;--danger-light:#fee2e2;
       --surface:#fff;--bg:#f4f6fb;
       --border:#e8edf5;--border-light:#f1f5f9;
       --text-primary:#1e293b;--text-secondary:#475569;--text-muted:#94a3b8;
@@ -39,10 +39,13 @@
 
     /* ── MODALS ── */
     input[type="date"]{-webkit-appearance:none;appearance:auto}
-    .modal-overlay{display:none;position:fixed;inset:0;background:rgba(15,23,42,.55);z-index:1000;align-items:flex-end;justify-content:center;padding:0;backdrop-filter:blur(2px)}
+    /* 改為 align-items:center 讓視窗垂直置中，並加上 padding 避免貼齊邊緣 */
+    .modal-overlay{display:none;position:fixed;inset:0;background:rgba(15,23,42,.55);z-index:1000;align-items:center;justify-content:center;padding:16px;backdrop-filter:blur(2px)}
     .modal-overlay.open{display:flex}
-    .modal-sheet{width:100%;max-width:520px;border-radius:24px 24px 0 0;box-shadow:var(--shadow-lg);background:var(--surface);padding:24px 20px;max-height:92vh;overflow-y:auto}
-    .modal-handle{width:40px;height:4px;background:var(--border);border-radius:99px;margin:0 auto 20px}
+    /* 將 border-radius 改為四周都是 24px，並縮減 max-height 確保高度不會被截斷 */
+    .modal-sheet{width:100%;max-width:480px;border-radius:24px;box-shadow:var(--shadow-lg);background:var(--surface);padding:24px 20px;max-height:80vh;overflow-y:auto}
+    /* 因為變成置中視窗了，不需要頂部的下拉把手，直接隱藏 */
+    .modal-handle{display:none}
 
     /* ── CARDS / BADGES ── */
     .card{background:var(--surface);border-radius:var(--radius-md);box-shadow:var(--shadow-sm);border:1px solid var(--border-light)}
@@ -269,7 +272,26 @@
       <div class="form-group"><label>暱稱</label><input type="text" id="set-name" placeholder="輸入暱稱" onchange="saveSetting('userName',this.value)"></div>
       <div class="form-group"><label>Email</label><input type="text" id="set-email" placeholder="輸入 Email" onchange="saveSetting('userEmail',this.value)"></div>
     </div>
+    <div class="drawer-divider"></div>
+    <div class="drawer-section">顯示設定</div>
+    <div style="padding:0 18px 14px">
+      <div class="settings-item"><div><label style="text-transform:none;letter-spacing:0;font-size:14px;font-weight:500;margin:0">To Do 顯示逾期區塊</label><p class="desc">在首頁顯示已逾期項目</p></div><button class="toggle" id="tog-overdue" onclick="toggleSetting('showOverdue',this)"></button></div>
+      <div class="settings-item"><div><label style="text-transform:none;letter-spacing:0;font-size:14px;font-weight:500;margin:0">家事卡片顯示備註</label></div><button class="toggle" id="tog-notes" onclick="toggleSetting('showNotes',this)"></button></div>
+      <div class="settings-item" style="border:none"><div><label style="text-transform:none;letter-spacing:0;font-size:14px;font-weight:500;margin:0">任務卡片顯示描述</label></div><button class="toggle" id="tog-desc" onclick="toggleSetting('showDesc',this)"></button></div>
+      <div class="form-group" style="margin-top:14px"><label>To Do 預設篩選</label>
+        <select id="set-default-filter" onchange="saveSetting('defaultFilter',this.value)"><option value="all">全部</option><option value="today">今天</option><option value="week">本週</option></select>
+      </div>
     </div>
+    <div class="drawer-divider"></div>
+    <div class="drawer-section">資料管理</div>
+    <button class="drawer-item" onclick="appConfirm('重置預設任務','所有任務將還原為預設資料',()=>{tasks=JSON.parse(JSON.stringify(DT));saveData();renderAll();closeDrawer()},{danger:false,icon:'restart_alt'})">
+      <div class="di-icon" style="background:#ede9fe"><span class="material-symbols-outlined" style="font-size:18px;color:var(--primary)">task_alt</span></div>
+      <div><div class="di-label">重置預設任務</div></div>
+    </button>
+    <button class="drawer-item" onclick="appConfirm('重置預設家事','所有家事將還原為預設資料',()=>{housework=JSON.parse(JSON.stringify(DH));saveData();renderAll();closeDrawer()},{danger:false,icon:'restart_alt'})">
+      <div class="di-icon" style="background:#fef3c7"><span class="material-symbols-outlined" style="font-size:18px;color:#d97706">cleaning_services</span></div>
+      <div><div class="di-label">重置預設家事</div></div>
+    </button>
     <div class="drawer-divider"></div>
     <div class="drawer-section">資料匯出入</div>
     <button class="drawer-item" onclick="exportData()">
@@ -282,8 +304,13 @@
     </button>
     <input type="file" id="importFile" accept=".json" style="display:none" onchange="importData(event)">
     <button class="drawer-item" onclick="copyShareLink()">
-      <div class="di-icon" style="background:#f0fdf4"><span class="material-symbols-outlined" style="font-size:18px;color:#16a34a">link</span></div>
+      <div class="di-icon" style="background:#f5f3ff"><span class="material-symbols-outlined" style="font-size:18px;color:#5b52e8">link</span></div>
       <div><div class="di-label">複製分享連結</div><div class="di-sub">含所有資料</div></div>
+    </button>
+    <div class="drawer-divider"></div>
+    <button class="drawer-item" onclick="appConfirm('清除所有資料','此操作無法復原，所有資料將永久刪除',()=>{localStorage.clear();location.reload()})">
+      <div class="di-icon" style="background:#fee2e2"><span class="material-symbols-outlined" style="font-size:18px;color:#dc2626">delete_sweep</span></div>
+      <div><div class="di-label" style="color:#dc2626">清除所有資料</div></div>
     </button>
   </div>
 </div>
@@ -300,9 +327,14 @@
         <p style="color:rgba(255,255,255,.7);font-size:11px;margin-top:1px" id="pageSubtitle">管理您的每日任務</p>
       </div>
     </div>
-    <button id="global-add-btn" onclick="openAddModal()" style="background:rgba(255,255,255,.22);border:none;color:#fff;border-radius:10px;padding:8px 14px;font-size:14px;font-weight:700;display:flex;align-items:center;gap:5px;cursor:pointer;backdrop-filter:blur(4px)">
-      <span class="material-symbols-outlined" style="font-size:18px">add</span>新增
-    </button>
+    <div style="display:flex;align-items:center;gap:6px">
+      <button id="global-import-btn" onclick="invOpenImport()" style="display:none;background:rgba(255,255,255,.15);border:none;color:#fff;border-radius:10px;padding:8px 12px;align-items:center;gap:5px;cursor:pointer" title="匯入物品資料">
+        <span class="material-symbols-outlined" style="font-size:18px">upload_file</span>
+      </button>
+      <button id="global-add-btn" onclick="openAddModal()" style="background:rgba(255,255,255,.22);border:none;color:#fff;border-radius:10px;padding:8px 14px;font-size:14px;font-weight:700;display:flex;align-items:center;gap:5px;cursor:pointer">
+        <span class="material-symbols-outlined" style="font-size:18px">add</span>新增
+      </button>
+    </div>
   </div>
 </header>
 
@@ -330,7 +362,7 @@
   </section>
   <section>
     <div class="section-header">
-      <div class="section-icon" style="background:#f0fdf4"><span class="material-symbols-outlined" style="color:#16a34a">table_rows</span></div>
+      <div class="section-icon" style="background:#f5f3ff"><span class="material-symbols-outlined" style="color:#5b52e8">table_rows</span></div>
       <div class="flex-1"><h2 class="text-lg font-bold text-gray-800">任務資料庫</h2><p class="text-gray-400 text-xs">所有任務總覽</p></div>
       <button onclick="openTaskModal()" style="background:var(--primary);color:#fff;border:none;border-radius:8px;padding:7px 13px;font-size:12px;font-weight:700;cursor:pointer;display:flex;align-items:center;gap:4px">
         <span class="material-symbols-outlined" style="font-size:16px">add</span>新增
@@ -392,6 +424,41 @@
 
 <!-- ── NAV ── -->
 <nav class="safe-bottom" style="position:fixed;bottom:0;left:0;right:0;background:rgba(255,255,255,.96);border-top:1px solid #e8edf5;z-index:100;backdrop-filter:blur(12px)">
+
+<!-- ── GLOBAL TOAST ── -->
+<div id="app-toast" style="position:fixed;bottom:90px;left:50%;transform:translateX(-50%) translateY(20px);background:#1e293b;color:#fff;padding:10px 18px;border-radius:12px;font-size:13px;font-weight:600;white-space:nowrap;z-index:3000;opacity:0;transition:opacity .2s,transform .2s;pointer-events:none;display:flex;align-items:center;gap:8px;box-shadow:0 4px 20px rgba(0,0,0,.3)">
+  <span class="material-symbols-outlined" id="app-toast-icon" style="font-size:16px">check_circle</span>
+  <span id="app-toast-msg"></span>
+</div>
+
+<!-- ── CONFIRM MODAL ── -->
+<div id="app-confirm-overlay" style="display:none;position:fixed;inset:0;z-index:2500;pointer-events:none">
+  <div id="app-confirm-card" style="position:fixed;bottom:200%;left:50%;transform:translate(-50%,-50%);width:calc(100vw - 48px);max-width:340px;background:#fff;border-radius:20px;padding:24px 20px;box-shadow:0 12px 48px rgba(0,0,0,.22),0 2px 8px rgba(0,0,0,.1);max-height:80vh;overflow-y:auto;pointer-events:all">
+    <div style="display:flex;align-items:center;gap:12px;margin-bottom:8px">
+      <div id="app-confirm-icon-wrap" style="width:40px;height:40px;border-radius:12px;display:flex;align-items:center;justify-content:center;flex-shrink:0;background:#fee2e2">
+        <span class="material-symbols-outlined" id="app-confirm-icon" style="font-size:20px;color:#dc2626">warning</span>
+      </div>
+      <h3 id="app-confirm-title" style="font-size:16px;font-weight:700;color:#1e293b"></h3>
+    </div>
+    <p id="app-confirm-msg" style="font-size:13px;color:#64748b;margin-bottom:20px;padding-left:52px"></p>
+    <div style="display:flex;gap:10px">
+      <button onclick="appConfirmCancel()" style="flex:1;padding:12px;border-radius:10px;border:none;background:#f1f5f9;color:#475569;font-size:14px;font-weight:600;cursor:pointer">取消</button>
+      <button id="app-confirm-ok" onclick="appConfirmOk()" style="flex:1;padding:12px;border-radius:10px;border:none;background:#dc2626;color:#fff;font-size:14px;font-weight:700;cursor:pointer">確定</button>
+    </div>
+  </div>
+</div>
+
+<!-- ── INPUT MODAL ── -->
+<div id="app-input-overlay" style="display:none;position:fixed;inset:0;z-index:2500;pointer-events:none">
+  <div style="position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);width:calc(100vw - 48px);max-width:340px;background:#fff;border-radius:20px;padding:24px 20px;box-shadow:0 12px 48px rgba(0,0,0,.22),0 2px 8px rgba(0,0,0,.1);pointer-events:all">
+    <h3 id="app-input-title" style="font-size:16px;font-weight:700;color:#1e293b;margin-bottom:12px"></h3>
+    <input id="app-input-field" type="number" min="0" style="width:100%;padding:11px 14px;border:1.5px solid #e2e8f0;border-radius:10px;font-size:15px;outline:none;font-family:inherit;color:#1e293b;margin-bottom:16px">
+    <div style="display:flex;gap:10px">
+      <button onclick="appInputCancel()" style="flex:1;padding:12px;border-radius:10px;border:none;background:#f1f5f9;color:#475569;font-size:14px;font-weight:600;cursor:pointer">取消</button>
+      <button onclick="appInputOk()" style="flex:1;padding:12px;border-radius:10px;border:none;background:var(--primary);color:#fff;font-size:14px;font-weight:700;cursor:pointer">確定</button>
+    </div>
+  </div>
+</div>
   <div class="max-w-2xl mx-auto flex">
     <button class="nav-item active flex-1 flex flex-col items-center py-2.5 gap-0.5" onclick="switchPage('todo',this)">
       <span class="material-symbols-outlined nav-icon" style="font-size:24px">checklist</span><span class="nav-label text-xs">To Do</span>
@@ -439,7 +506,7 @@
     <div class="form-group" id="hw-custom-area-group" style="display:none"><label>自訂區域名稱</label><input type="text" id="hw-custom-area" placeholder="輸入區域名稱"></div>
     <div class="form-group"><label>頻率（天數）</label><input type="number" id="hw-frequency" placeholder="例：7" min="1" max="365"></div>
     <div class="form-group"><label>上次完成日期</label><input type="date" id="hw-last-date" onchange="autoCalcReminder()"></div>
-    <div class="form-group"><label style="display:flex;align-items:center;gap:6px">提醒日期<span style="font-size:11px;color:#6366f1;font-weight:400">(自動計算，可手動改)</span></label><input type="date" id="hw-reminder"></div>
+    <div class="form-group"><label style="display:flex;align-items:center;gap:6px">提醒日期<span style="font-size:11px;color:#5b52e8;font-weight:400">(自動計算，可手動改)</span></label><input type="date" id="hw-reminder"></div>
     <div class="form-group"><label>備註</label><textarea id="hw-notes" placeholder="選填" rows="2" style="resize:none"></textarea></div>
     <div class="weekend-row" id="hw-weekend-row">
       <div><p style="font-size:14px;font-weight:600;color:var(--text-primary)">週末執行模式</p><p style="font-size:11px;color:var(--text-muted);margin-top:2px">提醒日自動對齊到最近的週六或週日</p></div>
@@ -633,10 +700,16 @@ const PT={
 };
 function switchPage(p,b){
   const addBtn=document.getElementById('global-add-btn');
-  if(addBtn){
-    if(p==='tasks'){addBtn.style.setProperty('display','none','important');}
-    else if(p==='inventory'){addBtn.style.setProperty('display','flex','important');}
-    else{addBtn.style.setProperty('display','flex','important');}
+  const importBtn=document.getElementById('global-import-btn');
+  if(p==='tasks'){
+    if(addBtn)addBtn.style.setProperty('display','none','important');
+    if(importBtn)importBtn.style.setProperty('display','none','important');
+  } else if(p==='inventory'){
+    if(addBtn)addBtn.style.setProperty('display','flex','important');
+    if(importBtn)importBtn.style.setProperty('display','flex','important');
+  } else {
+    if(addBtn)addBtn.style.setProperty('display','flex','important');
+    if(importBtn)importBtn.style.setProperty('display','none','important');
   }
   if(hwSelected.size>0&&p!=='housework')clearSelection();
   document.querySelectorAll('.page').forEach(x=>x.classList.remove('active'));
@@ -657,7 +730,7 @@ function openAddModal(){
   else openTaskModal();
 }
 function closeModal(id){document.getElementById(id).classList.remove('open')}
-function closeAllPopups(){document.querySelectorAll('.popup-menu').forEach(p=>p.classList.remove('show','flip-up'))}
+function closeAllPopups(){document.querySelectorAll('.popup-menu').forEach(p=>p.classList.remove('show','flip-up'));document.getElementById('inv-global-popup')?.remove();}
 
 // ── TASK MODAL ────────────────────────────────────────────
 function onTaskFreqTypeChange(){
@@ -721,7 +794,7 @@ document.getElementById('hw-weekend-toggle').addEventListener('click',()=>setTim
 
 // ── SAVE / ACTIONS ────────────────────────────────────────
 function saveTask(){
-  const title=document.getElementById('task-title').value.trim();if(!title){alert('請輸入任務名稱');return}
+  const title=document.getElementById('task-title').value.trim();if(!title){showToast('請輸入任務名稱','error');return}
   const id=document.getElementById('taskEditId').value,ex=id?tasks.find(x=>x.id==id):null;
   const ft=document.getElementById('task-freq-type').value,fv=ft!=='none'?parseInt(document.getElementById('task-freq-val').value)||0:0;
   const obj={id:id||Date.now().toString(),title,description:document.getElementById('task-desc').value.trim(),plannedDate:document.getElementById('task-date').value,priority:document.getElementById('task-priority').value,freqType:ft,freqVal:fv,status:ex?ex.status:'待辦',createdAt:ex?ex.createdAt:new Date().toISOString()};
@@ -729,7 +802,7 @@ function saveTask(){
   saveData();closeModal('taskModal');renderAll();
 }
 function saveHousework(){
-  const name=document.getElementById('hw-name').value.trim();if(!name){alert('請輸入家事名稱');return}
+  const name=document.getElementById('hw-name').value.trim();if(!name){showToast('請輸入家事名稱','error');return}
   const id=document.getElementById('hwEditId').value;let area=document.getElementById('hw-area').value;
   if(area==='__custom__')area=document.getElementById('hw-custom-area').value.trim()||'其他';
   const weekendMode=document.getElementById('hw-weekend-toggle').classList.contains('on');
@@ -739,8 +812,8 @@ function saveHousework(){
   if(id)housework=housework.map(x=>x.id==id?obj:x);else housework.push(obj);
   saveData();closeModal('houseworkModal');renderAll();
 }
-function deleteTask(id){if(!confirm('確定刪除？'))return;tasks=tasks.filter(x=>x.id!=id);saveData();renderAll()}
-function deleteHousework(id){if(!confirm('確定刪除？'))return;housework=housework.filter(x=>x.id!=id);saveData();renderAll()}
+function deleteTask(id){appConfirm('刪除任務','確定要刪除這個任務嗎？',()=>{tasks=tasks.filter(x=>x.id!=id);saveData();renderAll()})}
+function deleteHousework(id){appConfirm('刪除家事','確定要刪除這個家事嗎？',()=>{housework=housework.filter(x=>x.id!=id);saveData();renderAll()})}
 function markTaskDone(id){tasks=tasks.map(x=>x.id==id?{...x,status:x.status==='已完成'?'待辦':'已完成'}:x);saveData();renderAll()}
 function markHouseworkDone(id){
   housework=housework.map(h=>{if(h.id!=id)return h;let nr=h.frequency>0?addD(todayStr,h.frequency):h.reminderDate;if(h.weekendMode&&nr)nr=nextWeekend(nr);return{...h,lastCompleted:todayStr,reminderDate:nr};});
@@ -766,7 +839,7 @@ function toggleCustomDateSection(){
   if(sec.classList.contains('show')){const inp=document.getElementById('customDelayDateInline');inp.value=todayStr;inp.min=todayStr;setTimeout(()=>inp.focus(),100);}
 }
 function doDelayCustomInline(){
-  const val=document.getElementById('customDelayDateInline').value;if(!val){alert('請選擇日期');return}
+  const val=document.getElementById('customDelayDateInline').value;if(!val){showToast('請選擇日期','error');return}
   const type=document.getElementById('delay-type').value,id=document.getElementById('delay-id').value;if(!id||!type)return;
   if(type==='task')tasks=tasks.map(t=>t.id==id?{...t,status:'延後',plannedDate:val}:t);
   else housework=housework.map(h=>h.id==id?{...h,reminderDate:val}:h);
@@ -790,7 +863,7 @@ function renderTodoTaskItem(t){
   const done=t.status==='已完成';
   return `<div class="hw-row task-row animate-in">
     <button onclick="markTaskDone('${t.id}')" style="background:none;border:none;cursor:pointer">
-      <span class="material-symbols-outlined" style="font-size:22px;color:${done?'#16a34a':'#d1d5db'}">${done?'check_circle':'radio_button_unchecked'}</span>
+      <span class="material-symbols-outlined" style="font-size:22px;color:${done?'#5b52e8':'#d1d5db'}">${done?'check_circle':'radio_button_unchecked'}</span>
     </button>
     <div style="min-width:0">
       <p class="text-sm font-semibold text-gray-700 ${done?'line-through text-gray-400':''} truncate">${t.title}</p>
@@ -866,7 +939,7 @@ function switchDbTab(tab){
 }
 function renderDbRow(t){
   const fl=freqLabel(t);
-  const pc={'緊急':'#dc2626','普通':'#2563eb','低':'#16a34a'}[t.priority]||'#6b7280';
+  const pc={'緊急':'#dc2626','普通':'#2563eb','低':'#5b52e8'}[t.priority]||'#6b7280';
   return `<div class="task-db-row">
     <div style="min-width:0">
       <p style="font-size:14px;font-weight:600;color:var(--text-primary);white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${t.title}</p>
@@ -929,7 +1002,7 @@ function updateFloatBar(){const bar=document.getElementById('float-batch-bar'),l
 function batchDelay(days){housework=housework.map(h=>hwSelected.has(h.id)?{...h,reminderDate:addD(h.reminderDate||todayStr,days)}:h);saveData();clearSelection();renderHouseworkPage();}
 function batchToWeekend(){const target=nextWeekend(todayStr);housework=housework.map(h=>hwSelected.has(h.id)?{...h,reminderDate:target}:h);saveData();clearSelection();renderHouseworkPage();}
 function showBatchCustomDate(){const sub=document.getElementById('batch-date-subtitle');if(sub)sub.textContent=`將 ${hwSelected.size} 個項目延後到指定日期`;const inp=document.getElementById('batch-custom-date-input');if(inp){inp.value=nextWeekend(todayStr);inp.min=todayStr;}document.getElementById('batchDateModal').classList.add('open');}
-function applyBatchCustomDate(){const val=document.getElementById('batch-custom-date-input').value;if(!val){alert('請選擇日期');return}housework=housework.map(h=>hwSelected.has(h.id)?{...h,reminderDate:val}:h);saveData();closeModal('batchDateModal');clearSelection();renderHouseworkPage();}
+function applyBatchCustomDate(){const val=document.getElementById('batch-custom-date-input').value;if(!val){showToast('請選擇日期','error');return}housework=housework.map(h=>hwSelected.has(h.id)?{...h,reminderDate:val}:h);saveData();closeModal('batchDateModal');clearSelection();renderHouseworkPage();}
 function exitBatchMode(){clearSelection();}
 
 // ── RENDER: HOUSEWORK ─────────────────────────────────────
@@ -955,7 +1028,7 @@ function renderHouseworkRow(h){
       </button>
       <div class="popup-menu" id="popup-${h.id}">
         <button onclick="markHouseworkDone('${h.id}')"><span class="material-symbols-outlined" style="font-size:16px;color:#10b981">check_circle</span>標為完成</button>
-        <button onclick="openHouseworkModal('${h.id}')"><span class="material-symbols-outlined" style="font-size:16px;color:#6366f1">edit</span>修改</button>
+        <button onclick="openHouseworkModal('${h.id}')"><span class="material-symbols-outlined" style="font-size:16px;color:#5b52e8">edit</span>修改</button>
         <button onclick="openDelayModal('hw','${h.id}')"><span class="material-symbols-outlined" style="font-size:16px;color:#f59e0b">schedule</span>延後</button>
         <button class="danger" onclick="deleteHousework('${h.id}')"><span class="material-symbols-outlined" style="font-size:16px">delete</span>刪除</button>
       </div>
@@ -1080,23 +1153,47 @@ function invRenderRow(it,showLoc=true){
       </button>
     </div>
     <div class="inv-detail ${rowCls}" id="inv-detail-${it.id}" style="padding-left:30px">${detailHtml}</div>
-    <div class="popup-menu" id="inv-popup-${it.id}">
-      ${it.type==='restock'?`<button onclick="invSetQty('${it.id}',prompt('重新設定數量：',${it.qty}))"><span class="material-symbols-outlined" style="font-size:16px;color:var(--primary)">edit_note</span>修改數量</button>`:''}
-      <button onclick="invOpenEdit('${it.id}')"><span class="material-symbols-outlined" style="font-size:16px;color:var(--primary)">edit</span>修改資料</button>
-      <button class="danger" onclick="invDelete('${it.id}')"><span class="material-symbols-outlined" style="font-size:16px">delete</span>刪除</button>
-    </div>
   </div>`;
 }
 function invToggleDetail(id){const d=document.getElementById('inv-detail-'+id);if(d)d.classList.toggle('open')}
 function invTogglePopup(id,e){
-  e.stopPropagation();closeAllPopups();
-  const el=document.getElementById('inv-popup-'+id);if(!el)return;
-  el.classList.add('show');requestAnimationFrame(()=>{const r=el.getBoundingClientRect();if(r.bottom>window.innerHeight-80)el.classList.add('flip-up');});
+  e.stopPropagation();
+  // Build a global popup positioned via fixed coords
+  const existing=document.getElementById('inv-global-popup');
+  if(existing){
+    const curId=existing.dataset.itemId;
+    existing.remove();
+    if(curId===String(id)) return; // clicking same button closes it
+  }
+  const it=inventory.find(x=>x.id===String(id));if(!it)return;
+  const btn=e.currentTarget;
+  const rect=btn.getBoundingClientRect();
+  const popup=document.createElement('div');
+  popup.id='inv-global-popup';
+  popup.dataset.itemId=String(id);
+  popup.style.cssText=`position:fixed;z-index:2000;background:var(--surface);border-radius:var(--radius-md);box-shadow:var(--shadow-lg);border:1px solid var(--border);min-width:160px;overflow:hidden;right:${window.innerWidth-rect.right}px;`;
+  popup.innerHTML=`
+    ${it.type==='restock'?`<button onclick="invSetQtyPrompt('${it.id}')" style="display:flex;align-items:center;gap:8px;width:100%;padding:12px 16px;border:none;background:none;font-size:14px;font-weight:500;cursor:pointer;color:var(--text-primary);text-align:left"><span class="material-symbols-outlined" style="font-size:16px;color:var(--primary)">edit_note</span>修改數量</button>`:''}
+    <button onclick="invOpenEdit('${it.id}')" style="display:flex;align-items:center;gap:8px;width:100%;padding:12px 16px;border:none;background:none;font-size:14px;font-weight:500;cursor:pointer;color:var(--text-primary);text-align:left"><span class="material-symbols-outlined" style="font-size:16px;color:var(--primary)">edit</span>修改資料</button>
+    <button onclick="invDelete('${it.id}')" style="display:flex;align-items:center;gap:8px;width:100%;padding:12px 16px;border:none;background:none;font-size:14px;font-weight:500;cursor:pointer;color:#dc2626;text-align:left"><span class="material-symbols-outlined" style="font-size:16px">delete</span>刪除</button>`;
+  // Decide top vs bottom
+  const spaceBelow=window.innerHeight-rect.bottom;
+  if(spaceBelow<120) popup.style.bottom=`${window.innerHeight-rect.top}px`;
+  else popup.style.top=`${rect.bottom+4}px`;
+  document.body.appendChild(popup);
+  // Close on outside click
+  setTimeout(()=>document.addEventListener('click',_invPopupClose,{once:true}),0);
+}
+function _invPopupClose(){const p=document.getElementById('inv-global-popup');if(p)p.remove();}
+function invSetQtyPrompt(id){
+  document.getElementById('inv-global-popup')?.remove();
+  const it=inventory.find(x=>x.id===id);if(!it)return;
+  appPrompt('重新設定數量',it.qty,(val)=>invSetQty(id,val));
 }
 function invSetLocFilter(l){invLocFilter=l;renderInventoryPage()}
 function invChangeQty(id,delta){inventory=inventory.map(it=>it.id!==id?it:{...it,qty:Math.max(0,(it.qty??0)+delta)});saveInv();renderInventoryPage()}
 function invSetQty(id,val){const n=parseInt(val);if(isNaN(n)||n<0)return;inventory=inventory.map(it=>it.id===id?{...it,qty:n}:it);saveInv();renderInventoryPage()}
-function invDelete(id){if(!confirm('確定刪除？'))return;inventory=inventory.filter(x=>x.id!==id);saveInv();renderInventoryPage()}
+function invDelete(id){document.getElementById('inv-global-popup')?.remove();appConfirm('刪除物品','確定要刪除這個物品嗎？',()=>{inventory=inventory.filter(x=>x.id!==id);saveInv();renderInventoryPage()})}
 
 // ── INVENTORY MODAL ───────────────────────────────────────
 function invSelectType(type,el){invCurrentType=type;document.querySelectorAll('.itype-opt').forEach(o=>o.classList.remove('sel'));el.classList.add('sel');document.getElementById('inv-g-expiry').classList.toggle('show',type==='expiry');document.getElementById('inv-g-restock').classList.toggle('show',type==='restock');}
@@ -1109,6 +1206,7 @@ function invOpenAdd(){
   document.getElementById('invItemModal').classList.add('open');
 }
 function invOpenEdit(id){
+  document.getElementById('inv-global-popup')?.remove();
   const it=inventory.find(x=>x.id===id);if(!it)return;invEditingId=id;
   document.getElementById('inv-modal-title').textContent='修改物品';document.getElementById('inv-edit-id').value=id;
   document.getElementById('inv-f-name').value=it.name;document.getElementById('inv-f-note').value=it.note||'';document.getElementById('inv-f-location').value=it.location;
@@ -1119,7 +1217,7 @@ function invOpenEdit(id){
   document.getElementById('invItemModal').classList.add('open');
 }
 function invSaveItem(){
-  const name=document.getElementById('inv-f-name').value.trim();if(!name){alert('請輸入物品名稱');return}
+  const name=document.getElementById('inv-f-name').value.trim();if(!name){showToast('請輸入物品名稱','error');return}
   const obj={id:invEditingId||Date.now().toString(),type:invCurrentType,name,location:document.getElementById('inv-f-location').value,note:document.getElementById('inv-f-note').value.trim(),
     expiryDate:invCurrentType==='expiry'?document.getElementById('inv-f-expiry').value||null:null,
     qty:invCurrentType==='restock'?parseInt(document.getElementById('inv-f-qty').value)||0:null,
@@ -1147,7 +1245,7 @@ function invHandleImport(e){
   };
   if(file.name.endsWith('.csv'))reader.readAsText(file,'UTF-8');else reader.readAsArrayBuffer(file);
 }
-function invConfirmImport(){inventory=[...inventory,...invPendingImport];saveInv();closeModal('invImportModal');renderInventoryPage();alert(`成功匯入 ${invPendingImport.length} 筆！`);}
+function invConfirmImport(){inventory=[...inventory,...invPendingImport];saveInv();closeModal('invImportModal');renderInventoryPage();showToast(`成功匯入 ${invPendingImport.length} 筆物品`);}
 
 // ── SETTINGS ─────────────────────────────────────────────
 let appSettings=JSON.parse(localStorage.getItem('app_settings')||'{}');
@@ -1163,16 +1261,55 @@ function renderSettingsPage(){
   if(tn)tn.classList.toggle('on',appSettings.showNotes!==false);
   if(td)td.classList.toggle('on',appSettings.showDesc!==false);
 }
+
+// ── TOAST / CONFIRM / INPUT ───────────────────────────────
+let _toastTimer=null;
+function showToast(msg,type='success'){
+  const el=document.getElementById('app-toast'),icon=document.getElementById('app-toast-icon'),msgEl=document.getElementById('app-toast-msg');
+  if(!el)return;
+  icon.textContent=type==='error'?'error':type==='warn'?'warning':'check_circle';
+  icon.style.color=type==='error'?'#fca5a5':type==='warn'?'#fde68a':'#6ee7b7';
+  msgEl.textContent=msg;
+  if(_toastTimer)clearTimeout(_toastTimer);
+  el.style.opacity='1';el.style.transform='translateX(-50%) translateY(0)';
+  _toastTimer=setTimeout(()=>{el.style.opacity='0';el.style.transform='translateX(-50%) translateY(20px)';},2500);
+}
+let _confirmCb=null;
+function appConfirm(title,msg,cb,{danger=true,icon='warning'}={}){
+  document.getElementById('app-confirm-title').textContent=title;
+  document.getElementById('app-confirm-msg').textContent=msg||'';
+  const iconEl=document.getElementById('app-confirm-icon'),iconWrap=document.getElementById('app-confirm-icon-wrap'),okBtn=document.getElementById('app-confirm-ok');
+  iconEl.textContent=icon;iconEl.style.color=danger?'#dc2626':'var(--primary)';
+  iconWrap.style.background=danger?'#fee2e2':'var(--primary-light)';
+  okBtn.style.background=danger?'#dc2626':'var(--primary)';
+  _confirmCb=cb;document.getElementById('app-confirm-overlay').style.display='flex';
+}
+function appConfirmOk(){document.getElementById('app-confirm-overlay').style.display='none';if(_confirmCb){const cb=_confirmCb;_confirmCb=null;cb();}}
+function appConfirmCancel(){document.getElementById('app-confirm-overlay').style.display='none';_confirmCb=null;}
+let _inputCb=null;
+function appPrompt(title,defaultVal,cb){
+  document.getElementById('app-input-title').textContent=title;
+  const f=document.getElementById('app-input-field');f.value=defaultVal??'';
+  _inputCb=cb;document.getElementById('app-input-overlay').style.display='flex';
+  setTimeout(()=>f.focus(),100);
+}
+function appInputOk(){
+  const val=document.getElementById('app-input-field').value;
+  document.getElementById('app-input-overlay').style.display='none';
+  if(_inputCb){const cb=_inputCb;_inputCb=null;cb(val);}
+}
+function appInputCancel(){document.getElementById('app-input-overlay').style.display='none';_inputCb=null;}
+
 function renderAll(){renderTodoPage();renderTasksPage();renderHouseworkPage();}
 
 // ── EXPORT / IMPORT ───────────────────────────────────────
 function exportData(){const data=JSON.stringify({tasks,housework,inventory,settings:appSettings},null,2);const blob=new Blob([data],{type:'application/json'});const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='家事任務管理_'+todayStr+'.json';a.click();}
 function importData(e){
   const file=e.target.files[0];if(!file)return;const reader=new FileReader();
-  reader.onload=function(ev){try{const d=JSON.parse(ev.target.result);tasks=d.tasks||tasks;housework=d.housework||housework;if(d.inventory)inventory=d.inventory;appSettings={...appSettings,...(d.settings||{})};saveData();saveInv();renderAll();alert('匯入成功！');}catch(err){alert('匯入失敗')}};
+  reader.onload=function(ev){try{const d=JSON.parse(ev.target.result);tasks=d.tasks||tasks;housework=d.housework||housework;if(d.inventory)inventory=d.inventory;appSettings={...appSettings,...(d.settings||{})};saveData();saveInv();renderAll();showToast('匯入成功');}catch(err){showToast('匯入失敗','error')}};
   reader.readAsText(file);e.target.value='';closeDrawer();
 }
-function copyShareLink(){const data=JSON.stringify({tasks,housework});const url=location.origin+location.pathname+'#data='+btoa(unescape(encodeURIComponent(data)));navigator.clipboard.writeText(url).then(()=>alert('連結已複製')).catch(()=>prompt('複製此連結',url));}
+function copyShareLink(){const data=JSON.stringify({tasks,housework});const url=location.origin+location.pathname+'#data='+btoa(unescape(encodeURIComponent(data)));navigator.clipboard.writeText(url).then(()=>showToast('連結已複製')).catch(()=>showToast('複製失敗，請手動複製','error'));}
 
 // ── CLICK LISTENERS ───────────────────────────────────────
 document.addEventListener('click',function(e){
