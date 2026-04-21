@@ -272,26 +272,7 @@
       <div class="form-group"><label>暱稱</label><input type="text" id="set-name" placeholder="輸入暱稱" onchange="saveSetting('userName',this.value)"></div>
       <div class="form-group"><label>Email</label><input type="text" id="set-email" placeholder="輸入 Email" onchange="saveSetting('userEmail',this.value)"></div>
     </div>
-    <div class="drawer-divider"></div>
-    <div class="drawer-section">顯示設定</div>
-    <div style="padding:0 18px 14px">
-      <div class="settings-item"><div><label style="text-transform:none;letter-spacing:0;font-size:14px;font-weight:500;margin:0">To Do 顯示逾期區塊</label><p class="desc">在首頁顯示已逾期項目</p></div><button class="toggle" id="tog-overdue" onclick="toggleSetting('showOverdue',this)"></button></div>
-      <div class="settings-item"><div><label style="text-transform:none;letter-spacing:0;font-size:14px;font-weight:500;margin:0">家事卡片顯示備註</label></div><button class="toggle" id="tog-notes" onclick="toggleSetting('showNotes',this)"></button></div>
-      <div class="settings-item" style="border:none"><div><label style="text-transform:none;letter-spacing:0;font-size:14px;font-weight:500;margin:0">任務卡片顯示描述</label></div><button class="toggle" id="tog-desc" onclick="toggleSetting('showDesc',this)"></button></div>
-      <div class="form-group" style="margin-top:14px"><label>To Do 預設篩選</label>
-        <select id="set-default-filter" onchange="saveSetting('defaultFilter',this.value)"><option value="all">全部</option><option value="today">今天</option><option value="week">本週</option></select>
-      </div>
     </div>
-    <div class="drawer-divider"></div>
-    <div class="drawer-section">資料管理</div>
-    <button class="drawer-item" onclick="appConfirm('重置預設任務','所有任務將還原為預設資料',()=>{tasks=JSON.parse(JSON.stringify(DT));saveData();renderAll();closeDrawer()},{danger:false,icon:'restart_alt'})">
-      <div class="di-icon" style="background:#ede9fe"><span class="material-symbols-outlined" style="font-size:18px;color:var(--primary)">task_alt</span></div>
-      <div><div class="di-label">重置預設任務</div></div>
-    </button>
-    <button class="drawer-item" onclick="appConfirm('重置預設家事','所有家事將還原為預設資料',()=>{housework=JSON.parse(JSON.stringify(DH));saveData();renderAll();closeDrawer()},{danger:false,icon:'restart_alt'})">
-      <div class="di-icon" style="background:#fef3c7"><span class="material-symbols-outlined" style="font-size:18px;color:#d97706">cleaning_services</span></div>
-      <div><div class="di-label">重置預設家事</div></div>
-    </button>
     <div class="drawer-divider"></div>
     <div class="drawer-section">資料匯出入</div>
     <button class="drawer-item" onclick="exportData()">
@@ -306,11 +287,6 @@
     <button class="drawer-item" onclick="copyShareLink()">
       <div class="di-icon" style="background:#f5f3ff"><span class="material-symbols-outlined" style="font-size:18px;color:#5b52e8">link</span></div>
       <div><div class="di-label">複製分享連結</div><div class="di-sub">含所有資料</div></div>
-    </button>
-    <div class="drawer-divider"></div>
-    <button class="drawer-item" onclick="appConfirm('清除所有資料','此操作無法復原，所有資料將永久刪除',()=>{localStorage.clear();location.reload()})">
-      <div class="di-icon" style="background:#fee2e2"><span class="material-symbols-outlined" style="font-size:18px;color:#dc2626">delete_sweep</span></div>
-      <div><div class="di-label" style="color:#dc2626">清除所有資料</div></div>
     </button>
   </div>
 </div>
@@ -405,6 +381,7 @@
   <div class="inv-search-wrap" id="inv-search-wrap">
     <div class="inv-search-inner"><span class="material-symbols-outlined" style="font-size:16px;color:var(--text-muted)">search</span><input type="text" id="inv-search-input" placeholder="搜尋物品名稱…" oninput="renderInventoryPage()"></div>
     <div class="inv-loc-row" id="inv-loc-row"></div>
+    <div class="inv-loc-row" id="inv-cat-row" style="margin-top:6px"></div>
   </div>
   <div class="inv-content" id="inv-content"></div>
 </div>
@@ -569,6 +546,7 @@
     </div>
     <div class="form-group"><label>物品名稱 *</label><input type="text" id="inv-f-name" placeholder="例：洗碗精"></div>
     <div class="form-group"><label>存放位置</label><select id="inv-f-location"><option>廚房</option><option>浴室</option><option>臥室</option><option>客廳</option><option>儲藏室</option><option>冰箱</option><option>藥箱</option><option>其他</option></select></div>
+    <div class="form-group"><label>物品類型</label><select id="inv-f-category"><option>日常用品</option><option>保養品</option><option>糧食/飲品</option><option>藥品保健</option><option>清潔用品</option><option>文具工具</option><option>其他</option></select></div>
     <div class="form-group"><label>備註</label><input type="text" id="inv-f-note" placeholder="選填，例：品牌、規格"></div>
     <div class="form-group icond" id="inv-g-expiry"><label>到期日</label><input type="date" id="inv-f-expiry"><p style="font-size:11px;color:var(--text-muted);margin-top:5px">到期前 14 天出現提醒</p></div>
     <div class="icond" id="inv-g-restock">
@@ -662,19 +640,19 @@ const DT=[
   {id:'dt11',title:'搶高鐵票',description:'',plannedDate:'',priority:'普通',freqType:'none',freqVal:0,status:'待辦',createdAt:new Date().toISOString()},
 ];
 const DI=[
-  {id:'i1',type:'expiry',name:'感冒藥（白藥水）',location:'藥箱',note:'小朋友用',expiryDate:addD(todayStr,8),qty:null,threshold:null},
-  {id:'i2',type:'expiry',name:'維生素 C 錠',location:'藥箱',note:'每天一顆',expiryDate:addD(todayStr,45),qty:null,threshold:null},
-  {id:'i3',type:'expiry',name:'美乃滋',location:'冰箱',note:'開封後冷藏',expiryDate:addD(todayStr,5),qty:null,threshold:null},
-  {id:'i4',type:'expiry',name:'眼藥水',location:'藥箱',note:'',expiryDate:addD(todayStr,-3),qty:null,threshold:null},
-  {id:'i5',type:'expiry',name:'防曬乳 SPF50',location:'浴室',note:'出門必備',expiryDate:addD(todayStr,180),qty:null,threshold:null},
-  {id:'i6',type:'restock',name:'洗碗精',location:'廚房',note:'橘子香',expiryDate:null,qty:1,threshold:1},
-  {id:'i7',type:'restock',name:'洗衣精',location:'儲藏室',note:'濃縮型',expiryDate:null,qty:2,threshold:1},
-  {id:'i8',type:'restock',name:'衛生紙',location:'儲藏室',note:'抽取式 120抽',expiryDate:null,qty:5,threshold:2},
-  {id:'i9',type:'restock',name:'牙膏',location:'浴室',note:'',expiryDate:null,qty:1,threshold:1},
-  {id:'i10',type:'restock',name:'洗髮精',location:'浴室',note:'',expiryDate:null,qty:1,threshold:1},
-  {id:'i11',type:'item',name:'備用電池 AA',location:'儲藏室',note:'2包',expiryDate:null,qty:null,threshold:null},
-  {id:'i12',type:'item',name:'急救包',location:'藥箱',note:'含OK繃、碘酒',expiryDate:null,qty:null,threshold:null},
-  {id:'i13',type:'item',name:'工具箱',location:'儲藏室',note:'含螺絲起子',expiryDate:null,qty:null,threshold:null},
+  {id:'i1',type:'expiry',name:'感冒藥（白藥水）',location:'藥箱',category:'藥品保健',note:'小朋友用',expiryDate:addD(todayStr,8),qty:null,threshold:null},
+  {id:'i2',type:'expiry',name:'維生素 C 錠',location:'藥箱',category:'藥品保健',note:'每天一顆',expiryDate:addD(todayStr,45),qty:null,threshold:null},
+  {id:'i3',type:'expiry',name:'美乃滋',location:'冰箱',category:'糧食/飲品',note:'開封後冷藏',expiryDate:addD(todayStr,5),qty:null,threshold:null},
+  {id:'i4',type:'expiry',name:'眼藥水',location:'藥箱',category:'藥品保健',note:'',expiryDate:addD(todayStr,-3),qty:null,threshold:null},
+  {id:'i5',type:'expiry',name:'防曬乳 SPF50',location:'浴室',category:'保養品',note:'出門必備',expiryDate:addD(todayStr,180),qty:null,threshold:null},
+  {id:'i6',type:'restock',name:'洗碗精',location:'廚房',category:'清潔用品',note:'橘子香',expiryDate:null,qty:1,threshold:1},
+  {id:'i7',type:'restock',name:'洗衣精',location:'儲藏室',category:'清潔用品',note:'濃縮型',expiryDate:null,qty:2,threshold:1},
+  {id:'i8',type:'restock',name:'衛生紙',location:'儲藏室',category:'日常用品',note:'抽取式 120抽',expiryDate:null,qty:5,threshold:2},
+  {id:'i9',type:'restock',name:'牙膏',location:'浴室',category:'日常用品',note:'',expiryDate:null,qty:1,threshold:1},
+  {id:'i10',type:'restock',name:'洗髮精',location:'浴室',category:'日常用品',note:'',expiryDate:null,qty:1,threshold:1},
+  {id:'i11',type:'item',name:'備用電池 AA',location:'儲藏室',category:'文具工具',note:'2包',expiryDate:null,qty:null,threshold:null},
+  {id:'i12',type:'item',name:'急救包',location:'藥箱',category:'藥品保健',note:'含OK繃、碘酒',expiryDate:null,qty:null,threshold:null},
+  {id:'i13',type:'item',name:'工具箱',location:'儲藏室',category:'文具工具',note:'含螺絲起子',expiryDate:null,qty:null,threshold:null},
 ];
 
 function saveData(){localStorage.setItem('app_tasks',JSON.stringify(tasks));localStorage.setItem('app_housework',JSON.stringify(housework))}
@@ -1068,13 +1046,13 @@ function invRestockStatus(it){
   if(it.type!=='restock'||it.qty===null)return null;const thr=it.threshold??1;
   if(it.qty===0)return{cls:'red',label:'缺貨，需補貨',urgent:true,rowCls:'row-danger'};
   if(it.qty<=thr)return{cls:'orange',label:`剩 ${it.qty} 個，快用完`,urgent:false,rowCls:'row-warn'};
-  return{cls:'muted',label:`${it.qty} 個`,urgent:false,rowCls:''};
+  return{cls:'muted',label:'',urgent:false,rowCls:''};
 }
 
 // ── INVENTORY STATE & RENDER ──────────────────────────────
-let invCurrentTab='all',invCurrentType='item',invEditingId=null,invLocFilter=null,invPendingImport=[];
+let invCurrentTab='all',invCurrentType='item',invEditingId=null,invLocFilter=null,invCatFilter=null,invPendingImport=[];
 function invSwitchTab(tab,btn){
-  invCurrentTab=tab;invLocFilter=null;
+  invCurrentTab=tab;invLocFilter=null;invCatFilter=null;
   document.querySelectorAll('.inv-tab').forEach(b=>b.classList.remove('active'));btn.classList.add('active');
   const si=document.getElementById('inv-search-input');if(si)si.value='';
   renderInventoryPage();
@@ -1101,7 +1079,10 @@ function renderInventoryPage(){
     const locs=[...new Set(inventory.map(it=>it.location))];
     const locRow=document.getElementById('inv-loc-row');
     if(locRow)locRow.innerHTML=[null,...locs].map(l=>{const active=(l===null&&invLocFilter===null)||(invLocFilter===l);const meta=l?lm(l):null;return `<button class="inv-loc-chip ${active?'active':''}" onclick="invSetLocFilter(${l===null?'null':`'${l}'`})">${meta?meta.icon+' ':''}${l||'全部'}</button>`;}).join('');
-    let pool=inventory.filter(it=>(!invLocFilter||it.location===invLocFilter)&&(q===''||it.name.toLowerCase().includes(q)||it.note?.toLowerCase().includes(q)));
+    const cats=[...new Set(inventory.map(it=>it.category||'其他'))].sort();
+    const catRow=document.getElementById('inv-cat-row');
+    if(catRow)catRow.innerHTML=[null,...cats].map(c=>{const active=(c===null&&invCatFilter===null)||(invCatFilter===c);return `<button class="inv-loc-chip ${active?'active':''}" onclick="invSetCatFilter(${c===null?'null':`'${c}'`})">${c||'全部'}</button>`;}).join('');
+    let pool=inventory.filter(it=>(!invLocFilter||it.location===invLocFilter)&&(!invCatFilter||(it.category||'其他')===invCatFilter)&&(q===''||it.name.toLowerCase().includes(q)||it.note?.toLowerCase().includes(q)));
     let html='';
     if(invLocFilter){html=`<div class="inv-list">${pool.map(it=>invRenderRow(it,false)).join('')}</div>`;}
     else{locs.forEach(loc=>{const grp=pool.filter(it=>it.location===loc);if(!grp.length)return;const meta=lm(loc);html+=`<div class="inv-loc-group-head"><span style="font-size:16px">${meta.icon}</span><span style="font-size:13px;font-weight:700;color:var(--text-secondary)">${loc}</span><span style="font-size:11px;color:var(--text-muted);margin-left:auto">${grp.length} 件</span></div><div class="inv-list">${grp.map(it=>invRenderRow(it,false)).join('')}</div>`;});}
@@ -1138,7 +1119,7 @@ function invRenderRow(it,showLoc=true){
     detailHtml=it.note?`<div class="drow"><span class="dlabel">備註</span><span class="dvalue">${it.note}</span></div>`:'<div style="padding:7px 0;font-size:12px;color:var(--text-muted)">無其他資訊</div>';
     rightHtml=`<span class="material-symbols-outlined" style="font-size:18px;color:var(--text-muted)">expand_more</span>`;
   }
-  const typeDot=it.type==='expiry'?'#7c3aed':it.type==='restock'?'#2563eb':'transparent';
+  const typeDot='#94a3b8';
   const locLine=showLoc?`<span class="inv-loc-label">${it.location}</span>`:'';
   const sep=(locLine&&statusText)?`<span style="color:var(--border);font-size:10px">·</span>`:'';
   return `<div class="inv-item-wrap">
@@ -1173,7 +1154,6 @@ function invTogglePopup(id,e){
   popup.dataset.itemId=String(id);
   popup.style.cssText=`position:fixed;z-index:2000;background:var(--surface);border-radius:var(--radius-md);box-shadow:var(--shadow-lg);border:1px solid var(--border);min-width:160px;overflow:hidden;right:${window.innerWidth-rect.right}px;`;
   popup.innerHTML=`
-    ${it.type==='restock'?`<button onclick="invSetQtyPrompt('${it.id}')" style="display:flex;align-items:center;gap:8px;width:100%;padding:12px 16px;border:none;background:none;font-size:14px;font-weight:500;cursor:pointer;color:var(--text-primary);text-align:left"><span class="material-symbols-outlined" style="font-size:16px;color:var(--primary)">edit_note</span>修改數量</button>`:''}
     <button onclick="invOpenEdit('${it.id}')" style="display:flex;align-items:center;gap:8px;width:100%;padding:12px 16px;border:none;background:none;font-size:14px;font-weight:500;cursor:pointer;color:var(--text-primary);text-align:left"><span class="material-symbols-outlined" style="font-size:16px;color:var(--primary)">edit</span>修改資料</button>
     <button onclick="invDelete('${it.id}')" style="display:flex;align-items:center;gap:8px;width:100%;padding:12px 16px;border:none;background:none;font-size:14px;font-weight:500;cursor:pointer;color:#dc2626;text-align:left"><span class="material-symbols-outlined" style="font-size:16px">delete</span>刪除</button>`;
   // Decide top vs bottom
@@ -1191,6 +1171,7 @@ function invSetQtyPrompt(id){
   appPrompt('重新設定數量',it.qty,(val)=>invSetQty(id,val));
 }
 function invSetLocFilter(l){invLocFilter=l;renderInventoryPage()}
+function invSetCatFilter(c){invCatFilter=c;renderInventoryPage()}
 function invChangeQty(id,delta){inventory=inventory.map(it=>it.id!==id?it:{...it,qty:Math.max(0,(it.qty??0)+delta)});saveInv();renderInventoryPage()}
 function invSetQty(id,val){const n=parseInt(val);if(isNaN(n)||n<0)return;inventory=inventory.map(it=>it.id===id?{...it,qty:n}:it);saveInv();renderInventoryPage()}
 function invDelete(id){document.getElementById('inv-global-popup')?.remove();appConfirm('刪除物品','確定要刪除這個物品嗎？',()=>{inventory=inventory.filter(x=>x.id!==id);saveInv();renderInventoryPage()})}
@@ -1199,7 +1180,7 @@ function invDelete(id){document.getElementById('inv-global-popup')?.remove();app
 function invSelectType(type,el){invCurrentType=type;document.querySelectorAll('.itype-opt').forEach(o=>o.classList.remove('sel'));el.classList.add('sel');document.getElementById('inv-g-expiry').classList.toggle('show',type==='expiry');document.getElementById('inv-g-restock').classList.toggle('show',type==='restock');}
 function invOpenAdd(){
   invEditingId=null;document.getElementById('inv-modal-title').textContent='新增物品';document.getElementById('inv-edit-id').value='';
-  document.getElementById('inv-f-name').value='';document.getElementById('inv-f-note').value='';document.getElementById('inv-f-location').value='廚房';
+  document.getElementById('inv-f-name').value='';document.getElementById('inv-f-note').value='';document.getElementById('inv-f-location').value='廚房';document.getElementById('inv-f-category').value='日常用品';
   document.getElementById('inv-f-expiry').value='';document.getElementById('inv-f-qty').value='';document.getElementById('inv-f-threshold').value='1';
   invCurrentType='item';document.querySelectorAll('.itype-opt').forEach((o,i)=>o.classList.toggle('sel',i===0));
   document.getElementById('inv-g-expiry').classList.remove('show');document.getElementById('inv-g-restock').classList.remove('show');
@@ -1209,7 +1190,7 @@ function invOpenEdit(id){
   document.getElementById('inv-global-popup')?.remove();
   const it=inventory.find(x=>x.id===id);if(!it)return;invEditingId=id;
   document.getElementById('inv-modal-title').textContent='修改物品';document.getElementById('inv-edit-id').value=id;
-  document.getElementById('inv-f-name').value=it.name;document.getElementById('inv-f-note').value=it.note||'';document.getElementById('inv-f-location').value=it.location;
+  document.getElementById('inv-f-name').value=it.name;document.getElementById('inv-f-note').value=it.note||'';document.getElementById('inv-f-location').value=it.location;document.getElementById('inv-f-category').value=it.category||'其他';
   invCurrentType=it.type;const idx={item:0,expiry:1,restock:2}[it.type]||0;
   document.querySelectorAll('.itype-opt').forEach((o,i)=>o.classList.toggle('sel',i===idx));
   document.getElementById('inv-g-expiry').classList.toggle('show',it.type==='expiry');document.getElementById('inv-g-restock').classList.toggle('show',it.type==='restock');
@@ -1218,7 +1199,7 @@ function invOpenEdit(id){
 }
 function invSaveItem(){
   const name=document.getElementById('inv-f-name').value.trim();if(!name){showToast('請輸入物品名稱','error');return}
-  const obj={id:invEditingId||Date.now().toString(),type:invCurrentType,name,location:document.getElementById('inv-f-location').value,note:document.getElementById('inv-f-note').value.trim(),
+  const obj={id:invEditingId||Date.now().toString(),type:invCurrentType,name,location:document.getElementById('inv-f-location').value,category:document.getElementById('inv-f-category').value||'其他',note:document.getElementById('inv-f-note').value.trim(),
     expiryDate:invCurrentType==='expiry'?document.getElementById('inv-f-expiry').value||null:null,
     qty:invCurrentType==='restock'?parseInt(document.getElementById('inv-f-qty').value)||0:null,
     threshold:invCurrentType==='restock'?parseInt(document.getElementById('inv-f-threshold').value)||1:null};
