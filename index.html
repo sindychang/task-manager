@@ -1209,7 +1209,7 @@ function invSaveItem(){
 
 // ── INVENTORY IMPORT ──────────────────────────────────────
 function invOpenImport(){invPendingImport=[];document.getElementById('inv-import-result').classList.remove('show');document.getElementById('inv-import-confirm-btn').style.display='none';document.getElementById('inv-xlsx-file').value='';document.getElementById('invImportModal').classList.add('open');}
-function invDownloadTemplate(){const csv=[['物品名稱','類型','存放位置','備註','到期日 (YYYY-MM-DD)','現有數量','補貨門檻'],['洗碗精','補貨追蹤','廚房','橘子香','',2,1],['感冒藥','有效期限','藥箱','小朋友用','2025-12-31','',''],['工具箱','一般物品','儲藏室','含螺絲起子','','','']].map(r=>r.map(c=>`"${c}"`).join(',')).join('\n');const a=document.createElement('a');a.href=URL.createObjectURL(new Blob(['\uFEFF'+csv],{type:'text/csv;charset=utf-8'}));a.download='物品庫存範本.csv';a.click();}
+function invDownloadTemplate(){const csv=[['物品名稱','類型','存放位置','物品類型','備註','到期日 (YYYY-MM-DD)','現有數量','補貨門檻'],['洗碗精','補貨追蹤','廚房','清潔用品','橘子香','',2,1],['感冒藥','有效期限','藥箱','藥品保健','小朋友用','2025-12-31','',''],['工具箱','一般物品','儲藏室','文具工具','含螺絲起子','','','']].map(r=>r.map(c=>`"${c}"`).join(',')).join('\n');const a=document.createElement('a');a.href=URL.createObjectURL(new Blob(['\uFEFF'+csv],{type:'text/csv;charset=utf-8'}));a.download='物品庫存範本.csv';a.click();}
 function invHandleImport(e){
   const file=e.target.files[0];if(!file)return;const reader=new FileReader();
   reader.onload=function(ev){
@@ -1218,7 +1218,7 @@ function invHandleImport(e){
       else{const wb=XLSX.read(ev.target.result,{type:'array'});rows=XLSX.utils.sheet_to_array(wb.Sheets[wb.SheetNames[0]],{defval:''});}
       const typeMap={'一般物品':'item','有效期限':'expiry','補貨追蹤':'restock'};invPendingImport=[];
       for(let i=1;i<rows.length;i++){const r=rows[i],name=String(r[0]||'').trim();if(!name)continue;const type=typeMap[String(r[1]||'').trim()]||'item';
-        invPendingImport.push({id:Date.now().toString()+i,type,name,location:String(r[2]||'').trim()||'其他',note:String(r[3]||'').trim(),expiryDate:type==='expiry'?String(r[4]||'').trim()||null:null,qty:type==='restock'?(parseInt(r[5])||0):null,threshold:type==='restock'?(parseInt(r[6])||1):null});}
+        invPendingImport.push({id:Date.now().toString()+i,type,name,location:String(r[2]||'').trim()||'其他',category:String(r[3]||'').trim()||'其他',note:String(r[4]||'').trim(),expiryDate:type==='expiry'?String(r[5]||'').trim()||null:null,qty:type==='restock'?(parseInt(r[6])||0):null,threshold:type==='restock'?(parseInt(r[7])||1):null});}
       const res=document.getElementById('inv-import-result');res.style.display='block';
       res.innerHTML=invPendingImport.length>0?`<p style="font-weight:700;color:#10b981;margin-bottom:4px">解析成功，共 ${invPendingImport.length} 筆</p>${invPendingImport.slice(0,4).map(it=>`<p style="font-size:12px;color:var(--text-primary);margin-top:3px">• ${it.name}</p>`).join('')}${invPendingImport.length>4?`<p style="font-size:12px;color:var(--text-muted)">…還有 ${invPendingImport.length-4} 筆</p>`:''}`:'<p style="color:#dc2626">找不到有效資料</p>';
       document.getElementById('inv-import-confirm-btn').style.display=invPendingImport.length>0?'block':'none';
