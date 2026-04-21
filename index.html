@@ -269,26 +269,7 @@
       <div class="form-group"><label>暱稱</label><input type="text" id="set-name" placeholder="輸入暱稱" onchange="saveSetting('userName',this.value)"></div>
       <div class="form-group"><label>Email</label><input type="text" id="set-email" placeholder="輸入 Email" onchange="saveSetting('userEmail',this.value)"></div>
     </div>
-    <div class="drawer-divider"></div>
-    <div class="drawer-section">顯示設定</div>
-    <div style="padding:0 18px 14px">
-      <div class="settings-item"><div><label style="text-transform:none;letter-spacing:0;font-size:14px;font-weight:500;margin:0">To Do 顯示逾期區塊</label><p class="desc">在首頁顯示已逾期項目</p></div><button class="toggle" id="tog-overdue" onclick="toggleSetting('showOverdue',this)"></button></div>
-      <div class="settings-item"><div><label style="text-transform:none;letter-spacing:0;font-size:14px;font-weight:500;margin:0">家事卡片顯示備註</label></div><button class="toggle" id="tog-notes" onclick="toggleSetting('showNotes',this)"></button></div>
-      <div class="settings-item" style="border:none"><div><label style="text-transform:none;letter-spacing:0;font-size:14px;font-weight:500;margin:0">任務卡片顯示描述</label></div><button class="toggle" id="tog-desc" onclick="toggleSetting('showDesc',this)"></button></div>
-      <div class="form-group" style="margin-top:14px"><label>To Do 預設篩選</label>
-        <select id="set-default-filter" onchange="saveSetting('defaultFilter',this.value)"><option value="all">全部</option><option value="today">今天</option><option value="week">本週</option></select>
-      </div>
     </div>
-    <div class="drawer-divider"></div>
-    <div class="drawer-section">資料管理</div>
-    <button class="drawer-item" onclick="if(confirm('確定重置為預設任務？')){tasks=JSON.parse(JSON.stringify(DT));saveData();renderAll();closeDrawer()}">
-      <div class="di-icon" style="background:#ede9fe"><span class="material-symbols-outlined" style="font-size:18px;color:var(--primary)">task_alt</span></div>
-      <div><div class="di-label">重置預設任務</div></div>
-    </button>
-    <button class="drawer-item" onclick="if(confirm('確定重置為預設家事？')){housework=JSON.parse(JSON.stringify(DH));saveData();renderAll();closeDrawer()}">
-      <div class="di-icon" style="background:#fef3c7"><span class="material-symbols-outlined" style="font-size:18px;color:#d97706">cleaning_services</span></div>
-      <div><div class="di-label">重置預設家事</div></div>
-    </button>
     <div class="drawer-divider"></div>
     <div class="drawer-section">資料匯出入</div>
     <button class="drawer-item" onclick="exportData()">
@@ -303,11 +284,6 @@
     <button class="drawer-item" onclick="copyShareLink()">
       <div class="di-icon" style="background:#f0fdf4"><span class="material-symbols-outlined" style="font-size:18px;color:#16a34a">link</span></div>
       <div><div class="di-label">複製分享連結</div><div class="di-sub">含所有資料</div></div>
-    </button>
-    <div class="drawer-divider"></div>
-    <button class="drawer-item" onclick="if(confirm('確定清除所有資料？')){localStorage.clear();location.reload()}">
-      <div class="di-icon" style="background:#fee2e2"><span class="material-symbols-outlined" style="font-size:18px;color:#dc2626">delete_sweep</span></div>
-      <div><div class="di-label" style="color:#dc2626">清除所有資料</div></div>
     </button>
   </div>
 </div>
