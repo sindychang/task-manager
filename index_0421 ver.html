@@ -1,0 +1,1138 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <link rel="apple-touch-icon" href="kanahei.png">
+  <link rel="icon" type="image/png" href="kanahei.png">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
+  <meta name="apple-mobile-web-app-title" content="我的管理App">
+  <meta name="theme-color" content="#6366f1">
+  <title>家事與任務管理 App</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet">
+  <style>
+    :root{
+      --primary:#5b52e8;--primary-light:#ede9fe;--primary-dark:#4338ca;
+      --accent:#7c3aed;--accent-light:#f5f3ff;
+      --success:#10b981;--success-light:#d1fae5;
+      --warning:#f59e0b;--warning-light:#fef3c7;
+      --danger:#ef4444;--danger-light:#fee2e2;
+      --surface:#fff;--bg:#f4f6fb;
+      --border:#e8edf5;--border-light:#f1f5f9;
+      --text-primary:#1e293b;--text-secondary:#475569;--text-muted:#94a3b8;
+      --shadow-sm:0 1px 4px rgba(0,0,0,.07);
+      --shadow-md:0 4px 16px rgba(0,0,0,.10);
+      --shadow-lg:0 8px 32px rgba(0,0,0,.13);
+      --radius-sm:8px;--radius-md:14px;--radius-lg:20px;
+    }
+    *{font-family:'Noto Sans TC',sans-serif;-webkit-tap-highlight-color:transparent}
+    body{background:var(--bg);padding-bottom:84px}
+    .page{display:none}.page.active{display:block}
+    .nav-item{transition:all .2s;background:none;border:none;cursor:pointer;position:relative}
+    .nav-item.active .nav-icon{color:var(--primary)}
+    .nav-item.active .nav-label{color:var(--primary);font-weight:700}
+    .nav-item.active::after{content:'';position:absolute;bottom:6px;left:50%;transform:translateX(-50%);width:4px;height:4px;background:var(--primary);border-radius:50%}
+    .nav-item .nav-icon{color:#b0bbc8}.nav-item .nav-label{color:#b0bbc8}
+    input[type="date"]{-webkit-appearance:none;appearance:auto}
+    .modal-overlay{display:none;position:fixed;inset:0;background:rgba(15,23,42,.55);z-index:1000;align-items:flex-end;justify-content:center;padding:0;backdrop-filter:blur(2px)}
+    .modal-overlay.open{display:flex}
+    .modal-sheet{width:100%;max-width:520px;border-radius:24px 24px 0 0;box-shadow:var(--shadow-lg);background:var(--surface);padding:24px 20px;max-height:92vh;overflow-y:auto}
+    .modal-handle{width:40px;height:4px;background:var(--border);border-radius:99px;margin:0 auto 20px}
+    .card{background:var(--surface);border-radius:var(--radius-md);box-shadow:var(--shadow-sm);border:1px solid var(--border-light)}
+    .badge{display:inline-flex;align-items:center;padding:2px 9px;border-radius:999px;font-size:11px;font-weight:700;letter-spacing:.01em}
+    .badge-urgent{background:#fee2e2;color:#dc2626}.badge-normal{background:#dbeafe;color:#2563eb}.badge-low{background:#d1fae5;color:#059669}
+    .badge-done{background:#dcfce7;color:#15803d}.badge-delayed{background:#fff7ed;color:#c2410c}
+    .section-header{display:flex;align-items:center;gap:12px;margin-bottom:16px}
+    .section-icon{width:42px;height:42px;border-radius:12px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+    .empty-state{text-align:center;padding:32px 16px;color:var(--text-muted)}
+    .empty-state .material-symbols-outlined{font-size:44px;display:block;margin-bottom:8px;opacity:.5}
+    select,input[type="text"],input[type="number"],input[type="date"],textarea{
+      width:100%;padding:11px 14px;border:1.5px solid var(--border);border-radius:var(--radius-sm);font-size:15px;outline:none;background:var(--surface);font-family:'Noto Sans TC',sans-serif;color:var(--text-primary);transition:border-color .2s,box-shadow .2s}
+    select:focus,input:focus,textarea:focus{border-color:var(--primary);box-shadow:0 0 0 3px rgba(91,82,232,.12)}
+    label{display:block;font-size:12px;font-weight:700;color:var(--text-secondary);margin-bottom:6px;letter-spacing:.03em;text-transform:uppercase}
+    .form-group{margin-bottom:16px}
+    .btn-primary{background:var(--primary);color:#fff;padding:13px 24px;border-radius:var(--radius-sm);font-weight:700;border:none;cursor:pointer;font-size:15px;transition:background .15s,transform .1s;box-shadow:0 2px 8px rgba(91,82,232,.3)}
+    .btn-primary:active{transform:scale(.97);background:var(--primary-dark)}
+    .btn-secondary{background:var(--border-light);color:var(--text-secondary);padding:13px 24px;border-radius:var(--radius-sm);font-weight:600;border:none;cursor:pointer;font-size:15px;transition:background .15s}
+    .btn-secondary:active{background:#e2e8f0}
+    .animate-in{animation:fadeIn .25s ease}
+    @keyframes fadeIn{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:translateY(0)}}
+    .safe-bottom{padding-bottom:env(safe-area-inset-bottom,0px)}
+    .area-chip{cursor:pointer;transition:all .2s;border:2px solid transparent}
+    .area-chip.selected{transform:scale(1.02);box-shadow:0 4px 18px rgba(0,0,0,.12)}
+    .date-tag{display:inline-flex;align-items:center;gap:3px;padding:4px 10px;border-radius:var(--radius-sm);font-size:11px;font-weight:700;cursor:pointer;border:none;background:var(--border-light);color:#64748b;white-space:nowrap;min-width:78px;justify-content:center;transition:background .15s}
+    .date-tag:hover{background:#e2e8f0}.date-tag.overdue{background:#fee2e2;color:#dc2626}.date-tag.today-tag{background:var(--primary-light);color:var(--primary)}
+    .popup-menu{position:absolute;right:0;top:calc(100% + 4px);background:var(--surface);border-radius:var(--radius-md);box-shadow:var(--shadow-lg);border:1px solid var(--border);z-index:50;min-width:130px;overflow:hidden;display:none}
+    .popup-menu.show{display:block}
+    .popup-menu button{display:flex;align-items:center;gap:8px;width:100%;padding:12px 16px;border:none;background:none;font-size:14px;font-weight:500;cursor:pointer;color:var(--text-primary)}
+    .popup-menu button:hover{background:var(--bg)}
+    .popup-menu button.danger{color:var(--danger)}
+    .filter-row{display:flex;gap:6px;flex-wrap:wrap;align-items:center}
+    .filter-row+.filter-row{margin-top:8px}
+    .filter-chip{padding:5px 12px;border-radius:999px;font-size:11px;font-weight:700;border:1.5px solid var(--border);background:var(--surface);color:#64748b;cursor:pointer;transition:all .2s;white-space:nowrap}
+    .filter-chip.active{background:var(--primary);color:#fff;border-color:var(--primary)}
+    .filter-chip:hover:not(.active){background:var(--border-light)}
+    .hw-row{display:grid;grid-template-columns:34px 1fr 90px auto;align-items:center;gap:8px;padding:12px 0;border-bottom:1px solid var(--border-light)}
+    .hw-row:last-child{border-bottom:none}
+    .hw-row.task-row{grid-template-columns:34px 1fr 90px}
+    .hw-row .hw-date-col{text-align:right;justify-self:end}
+    .hw-row .hw-area-col{justify-self:end}
+    .settings-card{background:var(--surface);border-radius:var(--radius-md);box-shadow:var(--shadow-sm);border:1px solid var(--border-light);padding:20px;margin-bottom:14px}
+    .settings-card h3{font-size:14px;font-weight:700;color:var(--text-primary);margin-bottom:12px;display:flex;align-items:center;gap:8px;letter-spacing:.02em}
+    .settings-item{display:flex;align-items:center;justify-content:space-between;padding:12px 0;border-bottom:1px solid var(--border-light)}
+    .settings-item:last-child{border-bottom:none}
+    .settings-item label{margin-bottom:0;font-size:14px;font-weight:500;color:var(--text-secondary);letter-spacing:0;text-transform:none}
+    .settings-item .desc{font-size:11px;color:var(--text-muted);margin-top:2px}
+    .toggle{position:relative;width:50px;height:28px;background:#cbd5e1;border-radius:999px;cursor:pointer;transition:background .2s;border:none;flex-shrink:0}
+    .toggle.on{background:var(--primary)}
+    .toggle::after{content:'';position:absolute;top:3px;left:3px;width:22px;height:22px;background:#fff;border-radius:50%;transition:transform .2s;box-shadow:0 1px 4px rgba(0,0,0,.2)}
+    .toggle.on::after{transform:translateX(22px)}
+    /* Delay modal custom date section */
+    .delay-custom-section{display:none;margin-top:12px;padding:14px;background:var(--bg);border-radius:var(--radius-sm);border:1.5px solid var(--border)}
+    .delay-custom-section.show{display:block}
+    .delay-day-btn{border-radius:var(--radius-sm);border:1.5px solid var(--border);background:var(--surface);cursor:pointer;transition:all .15s;padding:10px 0}
+    .delay-day-btn:hover{border-color:var(--primary);background:var(--primary-light)}
+    .delay-day-btn:active{transform:scale(.96)}
+    /* Weekend badge */
+    .badge-weekend{background:#fef3c7;color:#b45309;font-size:10px;padding:2px 7px;border-radius:999px;font-weight:700;display:inline-flex;align-items:center;gap:3px}
+    /* Last done info */
+    .last-done-info{font-size:11px;color:var(--text-muted);margin-top:4px;display:flex;align-items:center;gap:3px}
+    /* Batch select mode */
+    .hw-select-cb{width:22px;height:22px;border-radius:6px;border:2px solid var(--border);background:var(--surface);cursor:pointer;flex-shrink:0;display:flex;align-items:center;justify-content:center;transition:all .15s}
+    .hw-select-cb.checked{background:var(--primary);border-color:var(--primary)}
+    .hw-select-cb.checked::after{content:'';width:5px;height:9px;border:2px solid #fff;border-top:none;border-left:none;transform:rotate(40deg) translateY(-1px);display:block}
+    .hw-card-selectable{cursor:pointer;transition:box-shadow .15s,border-color .15s}
+    .hw-card-selectable.selected-card{box-shadow:0 0 0 2px var(--primary)!important;border-color:var(--primary)!important}
+    /* Floating batch action bar */
+    .float-batch-bar{position:fixed;bottom:88px;left:0;right:0;z-index:200;display:flex;justify-content:center;pointer-events:none;transition:all .25s}
+    .float-batch-bar.show{pointer-events:all}
+    .float-batch-inner{background:#1e293b;border-radius:16px;padding:12px 16px;display:flex;align-items:center;gap:10px;box-shadow:0 8px 32px rgba(0,0,0,.28);transform:translateY(20px);opacity:0;transition:all .25s;max-width:calc(100vw - 32px)}
+    .float-batch-bar.show .float-batch-inner{transform:translateY(0);opacity:1}
+    .float-batch-action{background:rgba(255,255,255,.12);color:#fff;border:none;border-radius:10px;padding:9px 14px;font-size:13px;font-weight:700;cursor:pointer;display:flex;align-items:center;gap:6px;transition:background .15s;white-space:nowrap}
+    .float-batch-action:hover{background:rgba(255,255,255,.22)}
+    .float-batch-action.danger{background:rgba(239,68,68,.2);color:#fca5a5}
+    .float-batch-count{color:#94a3b8;font-size:12px;font-weight:700;white-space:nowrap}
+    .batch-mode-toggle{display:flex;align-items:center;gap:6px;padding:6px 12px;border-radius:999px;border:1.5px solid var(--border);background:var(--surface);cursor:pointer;font-size:12px;font-weight:700;color:var(--text-secondary);transition:all .15s}
+    .batch-mode-toggle.active{background:#fee2e2;border-color:#fca5a5;color:#dc2626}
+    /* Week calendar */
+    .week-cal-nav{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px}
+    .week-cal-nav-btn{background:var(--border-light);border:none;width:36px;height:36px;border-radius:10px;display:flex;align-items:center;justify-content:center;cursor:pointer;transition:background .15s;flex-shrink:0}
+    .week-cal-nav-btn:hover{background:var(--border)}
+    .week-cal-nav-btn:active{transform:scale(.93)}
+    .week-range-label{font-size:13px;font-weight:700;color:var(--text-primary)}
+    .week-cal-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:4px;margin-bottom:12px}
+    .day-col-header{text-align:center;padding:4px 0}
+    .day-col-header .dow{font-size:10px;font-weight:700;color:var(--text-muted);letter-spacing:.04em}
+    .day-col-header .dom{font-size:15px;font-weight:800;color:var(--text-secondary);line-height:1.2;margin-top:1px}
+    .day-col-header.is-today .dom{background:var(--primary);color:#fff;border-radius:50%;width:26px;height:26px;display:flex;align-items:center;justify-content:center;margin:1px auto 0}
+    .day-col-header.is-today .dow{color:var(--primary)}
+    .day-col-header.is-past .dom{color:#cbd5e1}
+    .day-col-header.is-past .dow{color:#e2e8f0}
+    .day-tasks-col{min-height:60px;padding:0 2px}
+    .day-task-pill{background:var(--primary-light);border-left:3px solid var(--primary);border-radius:0 6px 6px 0;padding:4px 6px;margin-bottom:4px;cursor:pointer;transition:background .15s}
+    .day-task-pill:hover{background:#ddd6fe}
+    .day-task-pill.done-pill{background:#f1f5f9;border-left-color:#cbd5e1;opacity:.6}
+    .day-task-pill p{font-size:11px;font-weight:600;color:var(--primary);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;line-height:1.3}
+    .day-task-pill.done-pill p{color:var(--text-muted);text-decoration:line-through}
+    .day-task-pill.overdue-pill{background:#fee2e2;border-left-color:#dc2626}
+    .day-task-pill.overdue-pill p{color:#dc2626}
+    .day-add-btn{display:flex;align-items:center;justify-content:center;width:100%;padding:4px 0;border:1.5px dashed var(--border);border-radius:6px;background:none;cursor:pointer;color:var(--text-muted);font-size:11px;gap:2px;transition:border-color .15s,color .15s;margin-top:2px}
+    .day-add-btn:hover{border-color:var(--primary);color:var(--primary)}
+    .day-assign-dropdown{position:relative}
+    .day-assign-menu{position:absolute;top:calc(100% + 4px);left:0;right:0;background:var(--surface);border:1px solid var(--border);border-radius:12px;box-shadow:var(--shadow-lg);z-index:300;max-height:220px;overflow-y:auto;min-width:180px}
+    .day-assign-menu button{display:block;width:100%;text-align:left;padding:10px 14px;border:none;background:none;font-size:13px;font-weight:500;color:var(--text-primary);cursor:pointer;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+    .day-assign-menu button:hover{background:var(--bg)}
+    .day-assign-menu .empty-opt{padding:10px 14px;font-size:12px;color:var(--text-muted)}
+    .week-overdue-bar{display:flex;align-items:center;gap:8px;padding:9px 12px;background:#fff5f5;border:1px solid #fecaca;border-radius:var(--radius-sm);margin-bottom:10px;font-size:12px;color:#dc2626;font-weight:600}
+    /* Task DB styles */
+    .task-db-row{display:grid;grid-template-columns:1fr auto auto;align-items:center;gap:8px;padding:11px 0;border-bottom:1px solid var(--border-light)}
+    .task-db-row:last-child{border-bottom:none}
+    .freq-badge{display:inline-flex;align-items:center;gap:3px;padding:2px 8px;border-radius:999px;font-size:10px;font-weight:700;background:#ede9fe;color:#7c3aed;white-space:nowrap}
+    /* Overdue notice bar (compact) */
+    .overdue-notice{display:flex;align-items:center;gap:8px;padding:10px 14px;background:#fff5f5;border:1px solid #fecaca;border-radius:var(--radius-sm);margin-bottom:12px;font-size:12px;font-weight:600;color:#dc2626}
+    /* weekend checkbox row in modal */
+    .weekend-row{display:flex;align-items:center;justify-content:space-between;padding:11px 13px;background:var(--bg);border-radius:var(--radius-sm);border:1.5px solid var(--border);margin-bottom:16px}
+    .weekend-row.active{background:#fffbeb;border-color:#fbbf24}
+  </style>
+</head>
+<body class="min-h-screen">
+
+<header style="background:linear-gradient(135deg,#5b52e8 0%,#7c3aed 100%);padding:18px 16px 14px;padding-top:calc(18px + env(safe-area-inset-top,0px));box-shadow:0 2px 16px rgba(91,82,232,.25)">
+  <div class="max-w-2xl mx-auto flex items-center justify-between">
+    <div class="flex items-center gap-3">
+      <div style="width:36px;height:36px;background:rgba(255,255,255,.18);border-radius:10px;display:flex;align-items:center;justify-content:center">
+        <span class="material-symbols-outlined" id="pageTitleIcon" style="font-size:22px;color:#fff">checklist</span>
+      </div>
+      <div><h1 class="text-white font-bold" id="pageTitle" style="font-size:17px;letter-spacing:.01em">To Do List</h1>
+      <p style="color:rgba(255,255,255,.7);font-size:11px;margin-top:1px" id="pageSubtitle">管理您的每日任務</p></div>
+    </div>
+    <button id="global-add-btn" onclick="openAddModal()" style="background:rgba(255,255,255,.22);border:none;color:#fff;border-radius:10px;padding:8px 14px;font-size:14px;font-weight:700;display:flex;align-items:center;gap:5px;cursor:pointer;backdrop-filter:blur(4px)">
+      <span class="material-symbols-outlined" style="font-size:18px">add</span>新增</button>
+  </div>
+</header>
+
+<div id="page-todo" class="page active max-w-2xl mx-auto px-4 py-6">
+  <div class="mb-4" id="todo-filter-area"></div>
+  <div id="todo-content"></div>
+</div>
+
+<div id="page-tasks" class="page max-w-2xl mx-auto px-4 py-6">
+  <!-- 週曆待執行清單 -->
+  <section class="mb-6">
+    <div class="section-header">
+      <div class="section-icon" style="background:#ede9fe"><span class="material-symbols-outlined" style="color:#7c3aed">calendar_view_week</span></div>
+      <div><h2 class="text-lg font-bold text-gray-800">待執行清單</h2><p class="text-gray-400 text-xs">週曆檢視</p></div>
+    </div>
+    <!-- 週導航 -->
+    <div class="week-cal-nav">
+      <button class="week-cal-nav-btn" onclick="shiftWeek(-1)">
+        <span class="material-symbols-outlined" style="font-size:20px;color:#64748b">chevron_left</span>
+      </button>
+      <span class="week-range-label" id="week-range-label"></span>
+      <button class="week-cal-nav-btn" onclick="shiftWeek(1)">
+        <span class="material-symbols-outlined" style="font-size:20px;color:#64748b">chevron_right</span>
+      </button>
+    </div>
+    <div id="week-overdue-bar"></div>
+    <!-- 日期 header row -->
+    <div class="week-cal-grid" id="week-header-row"></div>
+    <!-- 任務列 -->
+    <div class="week-cal-grid" id="week-tasks-row"></div>
+    <!-- 未排期 -->
+    <div id="unscheduled-section"></div>
+  </section>
+  <!-- 任務資料庫 -->
+  <section>
+    <div class="section-header">
+      <div class="section-icon" style="background:#f0fdf4"><span class="material-symbols-outlined" style="color:#16a34a">table_rows</span></div>
+      <div class="flex-1"><h2 class="text-lg font-bold text-gray-800">任務資料庫</h2><p class="text-gray-400 text-xs">所有任務總覽</p></div>
+      <button onclick="openTaskModal()" style="background:var(--primary);color:#fff;border:none;border-radius:8px;padding:7px 13px;font-size:12px;font-weight:700;cursor:pointer;display:flex;align-items:center;gap:4px">
+        <span class="material-symbols-outlined" style="font-size:16px">add</span>新增
+      </button>
+    </div>
+    <div class="card" style="overflow:hidden">
+      <div style="display:flex;border-bottom:1px solid var(--border-light)">
+        <button id="db-tab-recurring" onclick="switchDbTab('recurring')" style="flex:1;padding:10px;font-size:12px;font-weight:700;border:none;background:none;cursor:pointer;border-bottom:2px solid var(--primary);color:var(--primary)">定期任務</button>
+        <button id="db-tab-once" onclick="switchDbTab('once')" style="flex:1;padding:10px;font-size:12px;font-weight:700;border:none;background:none;cursor:pointer;border-bottom:2px solid transparent;color:var(--text-muted)">一次性任務</button>
+      </div>
+      <div id="task-db-recurring" class="px-4 py-1"></div>
+      <div id="task-db-once" class="px-4 py-1" style="display:none"></div>
+    </div>
+  </section>
+</div>
+
+<div id="page-housework" class="page max-w-2xl mx-auto px-4 py-6">
+  <div class="section-header mb-2">
+    <div class="section-icon" style="background:#fef3c7"><span class="material-symbols-outlined" style="color:#d97706">cleaning_services</span></div>
+    <div class="flex-1"><h2 class="text-lg font-bold text-gray-800">家事項目總覽</h2><p class="text-gray-400 text-xs">點擊區域篩選</p></div>
+    <button class="batch-mode-toggle" id="batch-mode-btn" onclick="toggleBatchMode()">
+      <span class="material-symbols-outlined" style="font-size:16px">checklist</span>批次選取
+    </button>
+  </div>
+
+  <div class="mb-5">
+    <button onclick="sendAllProgressToShortcut()" class="w-full py-4 bg-indigo-500 text-white rounded-2xl shadow-lg flex items-center justify-center gap-3 active:scale-95 transition-transform" style="background:linear-gradient(135deg,var(--primary),var(--accent))">
+      <span class="material-symbols-outlined" style="font-size:22px">send_to_mobile</span>
+      <span class="font-bold text-base">傳送今日總進度至 iPhone</span>
+    </button>
+  </div>
+
+  <div id="hw-area-chips" class="grid grid-cols-2 gap-3 mb-5"></div>
+  <div id="hw-overdue-notice"></div>
+  <div id="housework-cards"></div>
+</div>
+
+<!-- Floating batch action bar -->
+<div class="float-batch-bar" id="float-batch-bar">
+  <div class="float-batch-inner">
+    <span class="float-batch-count" id="batch-count-label">已選 0 項</span>
+    <button class="float-batch-action" onclick="batchToWeekend()">
+      <span class="material-symbols-outlined" style="font-size:16px">weekend</span>延後到週末
+    </button>
+    <button class="float-batch-action" onclick="showBatchCustomDate()">
+      <span class="material-symbols-outlined" style="font-size:16px">calendar_month</span>自選日期
+    </button>
+    <button class="float-batch-action danger" onclick="exitBatchMode()">
+      <span class="material-symbols-outlined" style="font-size:16px">close</span>
+    </button>
+  </div>
+</div>
+
+<!-- Batch custom date modal -->
+<div class="modal-overlay" id="batchDateModal">
+  <div class="modal-sheet">
+    <div class="modal-handle"></div>
+    <h2 style="font-size:17px;font-weight:700;color:#1e293b;margin-bottom:4px">批次延後日期</h2>
+    <p style="font-size:12px;color:var(--text-muted);margin-bottom:16px" id="batch-date-subtitle"></p>
+    <div class="form-group">
+      <label>選擇新提醒日期</label>
+      <input type="date" id="batch-custom-date-input">
+    </div>
+    <div class="flex gap-3 mt-2">
+      <button class="btn-secondary flex-1" onclick="closeModal('batchDateModal')">取消</button>
+      <button class="btn-primary flex-1" onclick="applyBatchCustomDate()">確認延後</button>
+    </div>
+  </div>
+</div>
+
+<div id="page-settings" class="page max-w-2xl mx-auto px-4 py-6">
+  <div class="settings-card">
+    <h3><span class="material-symbols-outlined" style="color:#6366f1">person</span>個人資料</h3>
+    <div class="form-group"><label>暱稱</label><input type="text" id="set-name" placeholder="輸入暱稱" onchange="saveSetting('userName',this.value)"></div>
+    <div class="form-group"><label>Email</label><input type="text" id="set-email" placeholder="輸入 Email" onchange="saveSetting('userEmail',this.value)"></div>
+  </div>
+
+  <div class="settings-card">
+    <h3><span class="material-symbols-outlined" style="color:#d97706">tune</span>頁面顯示設定</h3>
+    <div class="settings-item">
+      <div><label>To Do 顯示逾期區塊</label><p class="desc">在首頁顯示已逾期項目</p></div>
+      <button class="toggle" id="tog-overdue" onclick="toggleSetting('showOverdue',this)"></button>
+    </div>
+    <div class="settings-item">
+      <div><label>家事卡片顯示備註</label><p class="desc">在家事管理頁顯示備註欄</p></div>
+      <button class="toggle" id="tog-notes" onclick="toggleSetting('showNotes',this)"></button>
+    </div>
+    <div class="settings-item">
+      <div><label>任務卡片顯示描述</label><p class="desc">在任務資訊卡片顯示描述</p></div>
+      <button class="toggle" id="tog-desc" onclick="toggleSetting('showDesc',this)"></button>
+    </div>
+    <div class="form-group" style="margin-top:12px">
+      <label>To Do 預設篩選</label>
+      <select id="set-default-filter" onchange="saveSetting('defaultFilter',this.value)">
+        <option value="all">全部</option>
+        <option value="today">今天</option>
+        <option value="week">本週</option>
+      </select>
+    </div>
+  </div>
+
+  <div class="settings-card">
+    <h3><span class="material-symbols-outlined" style="color:#6366f1">task_alt</span>任務資料管理</h3>
+    <button class="btn-secondary w-full" style="font-size:14px;padding:10px;margin-bottom:8px" onclick="if(confirm('確定重置為預設任務？')){tasks=JSON.parse(JSON.stringify(DT));saveData();renderAll()}"><span class="material-symbols-outlined" style="font-size:16px;vertical-align:middle;margin-right:4px">restart_alt</span> 重置為預設任務</button>
+  </div>
+
+  <div class="settings-card">
+    <h3><span class="material-symbols-outlined" style="color:#d97706">cleaning_services</span>家事資料管理</h3>
+    <button class="btn-secondary w-full" style="font-size:14px;padding:10px" onclick="if(confirm('確定重置為預設家事？')){housework=JSON.parse(JSON.stringify(DH));saveData();renderAll()}"><span class="material-symbols-outlined" style="font-size:16px;vertical-align:middle;margin-right:4px">restart_alt</span> 重置為預設家事</button>
+  </div>
+
+  <div class="settings-card">
+    <h3><span class="material-symbols-outlined" style="color:#059669">share</span>共用 / 資料匯出入</h3>
+    <div class="flex gap-3 mb-3">
+      <button class="btn-primary flex-1" style="font-size:14px;padding:10px" onclick="exportData()"><span class="material-symbols-outlined" style="font-size:18px;vertical-align:middle">upload</span> 匯出資料</button>
+      <button class="btn-secondary flex-1" style="font-size:14px;padding:10px" onclick="document.getElementById('importFile').click()"><span class="material-symbols-outlined" style="font-size:18px;vertical-align:middle">download</span> 匯入資料</button>
+      <input type="file" id="importFile" accept=".json" style="display:none" onchange="importData(event)">
+    </div>
+    <button class="btn-secondary w-full" style="font-size:14px;padding:10px" onclick="copyShareLink()"><span class="material-symbols-outlined" style="font-size:18px;vertical-align:middle">link</span> 複製分享連結（含資料）</button>
+  </div>
+
+  <div class="settings-card">
+    <h3><span class="material-symbols-outlined" style="color:#dc2626">delete_sweep</span>危險操作</h3>
+    <button class="btn-secondary w-full" style="font-size:14px;padding:10px;color:#dc2626" onclick="if(confirm('確定清除所有資料？')){localStorage.clear();location.reload()}"><span class="material-symbols-outlined" style="font-size:16px;vertical-align:middle;margin-right:4px">delete_forever</span> 清除所有資料</button>
+  </div>
+</div>
+
+<nav class="safe-bottom" style="position:fixed;bottom:0;left:0;right:0;background:rgba(255,255,255,.96);border-top:1px solid #e8edf5;z-index:100;backdrop-filter:blur(12px)">
+  <div class="max-w-2xl mx-auto flex">
+    <button class="nav-item active flex-1 flex flex-col items-center py-2.5 gap-0.5" onclick="switchPage('todo',this)">
+      <span class="material-symbols-outlined nav-icon" style="font-size:24px;font-variation-settings:'FILL' 1">checklist</span>
+      <span class="nav-label text-xs">To Do</span>
+    </button>
+    <button class="nav-item flex-1 flex flex-col items-center py-2.5 gap-0.5" onclick="switchPage('tasks',this)">
+      <span class="material-symbols-outlined nav-icon" style="font-size:24px;font-variation-settings:'FILL' 0">assignment</span>
+      <span class="nav-label text-xs">任務</span>
+    </button>
+    <button class="nav-item flex-1 flex flex-col items-center py-2.5 gap-0.5" onclick="switchPage('housework',this)">
+      <span class="material-symbols-outlined nav-icon" style="font-size:24px;font-variation-settings:'FILL' 0">cottage</span>
+      <span class="nav-label text-xs">家事</span>
+    </button>
+    <button class="nav-item flex-1 flex flex-col items-center py-2.5 gap-0.5" onclick="switchPage('settings',this)">
+      <span class="material-symbols-outlined nav-icon" style="font-size:24px;font-variation-settings:'FILL' 0">manage_accounts</span>
+      <span class="nav-label text-xs">設定</span>
+    </button>
+  </div>
+</nav>
+
+<div class="modal-overlay" id="taskModal">
+  <div class="modal-sheet">
+    <div class="modal-handle"></div>
+    <div class="flex items-center justify-between mb-5">
+      <h2 style="font-size:17px;font-weight:700;color:#1e293b" id="taskModalTitle">新增任務</h2>
+      <button onclick="closeModal('taskModal')" style="background:var(--border-light);border:none;width:32px;height:32px;border-radius:50%;display:flex;align-items:center;justify-content:center;cursor:pointer"><span class="material-symbols-outlined" style="font-size:18px;color:#64748b">close</span></button>
+    </div>
+    <input type="hidden" id="taskEditId">
+    <div class="form-group"><label>任務名稱 *</label><input type="text" id="task-title" placeholder="輸入任務名稱"></div>
+    <div class="form-group"><label>描述</label><textarea id="task-desc" placeholder="選填" rows="2" style="resize:none"></textarea></div>
+    <div class="form-group"><label>計畫日期</label><input type="date" id="task-date"></div>
+    <div class="form-group"><label>緊急程度</label>
+      <select id="task-priority"><option value="緊急">🔴 緊急</option><option value="普通" selected>🔵 普通</option><option value="低">🟢 低</option></select>
+    </div>
+    <div class="form-group"><label>頻率</label>
+      <select id="task-freq-type" onchange="onTaskFreqTypeChange()">
+        <option value="none">不重複</option>
+        <option value="days">每 N 天</option>
+        <option value="monthly">每月 X 號</option>
+      </select>
+    </div>
+    <div class="form-group" id="task-freq-val-group" style="display:none">
+      <label id="task-freq-val-label">天數</label>
+      <input type="number" id="task-freq-val" min="1" max="365" placeholder="輸入數字">
+    </div>
+    <div class="flex gap-3 mt-4">
+      <button class="btn-secondary flex-1" onclick="closeModal('taskModal')">取消</button>
+      <button class="btn-primary flex-1" onclick="saveTask()">儲存</button>
+    </div>
+  </div>
+</div>
+
+<div class="modal-overlay" id="houseworkModal">
+  <div class="modal-sheet">
+    <div class="modal-handle"></div>
+    <div class="flex items-center justify-between mb-5">
+      <h2 style="font-size:17px;font-weight:700;color:#1e293b" id="hwModalTitle">新增家事</h2>
+      <button onclick="closeModal('houseworkModal')" style="background:var(--border-light);border:none;width:32px;height:32px;border-radius:50%;display:flex;align-items:center;justify-content:center;cursor:pointer"><span class="material-symbols-outlined" style="font-size:18px;color:#64748b">close</span></button>
+    </div>
+    <input type="hidden" id="hwEditId">
+    <div class="form-group"><label>家事名稱 *</label><input type="text" id="hw-name" placeholder="例：拖地板"></div>
+    <div class="form-group"><label>區域</label>
+      <select id="hw-area" onchange="onHwAreaChange()">
+        <option value="所有空間">🏠 所有空間</option>
+        <option value="臥室">🛏 臥室</option>
+        <option value="浴室">🚿 浴室</option>
+        <option value="廚房">🍳 廚房</option>
+        <option value="__custom__">✏️ 自訂區域…</option>
+      </select>
+    </div>
+    <div class="form-group" id="hw-custom-area-group" style="display:none">
+      <label>自訂區域名稱</label>
+      <input type="text" id="hw-custom-area" placeholder="輸入區域名稱">
+    </div>
+    <div class="form-group"><label>頻率（天數）</label><input type="number" id="hw-frequency" placeholder="例：7" min="1" max="365"></div>
+    <div class="form-group"><label>上次完成日期</label><input type="date" id="hw-last-date" onchange="autoCalcReminder()"></div>
+    <div class="form-group">
+      <label style="display:flex;align-items:center;gap:6px">提醒日期<span style="font-size:11px;color:#6366f1;font-weight:400">(自動計算，可手動改)</span></label>
+      <input type="date" id="hw-reminder">
+    </div>
+    <div class="form-group"><label>備註</label><textarea id="hw-notes" placeholder="選填" rows="2" style="resize:none"></textarea></div>
+    <div class="weekend-row" id="hw-weekend-row">
+      <div>
+        <p style="font-size:14px;font-weight:600;color:var(--text-primary)">週末執行模式</p>
+        <p style="font-size:11px;color:var(--text-muted);margin-top:2px">提醒日自動對齊到最近的週六或週日</p>
+      </div>
+      <button class="toggle" id="hw-weekend-toggle" onclick="toggleWeekendRow(this)"></button>
+    </div>
+    <div class="flex gap-3 mt-4">
+      <button class="btn-secondary flex-1" onclick="closeModal('houseworkModal')">取消</button>
+      <button class="btn-primary flex-1" style="background:#d97706" onclick="saveHousework()">儲存</button>
+    </div>
+  </div>
+</div>
+
+<div class="modal-overlay" id="delayModal">
+  <div class="modal-sheet">
+    <div class="modal-handle"></div>
+    <div class="flex items-center gap-3 mb-1">
+      <div style="width:36px;height:36px;background:#fef3c7;border-radius:10px;display:flex;align-items:center;justify-content:center;flex-shrink:0">
+        <span class="material-symbols-outlined" style="color:#d97706;font-size:20px">schedule</span>
+      </div>
+      <div>
+        <h2 style="font-size:17px;font-weight:700;color:#1e293b">延後項目</h2>
+        <p class="text-sm" style="color:#94a3b8" id="delay-item-name"></p>
+      </div>
+    </div>
+    <input type="hidden" id="delay-type"><input type="hidden" id="delay-id">
+    <p style="font-size:11px;font-weight:700;color:#94a3b8;letter-spacing:.06em;margin:16px 0 10px">選擇延後天數</p>
+    <div class="grid grid-cols-3 gap-3 mb-3">
+      <button onclick="doDelay(1)" class="delay-day-btn text-center"><p style="font-size:22px;font-weight:800;color:var(--primary)">1</p><p style="font-size:11px;color:#94a3b8;font-weight:600">天</p></button>
+      <button onclick="doDelay(2)" class="delay-day-btn text-center"><p style="font-size:22px;font-weight:800;color:var(--primary)">2</p><p style="font-size:11px;color:#94a3b8;font-weight:600">天</p></button>
+      <button onclick="doDelay(3)" class="delay-day-btn text-center"><p style="font-size:22px;font-weight:800;color:var(--primary)">3</p><p style="font-size:11px;color:#94a3b8;font-weight:600">天</p></button>
+      <button onclick="doDelay(7)" class="delay-day-btn text-center"><p style="font-size:22px;font-weight:800;color:var(--primary)">7</p><p style="font-size:11px;color:#94a3b8;font-weight:600">天</p></button>
+      <button onclick="doDelay(14)" class="delay-day-btn text-center"><p style="font-size:22px;font-weight:800;color:var(--primary)">14</p><p style="font-size:11px;color:#94a3b8;font-weight:600">天</p></button>
+      <button onclick="toggleCustomDateSection()" class="delay-day-btn text-center" id="customDateToggleBtn"><span class="material-symbols-outlined" style="font-size:20px;color:#64748b">calendar_month</span><p style="font-size:11px;color:#94a3b8;font-weight:600">自選日期</p></button>
+    </div>
+    <div class="delay-custom-section" id="customDateSection">
+      <label style="font-size:11px;font-weight:700;color:#94a3b8;letter-spacing:.05em;text-transform:uppercase;margin-bottom:8px">選擇日期</label>
+      <input type="date" id="customDelayDateInline" style="width:100%">
+      <button onclick="doDelayCustomInline()" class="btn-primary w-full" style="margin-top:10px;font-size:14px;padding:11px">確認延後</button>
+    </div>
+    <button class="btn-secondary w-full" style="margin-top:10px" onclick="closeModal('delayModal')">取消</button>
+  </div>
+</div>
+
+<script>
+// ===== DATE UTILS =====
+function toLD(d){return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0')}
+function addD(s,n){const d=new Date(s+'T00:00:00');d.setDate(d.getDate()+n);return toLD(d)}
+const NOW=new Date(),todayStr=toLD(NOW),tomorrowStr=addD(todayStr,1),weekEndStr=addD(todayStr,7);
+
+// Return nearest upcoming Saturday (or today if Sat/Sun)
+function nextWeekend(fromStr){
+  const d=new Date(fromStr+'T00:00:00');
+  const dow=d.getDay(); // 0=Sun,6=Sat
+  if(dow===6||dow===0) return toLD(d);
+  const daysToSat=6-dow;
+  d.setDate(d.getDate()+daysToSat);
+  return toLD(d);
+}
+// Days between two YYYY-MM-DD strings
+function daysBetween(a,b){
+  const ms=new Date(b+'T00:00:00')-new Date(a+'T00:00:00');
+  return Math.round(ms/86400000);
+}
+function fmtFull(d){if(!d)return '';const p=d.split('-');return p[0]+'/'+p[1]+'/'+p[2]}
+
+// 傳送今日總進度（家事+任務）至 iPhone 捷徑
+function sendAllProgressToShortcut() {
+  const today = new Date().toISOString().split('T')[0];
+  const pendingHousework = housework.filter(h => !h.reminderDate || h.reminderDate <= today).length;
+  const pendingTasks = tasks.filter(t => t.status !== '已完成').length;
+  const message = `今日進度摘要：\n🏠 待辦家事：${pendingHousework} 件\n📝 待辦任務：${pendingTasks} 件`;
+  const shortcutName = "家事進度回報"; 
+  const encodedMsg = encodeURIComponent(message);
+  window.location.href = `shortcuts://run-shortcut?name=${encodeURIComponent(shortcutName)}&input=text&text=${encodedMsg}`;
+}
+
+// ===== DATA =====
+let tasks=[],housework=[],hwAreaFilter=null;
+let todoDateFilter='all';
+let todoAreaFilter=null;
+let customDateFrom='',customDateTo='';
+let hwBatchMode=false;
+let hwSelected=new Set();
+let currentDbTab='recurring';
+let calendarWeekOffset=0; // 0 = 本週, -1 = 上週, +1 = 下週
+let openAssignDay=null;   // currently open dropdown date string
+
+const DH=[
+  {id:'hw1',name:'洗床單',area:'臥室',frequency:30,lastCompleted:'2026-03-01',reminderDate:'2026-03-31',notes:'',weekendMode:true},
+  {id:'hw2',name:'洗枕頭套',area:'臥室',frequency:14,lastCompleted:'2026-03-21',reminderDate:'2026-04-04',notes:'含沙發上枕頭',weekendMode:true},
+  {id:'hw3',name:'洗被子',area:'臥室',frequency:30,lastCompleted:'2026-03-01',reminderDate:'2026-03-31',notes:'含沙發上毛毯',weekendMode:true},
+  {id:'hw4',name:'擦櫃子',area:'臥室',frequency:30,lastCompleted:'2026-03-01',reminderDate:'2026-03-31',notes:'',weekendMode:false},
+  {id:'hw5',name:'倒垃圾',area:'所有空間',frequency:4,lastCompleted:'2026-03-01',reminderDate:'2026-03-05',notes:'',weekendMode:false},
+  {id:'hw6',name:'除濕機濾網',area:'所有空間',frequency:60,lastCompleted:'2026-03-01',reminderDate:'2026-04-30',notes:'',weekendMode:false},
+  {id:'hw7',name:'拖地',area:'所有空間',frequency:4,lastCompleted:'2026-03-30',reminderDate:'2026-04-03',notes:'',weekendMode:true},
+  {id:'hw8',name:'洗安全帽內襯',area:'所有空間',frequency:60,lastCompleted:'2026-03-01',reminderDate:'2026-04-30',notes:'',weekendMode:true},
+  {id:'hw9',name:'換牙刷',area:'浴室',frequency:90,lastCompleted:'2026-03-01',reminderDate:'2026-05-30',notes:'',weekendMode:false},
+  {id:'hw10',name:'換浴巾',area:'浴室',frequency:7,lastCompleted:'2026-03-01',reminderDate:'2026-03-08',notes:'',weekendMode:true},
+  {id:'hw11',name:'洗腳踏墊',area:'浴室',frequency:14,lastCompleted:'2026-03-01',reminderDate:'2026-03-15',notes:'',weekendMode:true},
+  {id:'hw12',name:'抽油煙機',area:'廚房',frequency:60,lastCompleted:'2026-03-01',reminderDate:'2026-04-30',notes:'',weekendMode:true},
+  {id:'hw13',name:'飲水機水箱',area:'廚房',frequency:14,lastCompleted:'2026-03-01',reminderDate:'2026-03-15',notes:'',weekendMode:false},
+  {id:'hw14',name:'洗刷具、粉撲',area:'所有空間',frequency:14,lastCompleted:'2026-03-29',reminderDate:'2026-04-12',notes:'',weekendMode:false},
+  {id:'hw15',name:'斷捨離',area:'所有空間',frequency:60,lastCompleted:'2026-02-01',reminderDate:'2026-04-02',notes:'衣櫃、化妝品、零食櫃',weekendMode:true},
+];
+
+const DT=[
+  {id:'dt1',title:'去超商取貨',description:'',plannedDate:'2026-03-30',priority:'普通',freqType:'none',freqVal:0,status:'待辦',createdAt:new Date().toISOString()},
+  {id:'dt2',title:'倒垃圾',description:'',plannedDate:'2026-03-30',priority:'普通',freqType:'none',freqVal:0,status:'待辦',createdAt:new Date().toISOString()},
+  {id:'dt3',title:'團購取貨',description:'',plannedDate:'2026-03-31',priority:'普通',freqType:'none',freqVal:0,status:'待辦',createdAt:new Date().toISOString()},
+  {id:'dt4',title:'彰銀存錢',description:'',plannedDate:'2026-04-01',priority:'普通',freqType:'none',freqVal:0,status:'待辦',createdAt:new Date().toISOString()},
+  {id:'dt5',title:'家用轉帳',description:'',plannedDate:'2026-04-01',priority:'普通',freqType:'monthly',freqVal:1,status:'待辦',createdAt:new Date().toISOString()},
+  {id:'dt6',title:'存股轉帳',description:'',plannedDate:'2026-04-01',priority:'普通',freqType:'monthly',freqVal:1,status:'待辦',createdAt:new Date().toISOString()},
+  {id:'dt7',title:'Cube卡繳費',description:'',plannedDate:'2026-04-01',priority:'普通',freqType:'monthly',freqVal:1,status:'待辦',createdAt:new Date().toISOString()},
+  {id:'dt8',title:'Richart卡繳費',description:'',plannedDate:'2026-04-01',priority:'普通',freqType:'monthly',freqVal:1,status:'待辦',createdAt:new Date().toISOString()},
+  {id:'dt9',title:'續訂機車停車',description:'',plannedDate:'',priority:'普通',freqType:'none',freqVal:0,status:'待辦',createdAt:new Date().toISOString()},
+  {id:'dt10',title:'南山人壽壽險',description:'轉帳至玉山($423)',plannedDate:'',priority:'普通',freqType:'none',freqVal:0,status:'待辦',createdAt:new Date().toISOString()},
+  {id:'dt11',title:'搶高鐵票',description:'',plannedDate:'',priority:'普通',freqType:'none',freqVal:0,status:'待辦',createdAt:new Date().toISOString()},
+];
+
+function saveData(){localStorage.setItem('app_tasks',JSON.stringify(tasks));localStorage.setItem('app_housework',JSON.stringify(housework))}
+function loadData(){const t=localStorage.getItem('app_tasks'),h=localStorage.getItem('app_housework');tasks=t?JSON.parse(t):JSON.parse(JSON.stringify(DT));housework=h?JSON.parse(h):JSON.parse(JSON.stringify(DH))}
+
+// NAV
+let currentPage='todo';
+const PT={
+  todo:{title:'To Do List',sub:'管理您的每日任務',icon:'checklist'},
+  tasks:{title:'任務清單',sub:'檢視所有任務資料',icon:'assignment'},
+  housework:{title:'家事管理',sub:'管理家事項目與頻率',icon:'cottage'},
+  settings:{title:'設定',sub:'個人資料與頁面設定',icon:'manage_accounts'}
+};
+
+function switchPage(p,b){
+  const addBtn = document.getElementById('global-add-btn');
+  if(addBtn) {
+    if(p === 'settings'||p==='tasks') {
+      addBtn.style.setProperty('display', 'none', 'important');
+    } else {
+      addBtn.style.setProperty('display', 'flex', 'important');
+    }
+  }
+  // Exit batch mode when leaving housework page
+  if(hwBatchMode&&p!=='housework') exitBatchMode();
+  document.querySelectorAll('.page').forEach(x=>x.classList.remove('active'));
+  document.getElementById('page-'+p).classList.add('active');
+  document.querySelectorAll('.nav-item').forEach(x=>x.classList.remove('active'));
+  if(b) b.classList.add('active');
+  currentPage=p;
+  const pg=PT[p];
+  document.getElementById('pageTitle').textContent=pg.title;
+  document.getElementById('pageSubtitle').textContent=pg.sub;
+  const iconEl=document.getElementById('pageTitleIcon');
+  if(iconEl) iconEl.textContent=pg.icon;
+  closeAllPopups();
+  renderAll();
+}
+
+function openAddModal(){currentPage==='housework'?openHouseworkModal():openTaskModal()}
+function closeModal(id){document.getElementById(id).classList.remove('open')}
+
+// TASK MODAL
+function onTaskFreqTypeChange(){
+  const v=document.getElementById('task-freq-type').value,g=document.getElementById('task-freq-val-group'),l=document.getElementById('task-freq-val-label');
+  if(v==='none'){g.style.display='none'}else{g.style.display='block';l.textContent=v==='days'?'每幾天':'每月幾號';document.getElementById('task-freq-val').placeholder=v==='days'?'例：7':'例：15'}
+}
+function openTaskModal(id){
+  document.getElementById('taskEditId').value=id||'';
+  document.getElementById('taskModalTitle').textContent=id?'修改任務':'新增任務';
+  if(id){const t=tasks.find(x=>x.id==id);if(!t)return;
+    document.getElementById('task-title').value=t.title||'';document.getElementById('task-desc').value=t.description||'';
+    document.getElementById('task-date').value=t.plannedDate||'';document.getElementById('task-priority').value=t.priority||'普通';
+    document.getElementById('task-freq-type').value=t.freqType||'none';
+    document.getElementById('task-freq-val').value=t.freqVal||'';
+  }else{
+    document.getElementById('task-title').value='';document.getElementById('task-desc').value='';
+    document.getElementById('task-date').value='';document.getElementById('task-priority').value='普通';
+    document.getElementById('task-freq-type').value='none';document.getElementById('task-freq-val').value='';
+  }
+  onTaskFreqTypeChange();
+  document.getElementById('taskModal').classList.add('open');
+}
+
+// HW MODAL
+function onHwAreaChange(){
+  const v=document.getElementById('hw-area').value;
+  document.getElementById('hw-custom-area-group').style.display=v==='__custom__'?'block':'none';
+}
+function toggleWeekendRow(btn){
+  btn.classList.toggle('on');
+  const row=document.getElementById('hw-weekend-row');
+  row.classList.toggle('active', btn.classList.contains('on'));
+}
+function openHouseworkModal(id){
+  document.getElementById('hwEditId').value=id||'';
+  document.getElementById('hwModalTitle').textContent=id?'修改家事':'新增家事';
+  rebuildAreaOptions(id?housework.find(x=>x.id==id)?.area:null);
+  const wToggle=document.getElementById('hw-weekend-toggle');
+  const wRow=document.getElementById('hw-weekend-row');
+  if(id){const h=housework.find(x=>x.id==id);if(!h)return;
+    document.getElementById('hw-name').value=h.name||'';
+    setAreaSelect(h.area);
+    document.getElementById('hw-frequency').value=h.frequency||'';document.getElementById('hw-last-date').value=h.lastCompleted||'';
+    document.getElementById('hw-reminder').value=h.reminderDate||'';document.getElementById('hw-notes').value=h.notes||'';
+    const wm=!!h.weekendMode;wToggle.classList.toggle('on',wm);wRow.classList.toggle('active',wm);
+  }else{
+    document.getElementById('hw-name').value='';document.getElementById('hw-area').value='所有空間';
+    document.getElementById('hw-frequency').value='';document.getElementById('hw-last-date').value='';
+    document.getElementById('hw-reminder').value='';document.getElementById('hw-notes').value='';
+    document.getElementById('hw-custom-area-group').style.display='none';
+    wToggle.classList.remove('on');wRow.classList.remove('active');
+  }
+  document.getElementById('houseworkModal').classList.add('open');
+}
+function rebuildAreaOptions(currentArea){
+  const sel=document.getElementById('hw-area');
+  const defaults=['所有空間','臥室','浴室','廚房'];
+  const icons={'所有空間':'🏠','臥室':'🛏','浴室':'🚿','廚房':'🍳'};
+  const customAreas=[...new Set(housework.map(h=>h.area).filter(a=>!defaults.includes(a)))];
+  let html=defaults.map(a=>`<option value="${a}">${icons[a]||'📍'} ${a}</option>`).join('');
+  customAreas.forEach(a=>{html+=`<option value="${a}">📍 ${a}</option>`});
+  html+=`<option value="__custom__">✏️ 自訂區域…</option>`;
+  sel.innerHTML=html;
+}
+function setAreaSelect(area){
+  const sel=document.getElementById('hw-area');
+  const opts=[...sel.options].map(o=>o.value);
+  if(opts.includes(area)){sel.value=area;document.getElementById('hw-custom-area-group').style.display='none'}
+  else{sel.value='__custom__';document.getElementById('hw-custom-area-group').style.display='block';document.getElementById('hw-custom-area').value=area}
+}
+function autoCalcReminder(){
+  const ld=document.getElementById('hw-last-date').value;
+  const f=parseInt(document.getElementById('hw-frequency').value);
+  if(ld&&f>0){
+    let reminder=addD(ld,f);
+    if(document.getElementById('hw-weekend-toggle').classList.contains('on')){
+      reminder=nextWeekend(reminder);
+    }
+    document.getElementById('hw-reminder').value=reminder;
+  }
+}
+document.getElementById('hw-frequency').addEventListener('input',autoCalcReminder);
+document.getElementById('hw-weekend-toggle').addEventListener('click',()=>setTimeout(autoCalcReminder,0));
+
+// SAVE & ACTIONS
+function saveTask(){
+  const title=document.getElementById('task-title').value.trim();if(!title){alert('請輸入任務名稱');return}
+  const id=document.getElementById('taskEditId').value,ex=id?tasks.find(x=>x.id==id):null;
+  const ft=document.getElementById('task-freq-type').value;
+  const fv=ft!=='none'?parseInt(document.getElementById('task-freq-val').value)||0:0;
+  const obj={id:id||Date.now().toString(),title,description:document.getElementById('task-desc').value.trim(),plannedDate:document.getElementById('task-date').value,priority:document.getElementById('task-priority').value,freqType:ft,freqVal:fv,status:ex?ex.status:'待辦',createdAt:ex?ex.createdAt:new Date().toISOString()};
+  if(id) tasks=tasks.map(x=>x.id==id?obj:x); else tasks.push(obj);
+  saveData();closeModal('taskModal');renderAll();
+}
+function saveHousework(){
+  const name=document.getElementById('hw-name').value.trim();if(!name){alert('請輸入家事名稱');return}
+  const id=document.getElementById('hwEditId').value;
+  let area=document.getElementById('hw-area').value;
+  if(area==='__custom__') area=document.getElementById('hw-custom-area').value.trim()||'其他';
+  const weekendMode=document.getElementById('hw-weekend-toggle').classList.contains('on');
+  let reminderDate=document.getElementById('hw-reminder').value;
+  if(weekendMode&&reminderDate) reminderDate=nextWeekend(reminderDate);
+  const obj={id:id||Date.now().toString(),name,area,frequency:parseInt(document.getElementById('hw-frequency').value)||0,lastCompleted:document.getElementById('hw-last-date').value,reminderDate,notes:document.getElementById('hw-notes').value.trim(),weekendMode};
+  if(id) housework=housework.map(x=>x.id==id?obj:x); else housework.push(obj);
+  saveData();closeModal('houseworkModal');renderAll();
+}
+function deleteTask(id){if(!confirm('確定刪除？'))return;tasks=tasks.filter(x=>x.id!=id);saveData();renderAll()}
+function deleteHousework(id){if(!confirm('確定刪除？'))return;housework=housework.filter(x=>x.id!=id);saveData();renderAll()}
+function markTaskDone(id){tasks=tasks.map(x=>x.id==id?{...x,status:x.status==='已完成'?'待辦':'已完成'}:x);saveData();renderAll()}
+function markHouseworkDone(id){
+  housework=housework.map(h=>{
+    if(h.id!=id) return h;
+    let nextReminder=h.frequency>0?addD(todayStr,h.frequency):h.reminderDate;
+    if(h.weekendMode&&nextReminder) nextReminder=nextWeekend(nextReminder);
+    return{...h,lastCompleted:todayStr,reminderDate:nextReminder};
+  });
+  saveData();renderAll();
+}
+
+// DELAY & POPUP
+function openDelayModal(type,id){
+  document.getElementById('delay-type').value=type;document.getElementById('delay-id').value=id;
+  const item=type==='task'?tasks.find(x=>x.id==id):housework.find(x=>x.id==id);
+  document.getElementById('delay-item-name').textContent=item?(item.title||item.name):'';
+  // reset custom date section
+  const sec=document.getElementById('customDateSection');
+  if(sec) sec.classList.remove('show');
+  document.getElementById('delayModal').classList.add('open');closeAllPopups();
+}
+function doDelay(days){
+  const type=document.getElementById('delay-type').value,id=document.getElementById('delay-id').value;
+  if(type==='task') tasks=tasks.map(t=>t.id==id?{...t,status:'延後',plannedDate:addD(t.plannedDate||todayStr,days)}:t);
+  else housework=housework.map(h=>h.id==id?{...h,reminderDate:addD(h.reminderDate||todayStr,days)}:h);
+  saveData();closeModal('delayModal');renderAll();
+}
+function toggleCustomDateSection(){
+  const sec=document.getElementById('customDateSection');
+  sec.classList.toggle('show');
+  if(sec.classList.contains('show')){
+    const inp=document.getElementById('customDelayDateInline');
+    inp.value=todayStr;
+    inp.min=todayStr;
+    setTimeout(()=>inp.focus(),100);
+  }
+}
+function doDelayCustomInline(){
+  const val=document.getElementById('customDelayDateInline').value;
+  if(!val){alert('請選擇日期');return}
+  const type=document.getElementById('delay-type').value;
+  const id=document.getElementById('delay-id').value;
+  if(!id||!type) return;
+  if(type==='task'){tasks=tasks.map(t=>t.id==id?{...t,status:'延後',plannedDate:val}:t);}
+  else{housework=housework.map(h=>h.id==id?{...h,reminderDate:val}:h);}
+  saveData();closeModal('delayModal');renderAll();
+}
+function togglePopup(id,e){e&&e.stopPropagation();closeAllPopups();const el=document.getElementById('popup-'+id);if(el)el.classList.toggle('show')}
+function closeAllPopups(){document.querySelectorAll('.popup-menu').forEach(p=>p.classList.remove('show'))}
+
+// HELPERS & RENDERERS
+function priorityBadge(p){return `<span class="badge ${p==='緊急'?'badge-urgent':p==='低'?'badge-low':'badge-normal'}">${p}</span>`}
+function fmtD(d){if(!d)return '';const p=d.split('-');return p[1]+'/'+p[2]}
+function fmtDF(d){if(!d)return '';return d.replace(/-/g,'/')}
+function dtCls(r){if(!r)return '';return r<todayStr?'overdue':r===todayStr?'today-tag':''}
+function dtLbl(r){if(!r)return '';return r<todayStr?'逾期 '+fmtD(r):r===todayStr?'今天':fmtD(r)}
+function areaColor(a){const m={'臥室':{bg:'#f5f3ff',dot:'#8b5cf6',icon:'🛏'},'所有空間':{bg:'#eff6ff',dot:'#3b82f6',icon:'🏠'},'浴室':{bg:'#ecfeff',dot:'#06b6d4',icon:'🚿'},'廚房':{bg:'#fffbeb',dot:'#f59e0b',icon:'🍳'}};return m[a]||{bg:'#f1f5f9',dot:'#6b7280',icon:'📍'}}
+function emptyS(m){return `<div class="empty-state"><span class="material-symbols-outlined">inbox</span><p>${m}</p></div>`}
+function freqLabel(t){if(!t||t.freqType==='none'||!t.freqVal)return '';return t.freqType==='days'?`每${t.freqVal}天`:`每月${t.freqVal}號`}
+
+// RENDER: To Do
+function renderTodoTaskItem(t){
+  const done=t.status==='已完成';
+  return `<div class="hw-row task-row animate-in">
+    <button onclick="markTaskDone('${t.id}')" style="background:none;border:none;cursor:pointer">
+      <span class="material-symbols-outlined" style="font-size:22px;color:${done?'#16a34a':'#d1d5db'}">${done?'check_circle':'radio_button_unchecked'}</span>
+    </button>
+    <div style="min-width:0">
+      <p class="text-sm font-semibold text-gray-700 ${done?'line-through text-gray-400':''} truncate">${t.title}</p>
+      <div class="flex items-center gap-2 mt-1">${priorityBadge(t.priority)}</div>
+    </div>
+    <div class="hw-date-col">${t.plannedDate?`<button class="date-tag ${dtCls(t.plannedDate)}" onclick="openDelayModal('task','${t.id}')">${dtLbl(t.plannedDate)}</button>`:''}</div>
+  </div>`;
+}
+function renderTodoHouseworkItem(h){
+  const col=areaColor(h.area);
+  return `<div class="hw-row animate-in">
+    <button onclick="markHouseworkDone('${h.id}')" style="background:none;border:none;cursor:pointer">
+      <span class="material-symbols-outlined" style="font-size:22px;color:#d1d5db">radio_button_unchecked</span>
+    </button>
+    <div style="min-width:0">
+      <p class="text-sm font-semibold text-gray-700 truncate">${h.name}</p>
+      ${h.notes?`<p class="text-xs text-gray-400 mt-0.5 truncate"><span class="material-symbols-outlined" style="font-size:12px;vertical-align:middle">notes</span> ${h.notes}</p>`:''}
+    </div>
+    <div class="hw-date-col">${h.reminderDate?`<button class="date-tag ${dtCls(h.reminderDate)}" onclick="openDelayModal('hw','${h.id}')">${dtLbl(h.reminderDate)}</button>`:''}</div>
+    <span class="badge hw-area-col" style="background:${col.bg};color:${col.dot};font-size:11px">${h.area}</span>
+  </div>`;
+}
+function renderTodoPage(){
+  const AREA_ORDER=['所有空間','浴室','廚房','臥室'];
+  const customAreas=[...new Set(housework.map(h=>h.area))].filter(a=>!AREA_ORDER.includes(a));
+  const orderedAreas=[...AREA_ORDER.filter(a=>housework.some(h=>h.area===a)),...customAreas];
+  let fh=`<div class="filter-row">
+    <span class="text-[10px] text-gray-400 font-semibold" style="width:30px">日期</span>
+    <button class="filter-chip ${todoDateFilter==='all'?'active':''}" onclick="setDF('all')">全部</button>
+    <button class="filter-chip ${todoDateFilter==='today'?'active':''}" onclick="setDF('today')">今天</button>
+    <button class="filter-chip ${todoDateFilter==='week'?'active':''}" onclick="setDF('week')">本週</button>
+    <button class="filter-chip ${todoDateFilter==='overdue'?'active':''}" onclick="setDF('overdue')">逾期</button>
+  </div>`;
+  fh+=`<div class="filter-row" style="margin-top:8px">
+    <span class="text-[10px] text-gray-400 font-semibold" style="width:30px">區域</span>
+    <button class="filter-chip ${!todoAreaFilter?'active':''}" onclick="setAF(null)">全部</button>`;
+  orderedAreas.forEach(a=>{const c=areaColor(a);fh+=`<button class="filter-chip ${todoAreaFilter===a?'active':''}" onclick="setAF('${a}')">${c.icon} ${a}</button>`});
+  fh+=`</div>`;
+  document.getElementById('todo-filter-area').innerHTML=fh;
+  renderTodoContent();
+}
+function setDF(f){todoDateFilter=f;renderTodoPage()}
+function setAF(a){todoAreaFilter=a;renderTodoContent()}
+function renderTodoContent(){
+  let filteredTasks=tasks.filter(t=>t.status!=='已完成');
+  let filteredHW=[...housework];
+  if(todoAreaFilter){filteredHW=filteredHW.filter(h=>h.area===todoAreaFilter);filteredTasks=[]}
+  let sections=[];
+  const tt=filteredTasks.filter(t=>t.plannedDate===todayStr);
+  const th=filteredHW.filter(h=>h.reminderDate&&h.reminderDate<=todayStr);
+  sections.push({title:`Today — ${NOW.getFullYear()}/${NOW.getMonth()+1}/${NOW.getDate()}`,tasks:tt,hw:th,icon:'today',iconBg:'#dbeafe',iconColor:'#2563eb'});
+  const wt=filteredTasks.filter(t=>t.plannedDate>todayStr&&t.plannedDate<=weekEndStr);
+  const wh=filteredHW.filter(h=>h.reminderDate>todayStr&&h.reminderDate<=weekEndStr);
+  sections.push({title:'This Week',sub:'明天起 7 天內',tasks:wt,hw:wh,icon:'date_range',iconBg:'#d1fae5',iconColor:'#059669'});
+  const ot=filteredTasks.filter(t=>t.plannedDate&&t.plannedDate<todayStr);
+  const oh=filteredHW.filter(h=>h.reminderDate&&h.reminderDate<todayStr);
+  if(ot.length||oh.length) sections.push({title:'已逾期',tasks:ot,hw:oh,icon:'warning',iconBg:'#fee2e2',iconColor:'#dc2626'});
+
+  let html='';
+  sections.forEach(s=>{
+    html+=`<section class="mb-6 animate-in">
+    <div class="section-header"><div class="section-icon" style="background:${s.iconBg}"><span class="material-symbols-outlined" style="color:${s.iconColor}">${s.icon}</span></div><div><h2 class="text-lg font-bold text-gray-800">${s.title}</h2>${s.sub?`<p class="text-gray-400 text-xs">${s.sub}</p>`:''}</div></div>`;
+    if(s.tasks.length){ html+=`<div class="card p-4 mb-3"><h3 class="text-sm font-semibold text-gray-600 mb-2">任務</h3>${s.tasks.map(renderTodoTaskItem).join('')}</div>`; }
+    if(s.hw.length){ html+=`<div class="card p-4"><h3 class="text-sm font-semibold text-gray-600 mb-2">家事</h3>${s.hw.map(renderTodoHouseworkItem).join('')}</div>`; }
+    if(!s.tasks.length&&!s.hw.length){ html+=`<div class="card p-4">${emptyS('沒有項目')}</div>`; }
+    html+=`</section>`;
+  });
+  document.getElementById('todo-content').innerHTML=html;
+}
+
+// RENDER: Tasks page — Week Calendar + DB tabs
+function switchDbTab(tab){
+  currentDbTab=tab;
+  const dbRec=document.getElementById('task-db-recurring');
+  const dbOnce=document.getElementById('task-db-once');
+  const rBtn=document.getElementById('db-tab-recurring');
+  const oBtn=document.getElementById('db-tab-once');
+  if(dbRec) dbRec.style.display=tab==='recurring'?'block':'none';
+  if(dbOnce) dbOnce.style.display=tab==='once'?'block':'none';
+  if(rBtn){rBtn.style.borderBottomColor=tab==='recurring'?'var(--primary)':'transparent';rBtn.style.color=tab==='recurring'?'var(--primary)':'var(--text-muted)';}
+  if(oBtn){oBtn.style.borderBottomColor=tab==='once'?'var(--primary)':'transparent';oBtn.style.color=tab==='once'?'var(--primary)':'var(--text-muted)';}
+}
+
+function renderDbRow(t){
+  const done=t.status==='已完成';
+  const fl=freqLabel(t);
+  const priorityColor={'緊急':'#dc2626','普通':'#2563eb','低':'#16a34a'}[t.priority]||'#6b7280';
+  return `<div class="task-db-row ${done?'opacity-50':''}">
+    <div style="min-width:0">
+      <p style="font-size:14px;font-weight:600;color:${done?'#9ca3af':'var(--text-primary)'};${done?'text-decoration:line-through':''};white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${t.title}</p>
+      <div style="display:flex;align-items:center;gap:6px;margin-top:3px;flex-wrap:wrap">
+        ${fl?`<span class="freq-badge"><span class="material-symbols-outlined" style="font-size:11px">repeat</span>${fl}</span>`:''}
+        ${t.description?`<span style="font-size:11px;color:var(--text-muted);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:140px">${t.description}</span>`:''}
+      </div>
+    </div>
+    <div style="width:10px;height:10px;border-radius:50%;background:${priorityColor};flex-shrink:0" title="${t.priority}"></div>
+    <div style="display:flex;gap:4px;flex-shrink:0">
+      <button onclick="openTaskModal('${t.id}')" style="background:none;border:none;cursor:pointer;padding:4px"><span class="material-symbols-outlined" style="font-size:18px;color:#b0bbc8">edit</span></button>
+      <button onclick="deleteTask('${t.id}')" style="background:none;border:none;cursor:pointer;padding:4px"><span class="material-symbols-outlined" style="font-size:18px;color:#d1d5db">delete</span></button>
+    </div>
+  </div>`;
+}
+
+function shiftWeek(delta){
+  calendarWeekOffset+=delta;
+  openAssignDay=null;
+  renderTasksPage();
+}
+
+function getWeekDays(offsetWeeks){
+  // Get Mon–Sun of the week that contains today + offsetWeeks*7 days
+  const base=new Date(NOW);
+  base.setDate(base.getDate()+offsetWeeks*7);
+  const dow=base.getDay(); // 0=Sun
+  const monday=new Date(base);
+  monday.setDate(base.getDate()-(dow===0?6:dow-1));
+  return Array.from({length:7},(_,i)=>{
+    const d=new Date(monday);
+    d.setDate(monday.getDate()+i);
+    return toLD(d);
+  });
+}
+
+function assignTaskToDay(taskId, dateStr){
+  tasks=tasks.map(t=>t.id===taskId?{...t,plannedDate:dateStr,status:'待辦'}:t);
+  saveData(); openAssignDay=null; renderTasksPage();
+}
+
+function toggleAssignDropdown(dateStr){
+  openAssignDay=(openAssignDay===dateStr)?null:dateStr;
+  renderTasksPage();
+}
+
+const DOW_LABELS=['一','二','三','四','五','六','日'];
+
+function renderTasksPage(){
+  const days=getWeekDays(calendarWeekOffset);
+  const monday=days[0], sunday=days[6];
+
+  // Range label
+  const rangeEl=document.getElementById('week-range-label');
+  if(rangeEl){
+    const isCurrentWeek=calendarWeekOffset===0;
+    const prefix=isCurrentWeek?'本週・':calendarWeekOffset===-1?'上週・':calendarWeekOffset===1?'下週・':'';
+    rangeEl.textContent=`${prefix}${fmtD(monday)} – ${fmtD(sunday)}`;
+  }
+
+  // Overdue bar (only show on current/past weeks)
+  const overdueBar=document.getElementById('week-overdue-bar');
+  if(overdueBar){
+    const overdueCount=tasks.filter(t=>t.status!=='已完成'&&t.plannedDate&&t.plannedDate<todayStr).length;
+    overdueBar.innerHTML=overdueCount>0&&calendarWeekOffset>=0
+      ?`<div class="week-overdue-bar"><span class="material-symbols-outlined" style="font-size:15px">warning</span>${overdueCount} 件逾期任務未處理</div>`:'';
+  }
+
+  // Header row (Mon–Sun)
+  const headerEl=document.getElementById('week-header-row');
+  if(headerEl){
+    headerEl.innerHTML=days.map((d,i)=>{
+      const isToday=d===todayStr;
+      const isPast=d<todayStr;
+      return `<div class="day-col-header ${isToday?'is-today':isPast?'is-past':''}">
+        <div class="dow">${DOW_LABELS[i]}</div>
+        <div class="dom">${d.split('-')[2]*1}</div>
+      </div>`;
+    }).join('');
+  }
+
+  // Tasks row — one column per day
+  const tasksEl=document.getElementById('week-tasks-row');
+  if(tasksEl){
+    const unscheduled=tasks.filter(t=>t.status!=='已完成'&&!t.plannedDate);
+    tasksEl.innerHTML=days.map(d=>{
+      const dayTasks=tasks.filter(t=>t.plannedDate===d);
+      const pillsHtml=dayTasks.map(t=>{
+        const done=t.status==='已完成';
+        const isOverdue=!done&&d<todayStr;
+        return `<div class="day-task-pill ${done?'done-pill':isOverdue?'overdue-pill':''}" onclick="markTaskDone('${t.id}')" title="${t.title}">
+          <p>${t.title}</p>
+        </div>`;
+      }).join('');
+
+      // Assign dropdown
+      const isOpen=openAssignDay===d;
+      const assignable=tasks.filter(t=>t.status!=='已完成'&&(!t.plannedDate||t.plannedDate!==d));
+      const dropdownHtml=isOpen?`<div class="day-assign-menu">
+        ${assignable.length
+          ?assignable.map(t=>`<button onclick="assignTaskToDay('${t.id}','${d}')">${t.title}</button>`).join('')
+          :`<div class="empty-opt">無可指派任務</div>`}
+      </div>`:'';
+
+      return `<div class="day-tasks-col">
+        ${pillsHtml}
+        <div class="day-assign-dropdown">
+          <button class="day-add-btn" onclick="toggleAssignDropdown('${d}')">
+            <span class="material-symbols-outlined" style="font-size:13px">${isOpen?'close':'add'}</span>
+          </button>
+          ${dropdownHtml}
+        </div>
+      </div>`;
+    }).join('');
+  }
+
+  // Unscheduled section
+  const unschedEl=document.getElementById('unscheduled-section');
+  if(unschedEl){
+    const unscheduled=tasks.filter(t=>t.status!=='已完成'&&!t.plannedDate);
+    if(unscheduled.length){
+      unschedEl.innerHTML=`<div style="margin-top:12px">
+        <p style="font-size:11px;font-weight:700;color:var(--text-muted);letter-spacing:.05em;margin-bottom:6px">未排期任務</p>
+        <div class="card" style="overflow:hidden">
+          ${unscheduled.map(t=>`<div style="display:flex;align-items:center;gap:8px;padding:10px 14px;border-bottom:1px solid var(--border-light)">
+            <span class="material-symbols-outlined" style="font-size:16px;color:#cbd5e1">drag_indicator</span>
+            <p style="flex:1;font-size:13px;font-weight:600;color:var(--text-primary)">${t.title}</p>
+            <button onclick="openDelayModal('task','${t.id}')" class="date-tag" style="font-size:11px">排期</button>
+          </div>`).join('')}
+        </div>
+      </div>`;
+    } else { unschedEl.innerHTML=''; }
+  }
+
+  // ── DB tabs ──
+  const recurring=tasks.filter(t=>t.freqType&&t.freqType!=='none');
+  const once=tasks.filter(t=>!t.freqType||t.freqType==='none');
+  const emptyRow='<p style="padding:20px 0;text-align:center;color:var(--text-muted);font-size:13px">目前沒有任務</p>';
+  const dbRec=document.getElementById('task-db-recurring');
+  const dbOnce=document.getElementById('task-db-once');
+  if(dbRec) dbRec.innerHTML=recurring.length?recurring.map(renderDbRow).join(''):emptyRow;
+  if(dbOnce) dbOnce.innerHTML=once.length?once.map(renderDbRow).join(''):emptyRow;
+  switchDbTab(currentDbTab);
+}
+
+// Close assign dropdown when clicking outside
+document.addEventListener('click',function(e){
+  closeAllPopups();
+  if(openAssignDay&&!e.target.closest('.day-assign-dropdown')){
+    openAssignDay=null; renderTasksPage();
+  }
+});
+
+// BATCH SELECT MODE (housework)
+function toggleBatchMode(){
+  hwBatchMode=!hwBatchMode;
+  hwSelected.clear();
+  const btn=document.getElementById('batch-mode-btn');
+  btn.classList.toggle('active',hwBatchMode);
+  btn.innerHTML=hwBatchMode
+    ?`<span class="material-symbols-outlined" style="font-size:16px">close</span>取消選取`
+    :`<span class="material-symbols-outlined" style="font-size:16px">checklist</span>批次選取`;
+  updateFloatBar();
+  renderHouseworkPage();
+}
+function exitBatchMode(){
+  hwBatchMode=false; hwSelected.clear();
+  const btn=document.getElementById('batch-mode-btn');
+  if(btn){btn.classList.remove('active');btn.innerHTML=`<span class="material-symbols-outlined" style="font-size:16px">checklist</span>批次選取`;}
+  updateFloatBar(); renderHouseworkPage();
+}
+function toggleHwSelect(id){
+  if(hwSelected.has(id)) hwSelected.delete(id); else hwSelected.add(id);
+  updateFloatBar(); renderHouseworkPage();
+}
+function updateFloatBar(){
+  const bar=document.getElementById('float-batch-bar');
+  const label=document.getElementById('batch-count-label');
+  if(!bar) return;
+  if(hwBatchMode&&hwSelected.size>0){
+    bar.classList.add('show');
+    if(label) label.textContent=`已選 ${hwSelected.size} 項`;
+  } else { bar.classList.remove('show'); }
+}
+function batchToWeekend(){
+  const target=nextWeekend(todayStr);
+  housework=housework.map(h=>hwSelected.has(h.id)?{...h,reminderDate:target}:h);
+  saveData(); exitBatchMode();
+}
+function showBatchCustomDate(){
+  const sub=document.getElementById('batch-date-subtitle');
+  if(sub) sub.textContent=`將 ${hwSelected.size} 個選取項目延後到指定日期`;
+  const inp=document.getElementById('batch-custom-date-input');
+  if(inp){inp.value=nextWeekend(todayStr); inp.min=todayStr;}
+  document.getElementById('batchDateModal').classList.add('open');
+}
+function applyBatchCustomDate(){
+  const val=document.getElementById('batch-custom-date-input').value;
+  if(!val){alert('請選擇日期');return}
+  housework=housework.map(h=>hwSelected.has(h.id)?{...h,reminderDate:val}:h);
+  saveData(); closeModal('batchDateModal'); exitBatchMode();
+}
+
+// RENDER: Housework
+function renderHouseworkCard(h){
+  const col=areaColor(h.area); const dc=dtCls(h.reminderDate);
+  const isSelected=hwSelected.has(h.id);
+  // Last done display
+  let lastDoneHtml='';
+  if(h.lastCompleted){
+    const days=daysBetween(h.lastCompleted,todayStr);
+    const daysLabel=days===0?'今天':days===1?'昨天':`${days} 天前`;
+    lastDoneHtml=`<div class="last-done-info"><span class="material-symbols-outlined" style="font-size:13px;color:#cbd5e1">history</span><span>上次執行：${daysLabel}，${fmtFull(h.lastCompleted)}</span></div>`;
+  }
+  const weekendBadge=h.weekendMode?`<span class="badge-weekend"><span class="material-symbols-outlined" style="font-size:11px">weekend</span>週末</span>`:'';
+  const selectCb=hwBatchMode?`<div class="hw-select-cb ${isSelected?'checked':''}" onclick="toggleHwSelect('${h.id}')"></div>`:'';
+  const cardClick=hwBatchMode?`onclick="toggleHwSelect('${h.id}')"`:'' ;
+  return `<div class="card p-4 mb-3 animate-in hw-card-selectable ${isSelected?'selected-card':''}" style="border-left:4px solid ${col.dot}" ${cardClick}>
+    <div class="flex items-start gap-2">
+      ${selectCb}
+      <div class="flex-1 min-w-0">
+        <div class="flex items-center gap-2 flex-wrap"><p class="font-semibold text-gray-800">${h.name}</p>${weekendBadge}</div>
+        ${lastDoneHtml}
+        ${h.reminderDate?`<div class="mt-2"><button class="date-tag ${dc}" onclick="${hwBatchMode?`toggleHwSelect('${h.id}')`:`openDelayModal('hw','${h.id}')`}" style="font-size:11px"><span class="material-symbols-outlined" style="font-size:12px">${dc==='overdue'?'warning':'event'}</span>${dtLbl(h.reminderDate)}</button></div>`:''}
+      </div>
+      <span class="badge" style="background:${col.bg};color:${col.dot};font-size:10px">${col.icon} ${h.area}</span>
+      ${hwBatchMode?'':`<div style="position:relative">
+        <button onclick="togglePopup('${h.id}',event)" style="background:var(--border-light);border:none;width:32px;height:32px;border-radius:8px;display:flex;align-items:center;justify-content:center;cursor:pointer"><span class="material-symbols-outlined" style="font-size:18px;color:#64748b">more_vert</span></button>
+        <div class="popup-menu" id="popup-${h.id}">
+          <button onclick="markHouseworkDone('${h.id}')"><span class="material-symbols-outlined" style="font-size:16px;color:#10b981">check_circle</span>標為完成</button>
+          <button onclick="openHouseworkModal('${h.id}')"><span class="material-symbols-outlined" style="font-size:16px;color:#6366f1">edit</span>修改</button>
+          <button onclick="openDelayModal('hw','${h.id}')"><span class="material-symbols-outlined" style="font-size:16px;color:#f59e0b">schedule</span>延後</button>
+          <button class="danger" onclick="deleteHousework('${h.id}')"><span class="material-symbols-outlined" style="font-size:16px">delete</span>刪除</button>
+        </div>
+      </div>`}
+    </div>
+  </div>`;
+}
+function renderHouseworkPage(){
+  const allAreas=[...new Set(housework.map(h=>h.area))];
+  document.getElementById('hw-area-chips').innerHTML=allAreas.map(a=>{
+    const c=areaColor(a),cnt=housework.filter(h=>h.area===a).length,sel=hwAreaFilter===a;
+    return `<div class="card area-chip p-4 ${sel?'selected':''}" onclick="toggleAreaFilter('${a}')" style="background:${sel?c.bg:'#fff'};border-color:${sel?c.dot:'transparent'}">
+      <div class="flex items-center gap-2"><span style="font-size:24px">${c.icon}</span><div><p class="font-semibold text-gray-800 text-sm">${a}</p><p class="text-xs text-gray-400">${cnt} 項</p></div></div>
+    </div>`;
+  }).join('')+`<div class="card area-chip p-4 ${!hwAreaFilter?'selected':''}" onclick="toggleAreaFilter(null)" style="grid-column:span 2;text-align:center;${!hwAreaFilter?'background:#f1f5f9;border-color:#6366f1':''}">
+    <p class="font-semibold text-gray-600 text-sm">全部（${housework.length}）</p></div>`;
+  // Overdue notice (compact, just informational)
+  const overdueHW=housework.filter(h=>h.reminderDate&&h.reminderDate<todayStr);
+  const notice=document.getElementById('hw-overdue-notice');
+  if(notice){
+    notice.innerHTML=overdueHW.length>0
+      ?`<div class="overdue-notice"><span class="material-symbols-outlined" style="font-size:16px">warning</span>有 ${overdueHW.length} 件逾期項目，請開啟批次選取處理</div>`
+      :'';
+  }
+  const filtered=hwAreaFilter?housework.filter(h=>h.area===hwAreaFilter):housework;
+  document.getElementById('housework-cards').innerHTML=filtered.length?filtered.map(renderHouseworkCard).join(''):`<div class="card p-6">${emptyS('此區域無家事項目')}</div>`;
+}
+function toggleAreaFilter(a){hwAreaFilter=hwAreaFilter===a?null:a;renderHouseworkPage()}
+
+// SETTINGS & INIT
+function renderAll(){renderTodoPage();renderTasksPage();renderHouseworkPage();renderSettingsPage()}
+let appSettings=JSON.parse(localStorage.getItem('app_settings')||'{}');
+function saveSetting(key,val){appSettings[key]=val;localStorage.setItem('app_settings',JSON.stringify(appSettings))}
+function toggleSetting(key,btn){appSettings[key]=!appSettings[key];btn.classList.toggle('on',appSettings[key]);localStorage.setItem('app_settings',JSON.stringify(appSettings));renderAll()}
+function renderSettingsPage(){
+  document.getElementById('set-name').value=appSettings.userName||'';
+  document.getElementById('set-email').value=appSettings.userEmail||'';
+  document.getElementById('set-default-filter').value=appSettings.defaultFilter||'all';
+  document.getElementById('tog-overdue').classList.toggle('on',appSettings.showOverdue!==false);
+  document.getElementById('tog-notes').classList.toggle('on',appSettings.showNotes!==false);
+  document.getElementById('tog-desc').classList.toggle('on',appSettings.showDesc!==false);
+}
+function exportData(){
+  const data=JSON.stringify({tasks,housework,settings:appSettings},null,2);
+  const blob=new Blob([data],{type:'application/json'});
+  const a=document.createElement('a'); a.href=URL.createObjectURL(blob); a.download='家事任務管理_'+todayStr+'.json'; a.click();
+}
+function importData(e){
+  const file=e.target.files[0]; if(!file)return;
+  const reader=new FileReader();
+  reader.onload=function(ev){
+    try{ const d=JSON.parse(ev.target.result); tasks=d.tasks||tasks; housework=d.housework||housework; appSettings={...appSettings,...(d.settings||{})}; saveData(); renderAll(); alert('匯入成功！'); }
+    catch(err){alert('匯入失敗')}
+  };
+  reader.readAsText(file); e.target.value='';
+}
+function copyShareLink(){
+  const data=JSON.stringify({tasks,housework});
+  const url=location.origin+location.pathname+'#data='+btoa(unescape(encodeURIComponent(data)));
+  navigator.clipboard.writeText(url).then(()=>alert('連結已複製')).catch(()=>prompt('複製此連結',url));
+}
+
+loadData(); renderAll();
+</script>
+</body>
+</html>
