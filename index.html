@@ -191,58 +191,81 @@
     .drawer-divider{height:1px;background:var(--border-light);margin:4px 0}
 
     /* ── INVENTORY PAGE ── */
-    .inv-tab-bar{display:flex;gap:4px;overflow-x:auto;padding:10px 16px 0;max-width:640px;margin:0 auto}
+    .inv-tab-bar{display:flex;gap:4px;overflow-x:auto;padding:10px 14px 0;max-width:640px;margin:0 auto}
     .inv-tab-bar::-webkit-scrollbar{display:none}
     .inv-tab{padding:6px 13px;border-radius:999px;border:1px solid var(--border);background:var(--surface);font-size:12px;font-weight:600;color:var(--text-muted);cursor:pointer;white-space:nowrap;transition:all .15s;flex-shrink:0;display:flex;align-items:center;gap:4px}
     .inv-tab.active{background:var(--primary);color:#fff;border-color:var(--primary)}
     .inv-tab .tcnt{background:rgba(0,0,0,.07);border-radius:999px;padding:1px 6px;font-size:10px;margin-left:2px}
     .inv-tab.active .tcnt{background:rgba(255,255,255,.22)}
+    /* alert strip */
     .inv-alert-strip{max-width:640px;margin:8px auto 0;padding:0 16px;display:none}
     .inv-alert-strip.show{display:flex;flex-direction:column;gap:5px}
     .inv-alert-line{display:flex;align-items:center;gap:8px;padding:9px 12px;background:var(--surface);border-radius:var(--radius-sm);border:1px solid var(--border);box-shadow:var(--shadow-sm)}
     .inv-dot{width:6px;height:6px;border-radius:50%;flex-shrink:0}
-    .inv-search-wrap{max-width:640px;margin:8px auto 0;padding:0 16px;display:none;flex-direction:column;gap:6px}
-    .inv-search-wrap.show{display:flex}
-    .inv-search-inner{display:flex;align-items:center;gap:7px;background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-sm);padding:7px 12px}
-    .inv-search-inner:focus-within{border-color:var(--primary)}
-    .inv-search-inner input{flex:1;border:none;outline:none;font-size:13px;color:var(--text-primary);background:none;font-family:'Noto Sans TC',sans-serif}
-    .inv-search-inner input::placeholder{color:var(--text-muted)}
-    .inv-loc-row{display:flex;gap:4px;overflow-x:auto}
-    .inv-loc-row::-webkit-scrollbar{display:none}
-    .inv-loc-chip{padding:4px 10px;border-radius:999px;font-size:11px;font-weight:600;border:1px solid var(--border);background:var(--surface);color:var(--text-muted);cursor:pointer;white-space:nowrap;flex-shrink:0;transition:all .15s}
-    .inv-loc-chip.active{background:var(--primary);color:#fff;border-color:var(--primary)}
+    /* collapsible filter panel */
+    .inv-filter-panel{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-sm);overflow:hidden;margin-top:8px}
+    .inv-filter-toggle{display:flex;align-items:center;justify-content:space-between;padding:8px 14px;cursor:pointer;border:none;background:none;width:100%;font-family:'Noto Sans TC',sans-serif;gap:8px}
+    .inv-filter-toggle-left{display:flex;align-items:center;gap:7px;min-width:0}
+    .inv-filter-summary{font-size:11px;color:var(--primary);font-weight:600;flex:1;text-align:left;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+    .inv-filter-arrow{font-size:20px;color:var(--text-muted);transition:transform .2s;flex-shrink:0}
+    .inv-filter-arrow.open{transform:rotate(180deg)}
+    .inv-filter-body{display:none;padding:0 14px 10px;border-top:1px solid var(--border-light)}
+    .inv-filter-body.open{display:block}
+    .inv-filter-row{display:flex;align-items:center;gap:5px;overflow-x:auto;padding:6px 0 2px}
+    .inv-filter-row::-webkit-scrollbar{display:none}
+    .inv-filter-row-label{font-size:10px;font-weight:700;color:var(--text-muted);letter-spacing:.04em;flex-shrink:0;min-width:28px}
+    .inv-chip{flex-shrink:0;padding:3px 10px;border-radius:999px;font-size:11px;font-weight:600;border:1px solid var(--border);background:transparent;color:var(--text-muted);cursor:pointer;transition:all .15s;font-family:'Noto Sans TC',sans-serif}
+    .inv-chip.active{background:var(--primary);color:#fff;border-color:var(--primary)}
+    .inv-filter-clear{font-size:11px;color:var(--text-muted);cursor:pointer;border:none;background:none;padding:3px 6px;font-family:'Noto Sans TC',sans-serif;margin-top:4px}
+    .inv-filter-clear:hover{color:var(--danger)}
+    /* content */
     .inv-content{max-width:640px;margin:0 auto;padding:10px 16px}
     .inv-sec-head{display:flex;align-items:center;justify-content:space-between;margin:10px 0 6px}
-    .inv-sec-title{font-size:11px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--text-muted)}
+    .inv-sec-title{font-size:10px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--text-muted)}
     .inv-sec-title.red{color:#dc2626}.inv-sec-title.orange{color:#c2410c}
     .inv-list{background:var(--surface);border-radius:var(--radius-md);border:1px solid var(--border-light);box-shadow:var(--shadow-sm);overflow:hidden;margin-bottom:10px}
     .inv-item-wrap{position:relative}
-    .inv-row{display:grid;grid-template-columns:1fr auto auto;align-items:center;gap:8px;padding:12px 13px 12px 16px;border-bottom:1px solid var(--border-light);cursor:pointer;transition:background .1s;border-left:3px solid transparent}
+    .inv-row{display:flex;align-items:center;gap:8px;padding:11px 10px 11px 13px;border-bottom:1px solid var(--border-light);cursor:pointer;transition:background .1s;border-left:3px solid transparent}
     .inv-row:last-child{border-bottom:none}
     .inv-row:active{background:var(--bg)}
     .inv-row.row-danger{border-left-color:#dc2626}
     .inv-row.row-warn{border-left-color:#f59e0b}
-    .inv-name{font-size:14px;font-weight:600;color:var(--text-primary);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-    .inv-meta{display:flex;align-items:center;gap:6px;margin-top:3px;flex-wrap:wrap}
-    .inv-status{font-size:11px;font-weight:600}
-    .inv-status.red{color:#dc2626}.inv-status.orange{color:#c2410c}.inv-status.muted{color:var(--text-muted)}
+    .inv-dot-item{width:5px;height:5px;border-radius:50%;background:var(--border);flex-shrink:0}
+    .inv-info{flex:1;min-width:0}
+    .inv-name{font-size:13px;font-weight:600;color:var(--text-primary);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+    .inv-sub{display:flex;align-items:center;gap:4px;margin-top:2px;flex-wrap:wrap}
     .inv-loc-label{font-size:11px;color:var(--text-muted)}
-    .qty-stepper{display:flex;align-items:center;border:1px solid var(--border);border-radius:var(--radius-sm);overflow:hidden;flex-shrink:0}
-    .qty-btn{width:32px;height:32px;border:none;background:var(--bg);cursor:pointer;font-size:15px;font-weight:700;color:var(--text-secondary);display:flex;align-items:center;justify-content:center;transition:background .1s}
+    .inv-right{display:flex;align-items:center;gap:5px;flex-shrink:0}
+    /* right controls */
+    .qty-stepper{display:flex;align-items:center;border:1px solid var(--border);border-radius:var(--radius-sm);overflow:hidden;flex-shrink:0;width:108px}
+    .qty-btn{width:27px;height:28px;border:none;background:var(--bg);cursor:pointer;font-size:14px;font-weight:700;color:var(--text-secondary);display:flex;align-items:center;justify-content:center;transition:background .1s;font-family:'Noto Sans TC',sans-serif;flex-shrink:0}
     .qty-btn:active{background:var(--border)}
-    .qty-val{min-width:30px;text-align:center;font-size:13px;font-weight:700;color:var(--text-primary);border-left:1px solid var(--border);border-right:1px solid var(--border);height:32px;line-height:32px}
-    .qty-val.low{color:#dc2626}.qty-val.warn{color:#c2410c}
-    .inv-detail{padding:0 13px 11px 16px;display:none;background:var(--surface);border-left:3px solid transparent}
+    .qty-inp{flex:1;min-width:0;text-align:center;font-size:12px;font-weight:700;color:var(--text-primary);border-left:1px solid var(--border);border-right:1px solid var(--border);height:28px;background:var(--bg);outline:none;padding:0;font-family:'Noto Sans TC',sans-serif;-moz-appearance:textfield}
+    .qty-inp::-webkit-outer-spin-button,.qty-inp::-webkit-inner-spin-button{-webkit-appearance:none;margin:0}
+    .qty-inp.low{color:#dc2626}.qty-inp.warn{color:#c2410c}
+    .ratio-ctl{display:flex;align-items:center;gap:5px;height:28px;padding:0 8px;border:1px solid var(--border);border-radius:var(--radius-sm);background:var(--bg);flex-shrink:0;width:108px;justify-content:flex-end}
+    .ratio-track{flex:1;height:4px;background:var(--border);border-radius:99px;overflow:hidden}
+    .ratio-fill{height:100%;border-radius:99px}
+    .ratio-pct{font-size:11px;font-weight:700}
+    .expiry-chip-row{display:flex;align-items:center;gap:3px;height:28px;padding:0 9px;border-radius:var(--radius-sm);font-size:11px;font-weight:700;border:1px solid var(--border);background:var(--bg);color:var(--text-muted);white-space:nowrap;flex-shrink:0}
+    .expiry-chip-row.red{background:#fef2f2;border-color:#fecaca;color:#dc2626}
+    .expiry-chip-row.amber{background:#fffbeb;border-color:#fde68a;color:#d97706}
+    /* detail */
+    .inv-detail{display:none;padding:8px 13px 10px 21px;background:#fafaf8;border-bottom:1px solid var(--border-light);border-left:3px solid transparent}
     .inv-detail.open{display:block}
-    .drow{display:flex;align-items:center;justify-content:space-between;padding:5px 0;border-bottom:1px solid var(--border-light)}
+    .inv-detail.row-danger{border-left-color:#dc2626}.inv-detail.row-warn{border-left-color:#f59e0b}
+    .drow{display:flex;align-items:center;justify-content:space-between;padding:4px 0;border-bottom:1px solid var(--border-light)}
     .drow:last-child{border-bottom:none}
     .dlabel{font-size:11px;color:var(--text-muted)}
-    .dvalue{font-size:12px;font-weight:600;color:var(--text-primary)}
-    .inv-bar{height:4px;background:var(--border-light);border-radius:99px;overflow:hidden;margin-top:8px}
+    .dvalue{font-size:11px;font-weight:600;color:var(--text-primary)}
+    .inv-bar{height:4px;background:var(--border-light);border-radius:99px;overflow:hidden;margin-top:6px}
     .inv-bar-fill{height:100%;border-radius:99px;transition:width .3s}
+    .inv-warn-box{display:flex;align-items:center;gap:6px;margin-top:8px;padding:7px 9px;background:#fef2f2;border-radius:6px;border:1px solid #fecaca}
+    .inv-warn-box span{font-size:11px;font-weight:600;color:#dc2626}
+    /* location-index tab */
     .inv-loc-group-head{display:flex;align-items:center;gap:8px;padding:10px 0 4px}
-    /* inv modals */
-    .itype-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:16px}
+    /* modal */
+    .itype-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:8px;margin-bottom:16px}
     .itype-opt{border:1px solid var(--border);border-radius:var(--radius-sm);padding:10px 6px;text-align:center;cursor:pointer;transition:all .15s}
     .itype-opt.sel{border-color:var(--primary);background:var(--primary-light)}
     .itype-icon{width:28px;height:28px;border-radius:8px;background:var(--border-light);display:flex;align-items:center;justify-content:center;margin:0 auto 6px}
@@ -250,6 +273,14 @@
     .itype-lbl{font-size:11px;font-weight:700;color:var(--text-secondary)}
     .itype-opt.sel .itype-lbl{color:var(--primary)}
     .icond{display:none}.icond.show{display:block}
+    .inv-toggle-row{display:flex;align-items:center;justify-content:space-between;padding:11px 0;border-top:1px solid var(--border-light)}
+    .inv-toggle-label p{font-size:13px;font-weight:600;color:var(--text-primary);margin-bottom:2px}
+    .inv-toggle-label small{font-size:11px;color:var(--text-muted)}
+    .inv-sub-panel{display:none;margin-top:10px;padding:12px;background:var(--bg);border-radius:var(--radius-sm);border:1px solid var(--border-light)}
+    .inv-sub-panel.show{display:block}
+    .mode-seg{display:flex;background:var(--border-light);border-radius:var(--radius-sm);padding:2px;gap:2px;margin-bottom:12px}
+    .mode-seg-btn{flex:1;padding:7px 4px;font-size:11px;font-weight:700;border:none;background:none;cursor:pointer;color:var(--text-muted);border-radius:6px;transition:all .15s;font-family:'Noto Sans TC',sans-serif;text-align:center}
+    .mode-seg-btn.on{background:var(--surface);color:var(--text-primary);box-shadow:0 0 0 1px var(--border)}
     .import-zone{border:1.5px dashed var(--border);border-radius:var(--radius-md);padding:22px;text-align:center;cursor:pointer;transition:border-color .2s;margin-bottom:14px;background:var(--bg)}
     .import-zone:hover{border-color:var(--primary)}
     .import-zone input{display:none}
@@ -377,11 +408,44 @@
     <button class="inv-tab" onclick="invSwitchTab('restock',this)"><span class="material-symbols-outlined" style="font-size:13px">shopping_bag</span>補貨追蹤<span class="tcnt" id="inv-cnt-restock"></span></button>
     <button class="inv-tab" onclick="invSwitchTab('location',this)"><span class="material-symbols-outlined" style="font-size:13px">place</span>位置索引<span class="tcnt" id="inv-cnt-loc"></span></button>
   </div>
-  <div class="inv-alert-strip" id="inv-alert-strip"></div>
-  <div class="inv-search-wrap" id="inv-search-wrap">
-    <div class="inv-search-inner"><span class="material-symbols-outlined" style="font-size:16px;color:var(--text-muted)">search</span><input type="text" id="inv-search-input" placeholder="搜尋物品名稱…" oninput="renderInventoryPage()"></div>
-    <div class="inv-loc-row" id="inv-loc-row"></div>
-    <div class="inv-loc-row" id="inv-cat-row" style="margin-top:6px"></div>
+  <div class="inv-alert-strip" id="inv-alert-strip" style="display:none"></div>
+  <div style="padding:0 14px;max-width:640px;margin:0 auto">
+  <!-- collapsible filter panel -->
+  <div class="inv-filter-panel" id="inv-filter-panel">
+    <button class="inv-filter-toggle" onclick="invToggleFilters()">
+      <div class="inv-filter-toggle-left">
+        <span class="material-symbols-outlined" style="font-size:16px;color:var(--text-muted)">tune</span>
+        <span style="font-size:12px;font-weight:600;color:var(--text-secondary)">篩選</span>
+        <span class="inv-filter-summary" id="inv-filter-summary"></span>
+      </div>
+      <span class="material-symbols-outlined inv-filter-arrow" id="inv-filter-arrow">expand_more</span>
+    </button>
+    <div class="inv-filter-body" id="inv-filter-body">
+      <div class="inv-filter-row" id="inv-filter-loc-row"><span class="inv-filter-row-label">位置</span></div>
+      <div class="inv-filter-row" id="inv-filter-cat-row"><span class="inv-filter-row-label">類別</span></div>
+      <div class="inv-filter-row" id="inv-filter-third-row"><span class="inv-filter-row-label">來源</span></div>
+      <button class="inv-filter-clear" id="inv-filter-clear-btn" onclick="invClearFilters()" style="display:none">✕ 清除篩選</button>
+    </div>
+  </div>
+  <!-- location-index: collapsible filter panel with search + chips -->
+  <div class="inv-filter-panel" id="inv-loc-filter-panel" style="display:none">
+    <button class="inv-filter-toggle" onclick="invToggleLocFilters()">
+      <div class="inv-filter-toggle-left">
+        <span class="material-symbols-outlined" style="font-size:16px;color:var(--text-muted)">tune</span>
+        <span style="font-size:12px;font-weight:600;color:var(--text-secondary)">搜尋 / 篩選</span>
+        <span class="inv-filter-summary" id="inv-loc-filter-summary"></span>
+      </div>
+      <span class="material-symbols-outlined inv-filter-arrow" id="inv-loc-filter-arrow">expand_more</span>
+    </button>
+    <div class="inv-filter-body" id="inv-loc-filter-body">
+      <div style="display:flex;align-items:center;gap:7px;background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-sm);padding:5px 10px;margin-bottom:2px">
+        <span class="material-symbols-outlined" style="font-size:15px;color:var(--text-muted)">search</span>
+        <input type="text" id="inv-search-input" placeholder="搜尋物品名稱…" oninput="renderInventoryPage()" style="flex:1;border:none;outline:none;font-size:12px;color:var(--text-primary);background:none;font-family:'Noto Sans TC',sans-serif">
+      </div>
+      <div class="inv-filter-row" id="inv-loc-row"></div>
+      <div class="inv-filter-row" id="inv-cat-row" style="margin-top:2px"></div>
+    </div>
+  </div>
   </div>
   <div class="inv-content" id="inv-content"></div>
 </div>
@@ -537,21 +601,54 @@
       <button onclick="closeModal('invItemModal')" style="background:var(--border-light);border:none;width:32px;height:32px;border-radius:50%;display:flex;align-items:center;justify-content:center;cursor:pointer"><span class="material-symbols-outlined" style="font-size:18px;color:#64748b">close</span></button>
     </div>
     <input type="hidden" id="inv-edit-id">
-    <div class="form-group"><label>類型</label>
+    <div class="form-group"><label>物品類型</label>
       <div class="itype-grid">
-        <div class="itype-opt sel" onclick="invSelectType('item',this)"><div class="itype-icon"><span class="material-symbols-outlined" style="font-size:16px;color:#6b7280">category</span></div><div class="itype-lbl">一般物品</div></div>
-        <div class="itype-opt" onclick="invSelectType('expiry',this)"><div class="itype-icon"><span class="material-symbols-outlined" style="font-size:16px;color:#6b7280">event</span></div><div class="itype-lbl">有效期限</div></div>
-        <div class="itype-opt" onclick="invSelectType('restock',this)"><div class="itype-icon"><span class="material-symbols-outlined" style="font-size:16px;color:#6b7280">shopping_bag</span></div><div class="itype-lbl">補貨追蹤</div></div>
+        <div class="itype-opt sel" id="inv-type-item" onclick="invSelectType('item',this)"><div class="itype-icon"><span class="material-symbols-outlined" style="font-size:16px;color:#6b7280">category</span></div><div class="itype-lbl">一般物品</div></div>
+        <div class="itype-opt" id="inv-type-expiry" onclick="invSelectType('expiry',this)"><div class="itype-icon"><span class="material-symbols-outlined" style="font-size:16px;color:#6b7280">event</span></div><div class="itype-lbl">有效期限</div></div>
       </div>
     </div>
-    <div class="form-group"><label>物品名稱 *</label><input type="text" id="inv-f-name" placeholder="例：洗碗精"></div>
+    <div class="form-group"><label>物品名稱 *</label><input type="text" id="inv-f-name" placeholder="例：感冒藥、洗碗精"></div>
     <div class="form-group"><label>存放位置</label><select id="inv-f-location"><option>廚房</option><option>浴室</option><option>臥室</option><option>客廳</option><option>儲藏室</option><option>冰箱</option><option>藥箱</option><option>其他</option></select></div>
-    <div class="form-group"><label>物品類型</label><select id="inv-f-category"><option>日常用品</option><option>保養品</option><option>糧食/飲品</option><option>藥品保健</option><option>清潔用品</option><option>文具工具</option><option>其他</option></select></div>
-    <div class="form-group"><label>備註</label><input type="text" id="inv-f-note" placeholder="選填，例：品牌、規格"></div>
-    <div class="form-group icond" id="inv-g-expiry"><label>到期日</label><input type="date" id="inv-f-expiry"><p style="font-size:11px;color:var(--text-muted);margin-top:5px">到期前 14 天出現提醒</p></div>
-    <div class="icond" id="inv-g-restock">
-      <div class="form-group"><label>目前數量（瓶/包/盒）</label><input type="number" id="inv-f-qty" min="0" placeholder="例：2"></div>
-      <div class="form-group"><label>補貨提醒門檻</label><input type="number" id="inv-f-threshold" min="0" value="1" placeholder="例：1（低於此數量時提醒）"></div>
+    <div class="form-group"><label>物品類別</label><select id="inv-f-category"><option>日常用品</option><option>保養品</option><option>糧食/飲品</option><option>藥品保健</option><option>清潔用品</option><option>文具工具</option><option>其他</option></select></div>
+    <div class="form-group"><label>備註</label><input type="text" id="inv-f-note" placeholder="品牌、規格…（選填）"></div>
+    <!-- 有效期限 -->
+    <div class="icond" id="inv-g-expiry">
+      <div class="form-group"><label>到期日</label><input type="date" id="inv-f-expiry"><p style="font-size:11px;color:var(--text-muted);margin-top:5px">到期前 14 天自動提醒</p></div>
+    </div>
+    <!-- 補貨追蹤開關 -->
+    <div class="inv-toggle-row">
+      <div class="inv-toggle-label"><p>需要補貨追蹤</p><small>開啟後可追蹤數量或剩餘比例</small></div>
+      <button class="toggle" id="inv-tgl-restock" onclick="invToggleRestock(this)"></button>
+    </div>
+    <div class="inv-sub-panel" id="inv-g-restock">
+      <div style="margin-bottom:10px"><label>追蹤方式</label>
+        <div class="mode-seg">
+          <button class="mode-seg-btn on" id="inv-mode-qty" onclick="invSetMode('qty',this)">數量（個／瓶）</button>
+          <button class="mode-seg-btn" id="inv-mode-ratio" onclick="invSetMode('ratio',this)">剩餘比例（%）</button>
+        </div>
+      </div>
+      <div id="inv-g-qty">
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
+          <div class="form-group" style="margin:0"><label>目前數量</label><input type="number" id="inv-f-qty" min="0" placeholder="0"></div>
+          <div class="form-group" style="margin:0"><label>補貨門檻</label><input type="number" id="inv-f-threshold" min="0" value="1" placeholder="1"><p style="font-size:10px;color:var(--text-muted);margin-top:4px">低於此數量時提醒</p></div>
+        </div>
+      </div>
+      <div id="inv-g-ratio" style="display:none">
+        <div class="form-group" style="margin-bottom:10px">
+          <label>目前剩餘 <b id="inv-ratio-disp" style="color:var(--primary)">50%</b></label>
+          <input type="range" id="inv-f-ratio" min="0" max="100" step="5" value="50" style="width:100%;accent-color:var(--primary)" oninput="document.getElementById('inv-ratio-disp').textContent=this.value+'%'">
+          <div style="display:flex;justify-content:space-between;font-size:10px;color:var(--text-muted);margin-top:2px"><span>空</span><span>25%</span><span>50%</span><span>75%</span><span>滿</span></div>
+        </div>
+        <div class="form-group" style="margin-bottom:0"><label>提醒門檻（低於此比例時）</label>
+          <select id="inv-f-ratio-thr"><option value="10">10%（快空才提醒）</option><option value="25" selected>25%（剩 1/4 時提醒）</option><option value="33">33%（剩 1/3 時提醒）</option><option value="50">50%（剩一半時提醒）</option></select>
+        </div>
+      </div>
+      <div class="form-group" style="margin-top:10px;margin-bottom:0"><label>補貨來源</label>
+        <select id="inv-f-source" onchange="invOnSourceChange()">
+          <option value="">不指定</option><option>蝦皮</option><option>酷澎</option><option>全聯</option><option>大潤發</option><option>家樂福</option><option>momo</option><option>藥局</option><option value="__custom">自訂…</option>
+        </select>
+        <input type="text" id="inv-f-source-custom" placeholder="輸入來源名稱" style="display:none;margin-top:8px">
+      </div>
     </div>
     <div class="flex gap-3 mt-4"><button class="btn-secondary flex-1" onclick="closeModal('invItemModal')">取消</button><button class="btn-primary flex-1" onclick="invSaveItem()">儲存</button></div>
   </div>
@@ -564,7 +661,7 @@
       <h2 style="font-size:17px;font-weight:700;color:#1e293b">匯入物品資料</h2>
       <button onclick="closeModal('invImportModal')" style="background:var(--border-light);border:none;width:32px;height:32px;border-radius:50%;display:flex;align-items:center;justify-content:center;cursor:pointer"><span class="material-symbols-outlined" style="font-size:18px;color:#64748b">close</span></button>
     </div>
-    <p style="font-size:13px;color:var(--text-muted);margin-bottom:14px;line-height:1.6">請先下載範本，填寫後再上傳。</p>
+    <p style="font-size:13px;color:var(--text-muted);margin-bottom:14px;line-height:1.6">請先下載範本，填妥後再上傳。支援 CSV 與 Excel 格式。</p>
     <button onclick="invDownloadTemplate()" style="display:flex;align-items:center;gap:8px;background:var(--primary-light);color:var(--primary);padding:11px 16px;border-radius:var(--radius-sm);font-weight:700;font-size:14px;border:none;cursor:pointer;width:100%;margin-bottom:14px">
       <span class="material-symbols-outlined" style="font-size:18px">download</span>下載 CSV 範本
     </button>
@@ -640,19 +737,19 @@ const DT=[
   {id:'dt11',title:'搶高鐵票',description:'',plannedDate:'',priority:'普通',freqType:'none',freqVal:0,status:'待辦',createdAt:new Date().toISOString()},
 ];
 const DI=[
-  {id:'i1',type:'expiry',name:'感冒藥（白藥水）',location:'藥箱',category:'藥品保健',note:'小朋友用',expiryDate:addD(todayStr,8),qty:null,threshold:null},
-  {id:'i2',type:'expiry',name:'維生素 C 錠',location:'藥箱',category:'藥品保健',note:'每天一顆',expiryDate:addD(todayStr,45),qty:null,threshold:null},
-  {id:'i3',type:'expiry',name:'美乃滋',location:'冰箱',category:'糧食/飲品',note:'開封後冷藏',expiryDate:addD(todayStr,5),qty:null,threshold:null},
-  {id:'i4',type:'expiry',name:'眼藥水',location:'藥箱',category:'藥品保健',note:'',expiryDate:addD(todayStr,-3),qty:null,threshold:null},
-  {id:'i5',type:'expiry',name:'防曬乳 SPF50',location:'浴室',category:'保養品',note:'出門必備',expiryDate:addD(todayStr,180),qty:null,threshold:null},
-  {id:'i6',type:'restock',name:'洗碗精',location:'廚房',category:'清潔用品',note:'橘子香',expiryDate:null,qty:1,threshold:1},
-  {id:'i7',type:'restock',name:'洗衣精',location:'儲藏室',category:'清潔用品',note:'濃縮型',expiryDate:null,qty:2,threshold:1},
-  {id:'i8',type:'restock',name:'衛生紙',location:'儲藏室',category:'日常用品',note:'抽取式 120抽',expiryDate:null,qty:5,threshold:2},
-  {id:'i9',type:'restock',name:'牙膏',location:'浴室',category:'日常用品',note:'',expiryDate:null,qty:1,threshold:1},
-  {id:'i10',type:'restock',name:'洗髮精',location:'浴室',category:'日常用品',note:'',expiryDate:null,qty:1,threshold:1},
-  {id:'i11',type:'item',name:'備用電池 AA',location:'儲藏室',category:'文具工具',note:'2包',expiryDate:null,qty:null,threshold:null},
-  {id:'i12',type:'item',name:'急救包',location:'藥箱',category:'藥品保健',note:'含OK繃、碘酒',expiryDate:null,qty:null,threshold:null},
-  {id:'i13',type:'item',name:'工具箱',location:'儲藏室',category:'文具工具',note:'含螺絲起子',expiryDate:null,qty:null,threshold:null},
+  {id:'i1',type:'expiry',name:'感冒藥（白藥水）',location:'藥箱',category:'藥品保健',note:'小朋友用',expiryDate:addD(todayStr,8),restock:false,qtyMode:'qty',qty:null,threshold:null,ratio:null,ratioThr:null,source:''},
+  {id:'i2',type:'expiry',name:'維生素 C 錠',location:'藥箱',category:'藥品保健',note:'每天一顆',expiryDate:addD(todayStr,45),restock:false,qtyMode:'qty',qty:null,threshold:null,ratio:null,ratioThr:null,source:''},
+  {id:'i3',type:'expiry',name:'美乃滋',location:'冰箱',category:'糧食/飲品',note:'開封後冷藏',expiryDate:addD(todayStr,5),restock:false,qtyMode:'qty',qty:null,threshold:null,ratio:null,ratioThr:null,source:''},
+  {id:'i4',type:'expiry',name:'眼藥水',location:'藥箱',category:'藥品保健',note:'',expiryDate:addD(todayStr,-3),restock:false,qtyMode:'qty',qty:null,threshold:null,ratio:null,ratioThr:null,source:''},
+  {id:'i5',type:'expiry',name:'防曬乳 SPF50',location:'浴室',category:'保養品',note:'出門必備',expiryDate:addD(todayStr,180),restock:false,qtyMode:'qty',qty:null,threshold:null,ratio:null,ratioThr:null,source:''},
+  {id:'i6',type:'item',name:'洗碗精',location:'廚房',category:'清潔用品',note:'橘子香',expiryDate:null,restock:true,qtyMode:'qty',qty:1,threshold:1,ratio:null,ratioThr:null,source:'全聯'},
+  {id:'i7',type:'item',name:'洗衣精',location:'儲藏室',category:'清潔用品',note:'濃縮型',expiryDate:null,restock:true,qtyMode:'qty',qty:2,threshold:1,ratio:null,ratioThr:null,source:'蝦皮'},
+  {id:'i8',type:'item',name:'衛生紙',location:'儲藏室',category:'日常用品',note:'抽取式 120抽',expiryDate:null,restock:true,qtyMode:'qty',qty:5,threshold:2,ratio:null,ratioThr:null,source:'酷澎'},
+  {id:'i9',type:'item',name:'牙膏',location:'浴室',category:'日常用品',note:'',expiryDate:null,restock:true,qtyMode:'qty',qty:1,threshold:1,ratio:null,ratioThr:null,source:'全聯'},
+  {id:'i10',type:'item',name:'洗髮精',location:'浴室',category:'日常用品',note:'',expiryDate:null,restock:true,qtyMode:'qty',qty:1,threshold:1,ratio:null,ratioThr:null,source:'蝦皮'},
+  {id:'i11',type:'item',name:'備用電池 AA',location:'儲藏室',category:'文具工具',note:'2包',expiryDate:null,restock:false,qtyMode:'qty',qty:null,threshold:null,ratio:null,ratioThr:null,source:''},
+  {id:'i12',type:'item',name:'急救包',location:'藥箱',category:'藥品保健',note:'含OK繃、碘酒',expiryDate:null,restock:false,qtyMode:'qty',qty:null,threshold:null,ratio:null,ratioThr:null,source:''},
+  {id:'i13',type:'item',name:'工具箱',location:'儲藏室',category:'文具工具',note:'含螺絲起子',expiryDate:null,restock:false,qtyMode:'qty',qty:null,threshold:null,ratio:null,ratioThr:null,source:''},
 ];
 
 function saveData(){localStorage.setItem('app_tasks',JSON.stringify(tasks));localStorage.setItem('app_housework',JSON.stringify(housework))}
@@ -1030,69 +1127,173 @@ function renderHouseworkPage(){
 function toggleAreaFilter(a){hwAreaFilter=hwAreaFilter===a?null:a;renderHouseworkPage()}
 
 // ── INVENTORY HELPERS ─────────────────────────────────────
-const LOC_META={
-  '廚房':{icon:'🍳'},'浴室':{icon:'🚿'},'臥室':{icon:'🛏'},'客廳':{icon:'🛋'},
-  '儲藏室':{icon:'📦'},'冰箱':{icon:'❄️'},'藥箱':{icon:'💊'},'其他':{icon:'📍'}
-};
+const LOC_META={'廚房':{icon:'🍳'},'浴室':{icon:'🚿'},'臥室':{icon:'🛏'},'客廳':{icon:'🛋'},'儲藏室':{icon:'📦'},'冰箱':{icon:'❄️'},'藥箱':{icon:'💊'},'其他':{icon:'📍'}};
 function lm(loc){return LOC_META[loc]||{icon:'📍'}}
+function fmtDateFull(s){if(!s)return '';return s.replace(/-/g,'/')}
+const INV_SOURCES={'蝦皮':'🛒','酷澎':'📦','全聯':'🏪','大潤發':'🏬','家樂福':'🏬','momo':'💻','藥局':'💊'};
+function invSrcIcon(s){return s&&INV_SOURCES[s]?INV_SOURCES[s]+' ':''}
+
 function invExpiryStatus(it){
-  if(!it.expiryDate)return null;const d=daysBetween(todayStr,it.expiryDate);
-  if(d<0)return{cls:'red',label:`已過期 ${-d} 天`,urgent:true,rowCls:'row-danger'};
-  if(d<=7)return{cls:'red',label:`${d} 天後到期`,urgent:true,rowCls:'row-danger'};
-  if(d<=14)return{cls:'orange',label:`${d} 天後到期`,urgent:false,rowCls:'row-warn'};
-  return{cls:'muted',label:`${fmtD(it.expiryDate)} 到期`,urgent:false,rowCls:''};
+  if(!it.expiryDate)return null;
+  const d=daysBetween(todayStr,it.expiryDate);
+  if(d<0)return{cls:'red',urgent:true,rowCls:'row-danger'};
+  if(d<=7)return{cls:'red',urgent:true,rowCls:'row-danger'};
+  if(d<=14)return{cls:'orange',urgent:false,rowCls:'row-warn'};
+  return{cls:'muted',urgent:false,rowCls:''};
 }
 function invRestockStatus(it){
-  if(it.type!=='restock'||it.qty===null)return null;const thr=it.threshold??1;
-  if(it.qty===0)return{cls:'red',label:'缺貨，需補貨',urgent:true,rowCls:'row-danger'};
-  if(it.qty<=thr)return{cls:'orange',label:`剩 ${it.qty} 個，快用完`,urgent:false,rowCls:'row-warn'};
-  return{cls:'muted',label:'',urgent:false,rowCls:''};
+  if(!it.restock)return null;
+  if(it.qtyMode==='ratio'){
+    const r=it.ratio??100,t=it.ratioThr??25;
+    if(r===0)return{cls:'red',urgent:true,rowCls:'row-danger'};
+    if(r<=t)return{cls:'orange',urgent:false,rowCls:'row-warn'};
+    return{cls:'muted',urgent:false,rowCls:''};
+  }
+  const qty=it.qty??0,thr=it.threshold??1;
+  if(qty===0)return{cls:'red',urgent:true,rowCls:'row-danger'};
+  if(qty<=thr)return{cls:'orange',urgent:false,rowCls:'row-warn'};
+  return{cls:'muted',urgent:false,rowCls:''};
+}
+function invWorstCls(es,rs){
+  const rank=s=>s?.rowCls==='row-danger'?0:s?.rowCls==='row-warn'?1:2;
+  return rank(es)<=rank(rs)?es?.rowCls:rs?.rowCls;
 }
 
-// ── INVENTORY STATE & RENDER ──────────────────────────────
-let invCurrentTab='all',invCurrentType='item',invEditingId=null,invLocFilter=null,invCatFilter=null,invPendingImport=[];
+// ── INVENTORY STATE ────────────────────────────────────────
+let invCurrentTab='all',invCurrentType='item',invEditingId=null;
+let invLocFilter=null,invCatFilter=null,invSrcFilter=null,invDateFrom=null,invDateTo=null;
+let invQtyMode='qty',invRestockOn=false,invFilterOpen=false,invLocFilterOpen=false,invPendingImport=[];
+
 function invSwitchTab(tab,btn){
-  invCurrentTab=tab;invLocFilter=null;invCatFilter=null;
+  invCurrentTab=tab;invLocFilter=null;invCatFilter=null;invSrcFilter=null;invDateFrom=null;invDateTo=null;
   document.querySelectorAll('.inv-tab').forEach(b=>b.classList.remove('active'));btn.classList.add('active');
   const si=document.getElementById('inv-search-input');if(si)si.value='';
   renderInventoryPage();
 }
+
+// ── INVENTORY FILTER PANEL ─────────────────────────────────
+function invToggleFilters(){
+  invFilterOpen=!invFilterOpen;
+  document.getElementById('inv-filter-body').classList.toggle('open',invFilterOpen);
+  document.getElementById('inv-filter-arrow').classList.toggle('open',invFilterOpen);
+}
+function invToggleLocFilters(){
+  invLocFilterOpen=!invLocFilterOpen;
+  document.getElementById('inv-loc-filter-body').classList.toggle('open',invLocFilterOpen);
+  document.getElementById('inv-loc-filter-arrow').classList.toggle('open',invLocFilterOpen);
+}
+function invClearFilters(){invLocFilter=null;invCatFilter=null;invSrcFilter=null;invDateFrom=null;invDateTo=null;renderInventoryPage()}
+function invSetLoc(l){invLocFilter=l;renderInventoryPage()}
+function invSetCat(c){invCatFilter=c;renderInventoryPage()}
+function invSetSrc(s){invSrcFilter=s;renderInventoryPage()}
+function invSetDateFrom(v){invDateFrom=v||null;renderInventoryPage()}
+function invSetDateTo(v){invDateTo=v||null;renderInventoryPage()}
+
+function invRenderFilterPanel(){
+  const pool=invFilterByTab();
+  const locs=[...new Set(pool.map(it=>it.location))].sort();
+  const cats=[...new Set(pool.map(it=>it.category||'其他'))].sort();
+  const srcs=[...new Set(pool.filter(it=>it.source).map(it=>it.source))].sort();
+
+  const locRow=document.getElementById('inv-filter-loc-row');
+  const catRow=document.getElementById('inv-filter-cat-row');
+  const thirdRow=document.getElementById('inv-filter-third-row');
+  if(!locRow||!catRow||!thirdRow)return;
+
+  let lh=`<span class="inv-filter-row-label">位置</span>`;
+  [null,...locs].forEach(l=>{const a=(invLocFilter===null&&l===null)||(invLocFilter===l&&l!==null);lh+=`<button class="inv-chip${a?' active':''}" onclick="invSetLoc(${l===null?'null':`'${l}'`})">${l||'全部'}</button>`;});
+
+  let ch=`<span class="inv-filter-row-label">類別</span>`;
+  [null,...cats].forEach(c=>{const a=(invCatFilter===null&&c===null)||(invCatFilter===c&&c!==null);ch+=`<button class="inv-chip${a?' active':''}" onclick="invSetCat(${c===null?'null':`'${c}'`})">${c||'全部'}</button>`;});
+
+  let th='';
+  if(invCurrentTab==='expiry'){
+    th=`<span class="inv-filter-row-label">效期</span>
+      <input type="date" value="${invDateFrom||''}" onchange="invSetDateFrom(this.value)" style="height:26px;font-size:11px;padding:0 7px;border:1px solid var(--border);border-radius:var(--radius-sm);background:var(--surface);color:var(--text-primary);font-family:'Noto Sans TC',sans-serif;outline:none;flex-shrink:0;max-width:130px">
+      <span style="font-size:11px;color:var(--text-muted);flex-shrink:0">至</span>
+      <input type="date" value="${invDateTo||''}" onchange="invSetDateTo(this.value)" style="height:26px;font-size:11px;padding:0 7px;border:1px solid var(--border);border-radius:var(--radius-sm);background:var(--surface);color:var(--text-primary);font-family:'Noto Sans TC',sans-serif;outline:none;flex-shrink:0;max-width:130px">`;
+  }else{
+    th=`<span class="inv-filter-row-label">來源</span>`;
+    if(srcs.length){[null,...srcs].forEach(s=>{const a=(invSrcFilter===null&&s===null)||(invSrcFilter===s&&s!==null);th+=`<button class="inv-chip${a?' active':''}" onclick="invSetSrc(${s===null?'null':`'${s}'`})">${s?invSrcIcon(s)+s:'全部'}</button>`;});}
+    else{th+=`<span style="font-size:11px;color:var(--text-muted)">（無補貨來源）</span>`;}
+  }
+
+  locRow.innerHTML=lh; catRow.innerHTML=ch; thirdRow.innerHTML=th;
+
+  const active=[];
+  if(invLocFilter)active.push(invLocFilter);
+  if(invCatFilter)active.push(invCatFilter);
+  if(invSrcFilter)active.push(invSrcIcon(invSrcFilter)+invSrcFilter);
+  if(invDateFrom||invDateTo)active.push((invDateFrom?fmtDateFull(invDateFrom):'…')+' ~ '+(invDateTo?fmtDateFull(invDateTo):'…'));
+  const summary=document.getElementById('inv-filter-summary');
+  const clearBtn=document.getElementById('inv-filter-clear-btn');
+  if(summary)summary.textContent=active.length?active.join(' · '):'';
+  if(clearBtn)clearBtn.style.display=active.length?'block':'none';
+}
+
+// ── INVENTORY FILTER / POOL ────────────────────────────────
+function invFilterByTab(){
+  if(invCurrentTab==='all')return inventory;
+  if(invCurrentTab==='expiry')return inventory.filter(it=>it.type==='expiry');
+  if(invCurrentTab==='restock')return inventory.filter(it=>it.restock);
+  if(invCurrentTab==='location')return inventory;
+  return inventory;
+}
+function invFilterPool(){
+  let pool=invFilterByTab();
+  if(invLocFilter)pool=pool.filter(it=>it.location===invLocFilter);
+  if(invCatFilter)pool=pool.filter(it=>(it.category||'其他')===invCatFilter);
+  if(invSrcFilter)pool=pool.filter(it=>it.source===invSrcFilter);
+  if(invDateFrom)pool=pool.filter(it=>it.expiryDate&&it.expiryDate>=invDateFrom);
+  if(invDateTo)pool=pool.filter(it=>it.expiryDate&&it.expiryDate<=invDateTo);
+  return pool;
+}
+
+// ── INVENTORY RENDER ───────────────────────────────────────
 function renderInventoryPage(){
-  const strip=document.getElementById('inv-alert-strip'),content=document.getElementById('inv-content');if(!strip||!content)return;
+  const strip=document.getElementById('inv-alert-strip'),content=document.getElementById('inv-content');
+  if(!strip||!content)return;
   document.getElementById('inv-cnt-all').textContent=inventory.length;
   document.getElementById('inv-cnt-expiry').textContent=inventory.filter(i=>i.type==='expiry').length;
-  document.getElementById('inv-cnt-restock').textContent=inventory.filter(i=>i.type==='restock').length;
+  document.getElementById('inv-cnt-restock').textContent=inventory.filter(i=>i.restock).length;
   document.getElementById('inv-cnt-loc').textContent=inventory.length;
-  // Alert strip
-  if(invCurrentTab==='all'){
-    const urg=inventory.filter(it=>(it.type==='expiry'&&invExpiryStatus(it)?.urgent)||(it.type==='restock'&&it.qty===0));
-    const wa=inventory.filter(it=>(it.type==='expiry'&&invExpiryStatus(it)?.cls==='orange')||(it.type==='restock'&&invRestockStatus(it)?.cls==='orange'));
-    let lines='';
-    if(urg.length)lines+=`<div class="inv-alert-line"><div class="inv-dot" style="background:#dc2626"></div><span style="font-size:12px;font-weight:600;color:var(--text-primary);flex:1">${urg.length} 件需立即處理</span><span style="font-size:11px;color:var(--text-muted)">${urg.map(x=>x.name).slice(0,2).join('、')}${urg.length>2?'…':''}</span></div>`;
-    if(wa.length)lines+=`<div class="inv-alert-line"><div class="inv-dot" style="background:#f59e0b"></div><span style="font-size:12px;font-weight:600;color:var(--text-primary)">${wa.length} 件即將到期或快用完</span></div>`;
-    strip.innerHTML=lines;strip.classList.toggle('show',!!lines);
-  }else{strip.classList.remove('show');strip.innerHTML='';}
+
+  invRenderFilterPanel();
+
+  // Alert strip — hidden (removed per user request)
+  strip.innerHTML='';strip.classList.remove('show');
+
   // Location tab
   if(invCurrentTab==='location'){
-    document.getElementById('inv-search-wrap').classList.add('show');
+    const fp=document.getElementById('inv-filter-panel');if(fp)fp.style.display='none';
+    const lp=document.getElementById('inv-loc-filter-panel');if(lp)lp.style.display='block';
     const q=(document.getElementById('inv-search-input')?.value||'').toLowerCase();
     const locs=[...new Set(inventory.map(it=>it.location))];
     const locRow=document.getElementById('inv-loc-row');
-    if(locRow)locRow.innerHTML=[null,...locs].map(l=>{const active=(l===null&&invLocFilter===null)||(invLocFilter===l);const meta=l?lm(l):null;return `<button class="inv-loc-chip ${active?'active':''}" onclick="invSetLocFilter(${l===null?'null':`'${l}'`})">${meta?meta.icon+' ':''}${l||'全部'}</button>`;}).join('');
+    if(locRow)locRow.innerHTML=[null,...locs].map(l=>{const a=(l===null&&invLocFilter===null)||(invLocFilter===l);const m=l?lm(l):null;return`<button class="inv-chip${a?' active':''}" onclick="invSetLocFilter2(${l===null?'null':`'${l}'`})">${m?m.icon+' ':''}${l||'全部'}</button>`;}).join('');
     const cats=[...new Set(inventory.map(it=>it.category||'其他'))].sort();
     const catRow=document.getElementById('inv-cat-row');
-    if(catRow)catRow.innerHTML=[null,...cats].map(c=>{const active=(c===null&&invCatFilter===null)||(invCatFilter===c);return `<button class="inv-loc-chip ${active?'active':''}" onclick="invSetCatFilter(${c===null?'null':`'${c}'`})">${c||'全部'}</button>`;}).join('');
+    if(catRow)catRow.innerHTML=[null,...cats].map(c=>{const a=(c===null&&invCatFilter===null)||(invCatFilter===c);return`<button class="inv-chip${a?' active':''}" onclick="invSetCatFilter2(${c===null?'null':`'${c}'`})">${c||'全部'}</button>`;}).join('');
+    // update loc panel summary
+    const locSummary=document.getElementById('inv-loc-filter-summary');
+    const locActive=[];if(invLocFilter)locActive.push(invLocFilter);if(invCatFilter)locActive.push(invCatFilter);
+    if(locSummary)locSummary.textContent=locActive.length?locActive.join(' · '):'';
     let pool=inventory.filter(it=>(!invLocFilter||it.location===invLocFilter)&&(!invCatFilter||(it.category||'其他')===invCatFilter)&&(q===''||it.name.toLowerCase().includes(q)||it.note?.toLowerCase().includes(q)));
     let html='';
     if(invLocFilter){html=`<div class="inv-list">${pool.map(it=>invRenderRow(it,false)).join('')}</div>`;}
-    else{locs.forEach(loc=>{const grp=pool.filter(it=>it.location===loc);if(!grp.length)return;const meta=lm(loc);html+=`<div class="inv-loc-group-head"><span style="font-size:16px">${meta.icon}</span><span style="font-size:13px;font-weight:700;color:var(--text-secondary)">${loc}</span><span style="font-size:11px;color:var(--text-muted);margin-left:auto">${grp.length} 件</span></div><div class="inv-list">${grp.map(it=>invRenderRow(it,false)).join('')}</div>`;});}
+    else{locs.forEach(loc=>{const grp=pool.filter(it=>it.location===loc);if(!grp.length)return;const m=lm(loc);html+=`<div class="inv-loc-group-head"><span style="font-size:16px">${m.icon}</span><span style="font-size:13px;font-weight:700;color:var(--text-secondary)">${loc}</span><span style="font-size:11px;color:var(--text-muted);margin-left:auto">${grp.length} 件</span></div><div class="inv-list">${grp.map(it=>invRenderRow(it,false)).join('')}</div>`;});}
     content.innerHTML=html||'<p style="text-align:center;padding:32px 0;color:var(--text-muted)">找不到符合的物品</p>';return;
   }
-  document.getElementById('inv-search-wrap').classList.remove('show');
-  let pool=invCurrentTab==='all'?[...inventory]:inventory.filter(it=>it.type===invCurrentTab);
-  pool.sort((a,b)=>{const ua=(a.type==='expiry'&&invExpiryStatus(a)?.urgent)||(a.type==='restock'&&a.qty===0)?0:1,ub=(b.type==='expiry'&&invExpiryStatus(b)?.urgent)||(b.type==='restock'&&b.qty===0)?0:1;if(ua!==ub)return ua-ub;return a.name.localeCompare(b.name);});
-  const urgent=pool.filter(it=>(it.type==='expiry'&&invExpiryStatus(it)?.urgent)||(it.type==='restock'&&it.qty===0));
-  const warn=pool.filter(it=>!urgent.includes(it)&&((it.type==='expiry'&&invExpiryStatus(it)?.cls==='orange')||(it.type==='restock'&&invRestockStatus(it)?.cls==='orange')));
+  const fp=document.getElementById('inv-filter-panel');if(fp)fp.style.display='block';
+  const lp=document.getElementById('inv-loc-filter-panel');if(lp)lp.style.display='none';
+
+  let pool=invFilterPool();
+  pool.sort((a,b)=>{
+    function s(it){if(invExpiryStatus(it)?.urgent||invRestockStatus(it)?.urgent)return 0;if(invExpiryStatus(it)?.cls==='orange'||invRestockStatus(it)?.cls==='orange')return 1;return 2;}
+    return s(a)-s(b)||a.name.localeCompare(b.name);
+  });
+  const urgent=pool.filter(it=>invExpiryStatus(it)?.urgent||invRestockStatus(it)?.urgent);
+  const warn=pool.filter(it=>!urgent.includes(it)&&(invExpiryStatus(it)?.cls==='orange'||invRestockStatus(it)?.cls==='orange'));
   const normal=pool.filter(it=>!urgent.includes(it)&&!warn.includes(it));
   let html='';
   if(urgent.length)html+=`<div class="inv-sec-head"><span class="inv-sec-title red">需要注意</span><span style="font-size:11px;color:var(--text-muted)">${urgent.length}</span></div><div class="inv-list">${urgent.map(it=>invRenderRow(it)).join('')}</div>`;
@@ -1101,132 +1302,279 @@ function renderInventoryPage(){
   if(!pool.length)html='<p style="text-align:center;padding:32px 0;color:var(--text-muted)">目前沒有項目</p>';
   content.innerHTML=html;
 }
+function invSetLocFilter2(l){invLocFilter=l;renderInventoryPage()}
+function invSetCatFilter2(c){invCatFilter=c;renderInventoryPage()}
+
 function invRenderRow(it,showLoc=true){
-  let statusText='',statusCls='muted',rowCls='',rightHtml='',detailHtml='';
-  if(it.type==='expiry'){
-    const s=invExpiryStatus(it);if(s){statusText=s.label;statusCls=s.cls;rowCls=s.rowCls;}
-    const d=daysBetween(todayStr,it.expiryDate),barPct=Math.max(0,Math.min(100,Math.round(d/365*100)));
-    const bc=d<=7?'#dc2626':d<=14?'#f59e0b':'#10b981';
-    detailHtml=`<div class="drow"><span class="dlabel">到期日</span><span class="dvalue">${fmtFull(it.expiryDate)}</span></div>${it.note?`<div class="drow"><span class="dlabel">備註</span><span class="dvalue">${it.note}</span></div>`:''}<div style="padding:6px 0 2px"><div style="display:flex;justify-content:space-between;margin-bottom:4px"><span style="font-size:11px;color:var(--text-muted)">效期剩餘</span><span style="font-size:11px;font-weight:700;color:${bc}">${d>=0?d+'天':'已過期'}</span></div><div class="inv-bar"><div class="inv-bar-fill" style="width:${barPct}%;background:${bc}"></div></div></div>`;
-    rightHtml=`<span class="material-symbols-outlined" style="font-size:18px;color:var(--text-muted)">expand_more</span>`;
-  }else if(it.type==='restock'){
-    const s=invRestockStatus(it);if(s){statusText=s.label;statusCls=s.cls;rowCls=s.rowCls;}
-    const thr=it.threshold??1,qc=it.qty===0?'low':it.qty<=thr?'warn':'';
-    detailHtml=`<div class="drow"><span class="dlabel">補貨門檻</span><span class="dvalue">低於 ${thr} 個時提醒</span></div>${it.note?`<div class="drow"><span class="dlabel">備註</span><span class="dvalue">${it.note}</span></div>`:''}`;
-    rightHtml=`<div class="qty-stepper" onclick="event.stopPropagation()"><button class="qty-btn" onclick="invChangeQty('${it.id}',-1)">−</button><div class="qty-val ${qc}">${it.qty??'?'}</div><button class="qty-btn" onclick="invChangeQty('${it.id}',+1)">+</button></div>`;
-  }else{
-    statusText=it.note||'';statusCls='muted';
-    detailHtml=it.note?`<div class="drow"><span class="dlabel">備註</span><span class="dvalue">${it.note}</span></div>`:'<div style="padding:7px 0;font-size:12px;color:var(--text-muted)">無其他資訊</div>';
-    rightHtml=`<span class="material-symbols-outlined" style="font-size:18px;color:var(--text-muted)">expand_more</span>`;
+  const es=invExpiryStatus(it),rs=invRestockStatus(it);
+  const rowCls=invWorstCls(es,rs)||'';
+
+  // right controls
+  let rightHtml='';
+  if(it.type==='expiry'&&it.expiryDate){
+    const d=daysBetween(todayStr,it.expiryDate);
+    if(d<0)rightHtml+=`<div class="expiry-chip-row red">已過期</div>`;
+    else if(d<=7)rightHtml+=`<div class="expiry-chip-row red">${d} 天後到期</div>`;
+    else if(d<=14)rightHtml+=`<div class="expiry-chip-row amber">${d} 天後到期</div>`;
   }
-  const typeDot='#94a3b8';
+  if(it.restock){
+    if(it.qtyMode==='ratio'){
+      const r=it.ratio??100,thr=it.ratioThr??25;
+      const fc=r===0?'#dc2626':r<=thr?'#d97706':'#059669';
+      rightHtml+=`<div class="ratio-ctl" onclick="event.stopPropagation()"><div class="ratio-track"><div class="ratio-fill" style="width:${r}%;background:${fc}"></div></div><span class="ratio-pct" style="color:${fc}">${r}%</span></div>`;
+    }else{
+      const qty=it.qty??0,thr=it.threshold??1;
+      const vc=qty===0?'low':qty<=thr?'warn':'';
+      rightHtml+=`<div class="qty-stepper"><button class="qty-btn" onclick="invChQty('${it.id}',-1,event)">−</button><input class="qty-inp ${vc}" type="number" min="0" value="${qty}" onclick="event.stopPropagation()" onchange="invSetQtyDirect('${it.id}',this.value,event)"><button class="qty-btn" onclick="invChQty('${it.id}',+1,event)">+</button></div>`;
+    }
+  }
+  rightHtml+=`<button style="background:none;border:none;cursor:pointer;width:30px;height:30px;border-radius:6px;display:flex;align-items:center;justify-content:center;color:var(--text-muted);flex-shrink:0" onclick="invTogglePopup('${it.id}',event)"><span class="material-symbols-outlined" style="font-size:18px">more_vert</span></button>`;
+
+  // detail
+  let detailHtml='';
+  if(it.type==='expiry'&&it.expiryDate){
+    const d=daysBetween(todayStr,it.expiryDate),pct=Math.max(0,Math.min(100,Math.round(d/365*100)));
+    const bc=d<0?'#dc2626':d<=14?'#d97706':'#059669';
+    detailHtml+=`<div class="drow"><span class="dlabel">到期日</span><span class="dvalue" style="color:${bc}">${fmtDateFull(it.expiryDate)}（剩 ${d>=0?d+' 天':'已過期'}）</span></div>`;
+    detailHtml+=`<div class="drow"><span class="dlabel">效期剩餘</span><span class="dvalue"><span style="display:inline-block;width:80px;height:4px;background:var(--border-light);border-radius:99px;overflow:hidden;vertical-align:middle"><span style="display:block;width:${pct}%;height:100%;background:${bc};border-radius:99px"></span></span></span></div>`;
+  }
+  if(it.restock){
+    if(it.qtyMode==='ratio'){
+      const r=it.ratio??100,thr=it.ratioThr??25;
+      const fc=r===0?'#dc2626':r<=thr?'#d97706':'#059669';
+      // slider in detail
+      detailHtml+=`<div class="drow"><span class="dlabel">剩餘比例</span><span class="dvalue" id="ratio-disp-${it.id}" style="color:${fc}">${r}%</span></div>`;
+      detailHtml+=`<div style="padding:8px 0 4px" onclick="event.stopPropagation()">
+        <input type="range" min="0" max="100" step="5" value="${r}"
+          style="width:100%;accent-color:${fc}"
+          oninput="invUpdateRatioSlider('${it.id}',this.value)"
+          onchange="invSetRatioDirect('${it.id}',this.value,event)">
+        <div style="display:flex;justify-content:space-between;font-size:10px;color:var(--text-muted);margin-top:1px"><span>空</span><span>25%</span><span>50%</span><span>75%</span><span>滿</span></div>
+      </div>`;
+      detailHtml+=`<div class="drow"><span class="dlabel">提醒門檻</span><span class="dvalue">低於 ${thr}% 時提醒</span></div>`;
+    }else{
+      detailHtml+=`<div class="drow"><span class="dlabel">目前數量</span><span class="dvalue">${it.qty??0} 個（門檻：${it.threshold??1}）</span></div>`;
+    }
+    if(it.source)detailHtml+=`<div class="drow"><span class="dlabel">補貨來源</span><span class="dvalue">${invSrcIcon(it.source)}${it.source}</span></div>`;
+  }
+  if(it.note)detailHtml+=`<div class="drow"><span class="dlabel">備註</span><span class="dvalue">${it.note}</span></div>`;
+  if(!detailHtml)detailHtml=`<div class="drow"><span class="dlabel" style="color:var(--text-muted)">無其他資訊</span></div>`;
+  let warnBox='';
+  if(it.type==='expiry'&&it.restock&&es?.urgent&&(rs?.urgent||rs?.cls==='orange')){
+    warnBox=`<div class="inv-warn-box"><span class="material-symbols-outlined" style="font-size:13px;flex-shrink:0">warning</span><span>效期將至且存量低 — 到期後請丟棄並補購</span></div>`;
+  }
+
   const locLine=showLoc?`<span class="inv-loc-label">${it.location}</span>`:'';
-  const sep=(locLine&&statusText)?`<span style="color:var(--border);font-size:10px">·</span>`:'';
   return `<div class="inv-item-wrap">
     <div class="inv-row ${rowCls}" onclick="invToggleDetail('${it.id}')">
-      <div style="min-width:0;display:flex;align-items:center;gap:8px">
-        <div style="width:6px;height:6px;border-radius:50%;background:${typeDot};flex-shrink:0"></div>
-        <div style="min-width:0"><div class="inv-name">${it.name}</div><div class="inv-meta">${locLine}${sep}<span class="inv-status ${statusCls}">${statusText}</span></div></div>
+      <div class="inv-dot-item"></div>
+      <div class="inv-info">
+        <div class="inv-name">${it.name}</div>
+        <div class="inv-sub">${locLine}</div>
       </div>
-      ${rightHtml}
-      <button style="background:none;border:none;cursor:pointer;width:32px;height:32px;border-radius:6px;display:flex;align-items:center;justify-content:center;color:var(--text-muted);flex-shrink:0" onclick="invTogglePopup('${it.id}',event)">
-        <span class="material-symbols-outlined" style="font-size:18px">more_vert</span>
-      </button>
+      <div class="inv-right" onclick="event.stopPropagation()">${rightHtml}</div>
     </div>
-    <div class="inv-detail ${rowCls}" id="inv-detail-${it.id}" style="padding-left:30px">${detailHtml}</div>
+    <div class="inv-detail ${rowCls}" id="inv-detail-${it.id}">${detailHtml}${warnBox}</div>
   </div>`;
 }
+
 function invToggleDetail(id){const d=document.getElementById('inv-detail-'+id);if(d)d.classList.toggle('open')}
+function invChQty(id,delta,e){
+  e.stopPropagation();
+  inventory=inventory.map(it=>{
+    if(it.id!==id)return it;
+    if(it.qtyMode==='ratio')return{...it,ratio:Math.max(0,Math.min(100,(it.ratio??100)+delta*5))};
+    return{...it,qty:Math.max(0,(it.qty??0)+delta)};
+  });
+  saveInv();renderInventoryPage();
+}
+function invSetQtyDirect(id,val,e){
+  e.stopPropagation();
+  const n=parseInt(val);if(isNaN(n)||n<0)return;
+  inventory=inventory.map(it=>it.id!==id?it:{...it,qty:n});
+  saveInv();renderInventoryPage();
+}
+function invSetRatioDirect(id,val,e){
+  if(e)e.stopPropagation();
+  const n=Math.max(0,Math.min(100,parseInt(val)||0));
+  inventory=inventory.map(it=>it.id!==id?it:{...it,ratio:n});
+  saveInv();renderInventoryPage();
+}
+function invUpdateRatioSlider(id,val){
+  const n=parseInt(val)||0;
+  const it=inventory.find(x=>x.id===id);if(!it)return;
+  const thr=it.ratioThr??25;
+  const fc=n===0?'#dc2626':n<=thr?'#d97706':'#059669';
+  const disp=document.getElementById('ratio-disp-'+id);
+  if(disp){disp.textContent=n+'%';disp.style.color=fc;}
+  // update mini bar on the right side
+  const row=document.querySelector(`.inv-row [onclick*="invSetRatioDirect('${id}"]`);
+  if(row){const fill=row.closest('.inv-row')?.querySelector('.ratio-fill');const pct=row.closest('.inv-row')?.querySelector('.ratio-pct');if(fill){fill.style.width=n+'%';fill.style.background=fc;}if(pct){pct.textContent=n+'%';pct.style.color=fc;}}
+}
+function invDelete(id){document.getElementById('inv-global-popup')?.remove();appConfirm('刪除物品','確定要刪除這個物品嗎？',()=>{inventory=inventory.filter(x=>x.id!==id);saveInv();renderInventoryPage()})}
 function invTogglePopup(id,e){
   e.stopPropagation();
-  // Build a global popup positioned via fixed coords
   const existing=document.getElementById('inv-global-popup');
-  if(existing){
-    const curId=existing.dataset.itemId;
-    existing.remove();
-    if(curId===String(id)) return; // clicking same button closes it
-  }
+  if(existing){const curId=existing.dataset.itemId;existing.remove();if(curId===String(id))return;}
   const it=inventory.find(x=>x.id===String(id));if(!it)return;
-  const btn=e.currentTarget;
-  const rect=btn.getBoundingClientRect();
+  const btn=e.currentTarget,rect=btn.getBoundingClientRect();
   const popup=document.createElement('div');
-  popup.id='inv-global-popup';
-  popup.dataset.itemId=String(id);
+  popup.id='inv-global-popup';popup.dataset.itemId=String(id);
   popup.style.cssText=`position:fixed;z-index:2000;background:var(--surface);border-radius:var(--radius-md);box-shadow:var(--shadow-lg);border:1px solid var(--border);min-width:160px;overflow:hidden;right:${window.innerWidth-rect.right}px;`;
-  popup.innerHTML=`
-    <button onclick="invOpenEdit('${it.id}')" style="display:flex;align-items:center;gap:8px;width:100%;padding:12px 16px;border:none;background:none;font-size:14px;font-weight:500;cursor:pointer;color:var(--text-primary);text-align:left"><span class="material-symbols-outlined" style="font-size:16px;color:var(--primary)">edit</span>修改資料</button>
+  popup.innerHTML=`<button onclick="invOpenEdit('${it.id}')" style="display:flex;align-items:center;gap:8px;width:100%;padding:12px 16px;border:none;background:none;font-size:14px;font-weight:500;cursor:pointer;color:var(--text-primary);text-align:left"><span class="material-symbols-outlined" style="font-size:16px;color:var(--primary)">edit</span>修改資料</button>
     <button onclick="invDelete('${it.id}')" style="display:flex;align-items:center;gap:8px;width:100%;padding:12px 16px;border:none;background:none;font-size:14px;font-weight:500;cursor:pointer;color:#dc2626;text-align:left"><span class="material-symbols-outlined" style="font-size:16px">delete</span>刪除</button>`;
-  // Decide top vs bottom
   const spaceBelow=window.innerHeight-rect.bottom;
-  if(spaceBelow<120) popup.style.bottom=`${window.innerHeight-rect.top}px`;
-  else popup.style.top=`${rect.bottom+4}px`;
+  if(spaceBelow<120)popup.style.bottom=`${window.innerHeight-rect.top}px`;else popup.style.top=`${rect.bottom+4}px`;
   document.body.appendChild(popup);
-  // Close on outside click
   setTimeout(()=>document.addEventListener('click',_invPopupClose,{once:true}),0);
 }
 function _invPopupClose(){const p=document.getElementById('inv-global-popup');if(p)p.remove();}
-function invSetQtyPrompt(id){
-  document.getElementById('inv-global-popup')?.remove();
-  const it=inventory.find(x=>x.id===id);if(!it)return;
-  appPrompt('重新設定數量',it.qty,(val)=>invSetQty(id,val));
-}
-function invSetLocFilter(l){invLocFilter=l;renderInventoryPage()}
-function invSetCatFilter(c){invCatFilter=c;renderInventoryPage()}
-function invChangeQty(id,delta){inventory=inventory.map(it=>it.id!==id?it:{...it,qty:Math.max(0,(it.qty??0)+delta)});saveInv();renderInventoryPage()}
-function invSetQty(id,val){const n=parseInt(val);if(isNaN(n)||n<0)return;inventory=inventory.map(it=>it.id===id?{...it,qty:n}:it);saveInv();renderInventoryPage()}
-function invDelete(id){document.getElementById('inv-global-popup')?.remove();appConfirm('刪除物品','確定要刪除這個物品嗎？',()=>{inventory=inventory.filter(x=>x.id!==id);saveInv();renderInventoryPage()})}
 
 // ── INVENTORY MODAL ───────────────────────────────────────
-function invSelectType(type,el){invCurrentType=type;document.querySelectorAll('.itype-opt').forEach(o=>o.classList.remove('sel'));el.classList.add('sel');document.getElementById('inv-g-expiry').classList.toggle('show',type==='expiry');document.getElementById('inv-g-restock').classList.toggle('show',type==='restock');}
+function invSelectType(type,el){
+  invCurrentType=type;
+  document.querySelectorAll('.itype-opt').forEach(o=>o.classList.remove('sel'));el.classList.add('sel');
+  document.getElementById('inv-g-expiry').classList.toggle('show',type==='expiry');
+}
+function invToggleRestock(btn){
+  btn.classList.toggle('on');invRestockOn=btn.classList.contains('on');
+  document.getElementById('inv-g-restock').classList.toggle('show',invRestockOn);
+}
+function invSetMode(mode,el){
+  invQtyMode=mode;
+  document.querySelectorAll('.mode-seg-btn').forEach(b=>b.classList.remove('on'));el.classList.add('on');
+  document.getElementById('inv-g-qty').style.display=mode==='qty'?'block':'none';
+  document.getElementById('inv-g-ratio').style.display=mode==='ratio'?'block':'none';
+}
+function invOnSourceChange(){
+  const v=document.getElementById('inv-f-source').value;
+  document.getElementById('inv-f-source-custom').style.display=v==='__custom'?'block':'none';
+}
 function invOpenAdd(){
-  invEditingId=null;document.getElementById('inv-modal-title').textContent='新增物品';document.getElementById('inv-edit-id').value='';
-  document.getElementById('inv-f-name').value='';document.getElementById('inv-f-note').value='';document.getElementById('inv-f-location').value='廚房';document.getElementById('inv-f-category').value='日常用品';
-  document.getElementById('inv-f-expiry').value='';document.getElementById('inv-f-qty').value='';document.getElementById('inv-f-threshold').value='1';
-  invCurrentType='item';document.querySelectorAll('.itype-opt').forEach((o,i)=>o.classList.toggle('sel',i===0));
-  document.getElementById('inv-g-expiry').classList.remove('show');document.getElementById('inv-g-restock').classList.remove('show');
+  invEditingId=null;invCurrentType='item';invQtyMode='qty';invRestockOn=false;
+  document.getElementById('inv-modal-title').textContent='新增物品';
+  document.getElementById('inv-edit-id').value='';
+  document.getElementById('inv-f-name').value='';document.getElementById('inv-f-note').value='';
+  document.getElementById('inv-f-location').value='廚房';document.getElementById('inv-f-category').value='日常用品';
+  document.getElementById('inv-f-expiry').value='';
+  document.getElementById('inv-f-qty').value='';document.getElementById('inv-f-threshold').value='1';
+  document.getElementById('inv-f-ratio').value='50';document.getElementById('inv-ratio-disp').textContent='50%';
+  document.getElementById('inv-f-ratio-thr').value='25';
+  document.getElementById('inv-f-source').value='';document.getElementById('inv-f-source-custom').style.display='none';
+  document.querySelectorAll('.itype-opt').forEach((o,i)=>o.classList.toggle('sel',i===0));
+  document.getElementById('inv-g-expiry').classList.remove('show');
+  document.getElementById('inv-tgl-restock').classList.remove('on');
+  document.getElementById('inv-g-restock').classList.remove('show');
+  invSetMode('qty',document.getElementById('inv-mode-qty'));
   document.getElementById('invItemModal').classList.add('open');
 }
 function invOpenEdit(id){
   document.getElementById('inv-global-popup')?.remove();
   const it=inventory.find(x=>x.id===id);if(!it)return;invEditingId=id;
   document.getElementById('inv-modal-title').textContent='修改物品';document.getElementById('inv-edit-id').value=id;
-  document.getElementById('inv-f-name').value=it.name;document.getElementById('inv-f-note').value=it.note||'';document.getElementById('inv-f-location').value=it.location;document.getElementById('inv-f-category').value=it.category||'其他';
-  invCurrentType=it.type;const idx={item:0,expiry:1,restock:2}[it.type]||0;
-  document.querySelectorAll('.itype-opt').forEach((o,i)=>o.classList.toggle('sel',i===idx));
-  document.getElementById('inv-g-expiry').classList.toggle('show',it.type==='expiry');document.getElementById('inv-g-restock').classList.toggle('show',it.type==='restock');
-  document.getElementById('inv-f-expiry').value=it.expiryDate||'';document.getElementById('inv-f-qty').value=it.qty??'';document.getElementById('inv-f-threshold').value=it.threshold??1;
+  document.getElementById('inv-f-name').value=it.name;document.getElementById('inv-f-note').value=it.note||'';
+  document.getElementById('inv-f-location').value=it.location;document.getElementById('inv-f-category').value=it.category||'其他';
+  document.getElementById('inv-f-expiry').value=it.expiryDate||'';
+  invCurrentType=it.type;
+  document.querySelectorAll('.itype-opt').forEach((o,i)=>o.classList.toggle('sel',i===(it.type==='expiry'?1:0)));
+  document.getElementById('inv-g-expiry').classList.toggle('show',it.type==='expiry');
+  invRestockOn=!!it.restock;
+  document.getElementById('inv-tgl-restock').classList.toggle('on',invRestockOn);
+  document.getElementById('inv-g-restock').classList.toggle('show',invRestockOn);
+  invQtyMode=it.qtyMode||'qty';
+  invSetMode(invQtyMode,document.getElementById('inv-mode-'+invQtyMode));
+  document.getElementById('inv-f-qty').value=it.qty??'';document.getElementById('inv-f-threshold').value=it.threshold??1;
+  const r=it.ratio??50;document.getElementById('inv-f-ratio').value=r;document.getElementById('inv-ratio-disp').textContent=r+'%';
+  document.getElementById('inv-f-ratio-thr').value=it.ratioThr??25;
+  const knownSrc=['','蝦皮','酷澎','全聯','大潤發','家樂福','momo','藥局'];
+  if(knownSrc.includes(it.source||'')){document.getElementById('inv-f-source').value=it.source||'';document.getElementById('inv-f-source-custom').style.display='none';}
+  else{document.getElementById('inv-f-source').value='__custom';document.getElementById('inv-f-source-custom').style.display='block';document.getElementById('inv-f-source-custom').value=it.source||'';}
   document.getElementById('invItemModal').classList.add('open');
 }
 function invSaveItem(){
   const name=document.getElementById('inv-f-name').value.trim();if(!name){showToast('請輸入物品名稱','error');return}
-  const obj={id:invEditingId||Date.now().toString(),type:invCurrentType,name,location:document.getElementById('inv-f-location').value,category:document.getElementById('inv-f-category').value||'其他',note:document.getElementById('inv-f-note').value.trim(),
+  const location=document.getElementById('inv-f-location').value;
+  const srcSel=document.getElementById('inv-f-source').value;
+  const source=srcSel==='__custom'?document.getElementById('inv-f-source-custom').value.trim():srcSel;
+  const obj={
+    id:invEditingId||Date.now().toString(),type:invCurrentType,name,location,
+    category:document.getElementById('inv-f-category').value||'其他',
+    note:document.getElementById('inv-f-note').value.trim(),
     expiryDate:invCurrentType==='expiry'?document.getElementById('inv-f-expiry').value||null:null,
-    qty:invCurrentType==='restock'?parseInt(document.getElementById('inv-f-qty').value)||0:null,
-    threshold:invCurrentType==='restock'?parseInt(document.getElementById('inv-f-threshold').value)||1:null};
+    restock:invRestockOn,qtyMode:invQtyMode,
+    qty:invRestockOn&&invQtyMode==='qty'?parseInt(document.getElementById('inv-f-qty').value)||0:null,
+    threshold:invRestockOn&&invQtyMode==='qty'?parseInt(document.getElementById('inv-f-threshold').value)||1:null,
+    ratio:invRestockOn&&invQtyMode==='ratio'?parseInt(document.getElementById('inv-f-ratio').value):null,
+    ratioThr:invRestockOn&&invQtyMode==='ratio'?parseInt(document.getElementById('inv-f-ratio-thr').value):null,
+    source:invRestockOn?source:'',
+  };
+  // 新增時才做去重（修改時略過）
+  if(!invEditingId){
+    const dup=inventory.find(x=>x.name===name&&x.location===location);
+    if(dup){
+      appConfirm(
+        '物品已存在',
+        `「${name}」已在「${location}」中，確定要新增嗎？`,
+        ()=>{inventory.push(obj);saveInv();closeModal('invItemModal');renderInventoryPage();showToast('已新增');},
+        {danger:false,icon:'inventory_2'}
+      );
+      return;
+    }
+  }
   if(invEditingId)inventory=inventory.map(x=>x.id===invEditingId?obj:x);else inventory.push(obj);
   saveInv();closeModal('invItemModal');renderInventoryPage();
 }
 
 // ── INVENTORY IMPORT ──────────────────────────────────────
-function invOpenImport(){invPendingImport=[];document.getElementById('inv-import-result').classList.remove('show');document.getElementById('inv-import-confirm-btn').style.display='none';document.getElementById('inv-xlsx-file').value='';document.getElementById('invImportModal').classList.add('open');}
-function invDownloadTemplate(){const csv=[['物品名稱','類型','存放位置','物品類型','備註','到期日 (YYYY-MM-DD)','現有數量','補貨門檻'],['洗碗精','補貨追蹤','廚房','清潔用品','橘子香','',2,1],['感冒藥','有效期限','藥箱','藥品保健','小朋友用','2025-12-31','',''],['工具箱','一般物品','儲藏室','文具工具','含螺絲起子','','','']].map(r=>r.map(c=>`"${c}"`).join(',')).join('\n');const a=document.createElement('a');a.href=URL.createObjectURL(new Blob(['\uFEFF'+csv],{type:'text/csv;charset=utf-8'}));a.download='物品庫存範本.csv';a.click();}
+function invOpenImport(){invPendingImport=[];const r=document.getElementById('inv-import-result');r.classList.remove('show');r.innerHTML='';document.getElementById('inv-import-confirm-btn').style.display='none';document.getElementById('inv-xlsx-file').value='';document.getElementById('invImportModal').classList.add('open');}
+function invDownloadTemplate(){
+  const rows=[['物品名稱','物品類型','存放位置','物品類別','備註','到期日(YYYY-MM-DD)','需補貨追蹤(是/否)','目前數量','補貨門檻','補貨來源'],['感冒藥','有效期限','藥箱','藥品保健','小朋友用','2026-12-31','否','','',''],['洗碗精','一般物品','廚房','清潔用品','橘子香','','是','2','1','全聯'],['沐浴乳','一般物品','浴室','日常用品','','','是（比例）','','25%','momo']];
+  const csv=rows.map(r=>r.map(c=>`"${c}"`).join(',')).join('\n');
+  const a=document.createElement('a');a.href=URL.createObjectURL(new Blob(['\uFEFF'+csv],{type:'text/csv;charset=utf-8'}));a.download='物品庫存範本.csv';a.click();
+}
 function invHandleImport(e){
   const file=e.target.files[0];if(!file)return;const reader=new FileReader();
   reader.onload=function(ev){
-    try{let rows=[];
-      if(file.name.endsWith('.csv')){rows=ev.target.result.split('\n').map(l=>l.split(',').map(c=>c.replace(/^"|"$/g,'').trim()));}
+    try{
+      let rows=[];
+      if(file.name.endsWith('.csv')){rows=ev.target.result.split('\n').map(l=>{const out=[];let cur='',inQ=false;for(const ch of l){if(ch==='"'){inQ=!inQ}else if(ch===','&&!inQ){out.push(cur.trim());cur=''}else{cur+=ch}}out.push(cur.trim());return out;});}
       else{const wb=XLSX.read(ev.target.result,{type:'array'});rows=XLSX.utils.sheet_to_array(wb.Sheets[wb.SheetNames[0]],{defval:''});}
-      const typeMap={'一般物品':'item','有效期限':'expiry','補貨追蹤':'restock'};invPendingImport=[];
-      for(let i=1;i<rows.length;i++){const r=rows[i],name=String(r[0]||'').trim();if(!name)continue;const type=typeMap[String(r[1]||'').trim()]||'item';
-        invPendingImport.push({id:Date.now().toString()+i,type,name,location:String(r[2]||'').trim()||'其他',category:String(r[3]||'').trim()||'其他',note:String(r[4]||'').trim(),expiryDate:type==='expiry'?String(r[5]||'').trim()||null:null,qty:type==='restock'?(parseInt(r[6])||0):null,threshold:type==='restock'?(parseInt(r[7])||1):null});}
-      const res=document.getElementById('inv-import-result');res.style.display='block';
-      res.innerHTML=invPendingImport.length>0?`<p style="font-weight:700;color:#10b981;margin-bottom:4px">解析成功，共 ${invPendingImport.length} 筆</p>${invPendingImport.slice(0,4).map(it=>`<p style="font-size:12px;color:var(--text-primary);margin-top:3px">• ${it.name}</p>`).join('')}${invPendingImport.length>4?`<p style="font-size:12px;color:var(--text-muted)">…還有 ${invPendingImport.length-4} 筆</p>`:''}`:'<p style="color:#dc2626">找不到有效資料</p>';
-      document.getElementById('inv-import-confirm-btn').style.display=invPendingImport.length>0?'block':'none';
-    }catch(err){document.getElementById('inv-import-result').style.display='block';document.getElementById('inv-import-result').innerHTML=`<p style="color:#dc2626">解析失敗：${err.message}</p>`;}
+      invPendingImport=[];
+      for(let i=1;i<rows.length;i++){
+        const r=rows[i],name=String(r[0]||'').trim();if(!name)continue;
+        const typeRaw=String(r[1]||'').trim(),type=typeRaw==='有效期限'?'expiry':'item';
+        const restockRaw=String(r[6]||'').trim(),restock=restockRaw.startsWith('是');
+        const isRatio=restockRaw.includes('比例');
+        const ratioThrRaw=parseInt(String(r[8]||'').replace('%',''))||25;
+        invPendingImport.push({id:Date.now().toString()+i,type,name,location:String(r[2]||'').trim()||'其他',category:String(r[3]||'').trim()||'其他',note:String(r[4]||'').trim(),expiryDate:type==='expiry'?String(r[5]||'').trim()||null:null,restock,qtyMode:isRatio?'ratio':'qty',qty:restock&&!isRatio?parseInt(r[7])||0:null,threshold:restock&&!isRatio?parseInt(r[8])||1:null,ratio:restock&&isRatio?50:null,ratioThr:restock&&isRatio?ratioThrRaw:null,source:String(r[9]||'').trim()});
+      }
+      const res=document.getElementById('inv-import-result');res.classList.add('show');
+      if(invPendingImport.length>0){
+        // detect duplicates: same name + location
+        const dupes=invPendingImport.filter(it=>inventory.some(ex=>ex.name===it.name&&ex.location===it.location));
+        const news=invPendingImport.filter(it=>!dupes.includes(it));
+        let html=`<p style="font-weight:700;color:#059669;margin-bottom:6px">解析成功，共 ${invPendingImport.length} 筆</p>`;
+        if(news.length) html+=`<p style="font-size:12px;margin-bottom:4px">✅ 新增 ${news.length} 筆：${news.slice(0,3).map(x=>x.name).join('、')}${news.length>3?'…':''}</p>`;
+        if(dupes.length) html+=`<p style="font-size:12px;color:#d97706;margin-bottom:2px">⚠️ 發現 ${dupes.length} 筆重複（名稱+位置相同），確認後將略過：</p>${dupes.map(x=>`<p style="font-size:11px;color:var(--text-muted);margin-top:2px">· ${x.name}（${x.location}）</p>`).join('')}`;
+        res.innerHTML=html;
+        res.style.color='var(--text-primary)';
+        document.getElementById('inv-import-confirm-btn').style.display=news.length>0?'block':'none';
+        // hide confirm if all duplicates
+        if(news.length===0){res.innerHTML+=`<p style="font-size:12px;color:#dc2626;margin-top:6px;font-weight:600">所有項目均已存在，無需匯入。</p>`;}
+      }
+      else{res.style.color='#dc2626';res.innerHTML='<p>找不到有效資料，請確認格式是否正確</p>';}
+    }catch(err){const res=document.getElementById('inv-import-result');res.classList.add('show');res.style.color='#dc2626';res.innerHTML=`<p>解析失敗：${err.message}</p>`;}
   };
   if(file.name.endsWith('.csv'))reader.readAsText(file,'UTF-8');else reader.readAsArrayBuffer(file);
 }
-function invConfirmImport(){inventory=[...inventory,...invPendingImport];saveInv();closeModal('invImportModal');renderInventoryPage();showToast(`成功匯入 ${invPendingImport.length} 筆物品`);}
+function invConfirmImport(){
+  const toAdd=invPendingImport.filter(it=>!inventory.some(ex=>ex.name===it.name&&ex.location===it.location));
+  const skipped=invPendingImport.length-toAdd.length;
+  inventory=[...inventory,...toAdd];
+  saveInv();closeModal('invImportModal');renderInventoryPage();
+  showToast(`成功匯入 ${toAdd.length} 筆${skipped>0?`，略過 ${skipped} 筆重複`:''}`);
+  invPendingImport=[];
+}
 
 // ── SETTINGS ─────────────────────────────────────────────
 let appSettings=JSON.parse(localStorage.getItem('app_settings')||'{}');
