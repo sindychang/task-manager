@@ -234,7 +234,7 @@
     .inv-info{flex:1;min-width:0}
     .inv-name{font-size:13px;font-weight:600;color:var(--text-primary);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
     .inv-sub{display:flex;align-items:center;gap:4px;margin-top:2px;flex-wrap:wrap}
-    .inv-loc-label{font-size:11px;color:var(--text-muted)}
+    .inv-loc-label{font-size:11px;color:var(--text-secondary)}
     .inv-right{display:flex;align-items:center;gap:5px;flex-shrink:0}
     /* right controls */
     .qty-stepper{display:flex;align-items:center;border:1px solid var(--border);border-radius:var(--radius-sm);overflow:hidden;flex-shrink:0;width:108px}
@@ -609,7 +609,15 @@
     </div>
     <div class="form-group"><label>物品名稱 *</label><input type="text" id="inv-f-name" placeholder="例：感冒藥、洗碗精"></div>
     <div class="form-group"><label>存放位置</label><select id="inv-f-location"><option>廚房</option><option>浴室</option><option>臥室</option><option>客廳</option><option>儲藏室</option><option>冰箱</option><option>藥箱</option><option>其他</option></select></div>
-    <div class="form-group"><label>物品類別</label><select id="inv-f-category"><option>日常用品</option><option>保養品</option><option>糧食/飲品</option><option>藥品保健</option><option>清潔用品</option><option>文具工具</option><option>其他</option></select></div>
+    <div class="form-group"><label>物品類別</label>
+      <select id="inv-f-category" onchange="invOnCatChange()">
+        <option>日常用品</option><option>保養品</option><option>糧食/飲品</option>
+        <option>藥品保健</option><option>清潔用品</option><option>文具工具</option>
+        <option>調味料</option><option>其他</option>
+        <option value="__custom">✏️ 自訂…</option>
+      </select>
+      <input type="text" id="inv-f-category-custom" placeholder="輸入自訂類別" style="display:none;margin-top:8px">
+    </div>
     <div class="form-group"><label>備註</label><input type="text" id="inv-f-note" placeholder="品牌、規格…（選填）"></div>
     <!-- 有效期限 -->
     <div class="icond" id="inv-g-expiry">
@@ -1365,12 +1373,14 @@ function invRenderRow(it,showLoc=true){
   }
 
   const locLine=showLoc?`<span class="inv-loc-label">${it.location}</span>`:'';
+  const catLine=it.category&&it.category!=='其他'?`<span class="inv-loc-label">${it.category}</span>`:'';
+  const subSep=locLine&&catLine?`<span style="color:var(--text-muted);font-size:10px;margin:0 1px">·</span>`:'';
   return `<div class="inv-item-wrap">
     <div class="inv-row ${rowCls}" onclick="invToggleDetail('${it.id}')">
       <div class="inv-dot-item"></div>
       <div class="inv-info">
         <div class="inv-name">${it.name}</div>
-        <div class="inv-sub">${locLine}</div>
+        <div class="inv-sub">${locLine}${subSep}${catLine}</div>
       </div>
       <div class="inv-right" onclick="event.stopPropagation()">${rightHtml}</div>
     </div>
@@ -1446,6 +1456,10 @@ function invSetMode(mode,el){
   document.getElementById('inv-g-qty').style.display=mode==='qty'?'block':'none';
   document.getElementById('inv-g-ratio').style.display=mode==='ratio'?'block':'none';
 }
+function invOnCatChange(){
+  const v=document.getElementById('inv-f-category').value;
+  document.getElementById('inv-f-category-custom').style.display=v==='__custom'?'block':'none';
+}
 function invOnSourceChange(){
   const v=document.getElementById('inv-f-source').value;
   document.getElementById('inv-f-source-custom').style.display=v==='__custom'?'block':'none';
@@ -1456,6 +1470,7 @@ function invOpenAdd(){
   document.getElementById('inv-edit-id').value='';
   document.getElementById('inv-f-name').value='';document.getElementById('inv-f-note').value='';
   document.getElementById('inv-f-location').value='廚房';document.getElementById('inv-f-category').value='日常用品';
+  document.getElementById('inv-f-category-custom').style.display='none';document.getElementById('inv-f-category-custom').value='';
   document.getElementById('inv-f-expiry').value='';
   document.getElementById('inv-f-qty').value='';document.getElementById('inv-f-threshold').value='1';
   document.getElementById('inv-f-ratio').value='50';document.getElementById('inv-ratio-disp').textContent='50%';
@@ -1473,7 +1488,16 @@ function invOpenEdit(id){
   const it=inventory.find(x=>x.id===id);if(!it)return;invEditingId=id;
   document.getElementById('inv-modal-title').textContent='修改物品';document.getElementById('inv-edit-id').value=id;
   document.getElementById('inv-f-name').value=it.name;document.getElementById('inv-f-note').value=it.note||'';
-  document.getElementById('inv-f-location').value=it.location;document.getElementById('inv-f-category').value=it.category||'其他';
+  document.getElementById('inv-f-location').value=it.location;
+  const knownCats=['日常用品','保養品','糧食/飲品','藥品保健','清潔用品','文具工具','調味料','其他'];
+  if(knownCats.includes(it.category||'')){
+    document.getElementById('inv-f-category').value=it.category||'其他';
+    document.getElementById('inv-f-category-custom').style.display='none';
+  }else{
+    document.getElementById('inv-f-category').value='__custom';
+    document.getElementById('inv-f-category-custom').style.display='block';
+    document.getElementById('inv-f-category-custom').value=it.category||'';
+  }
   document.getElementById('inv-f-expiry').value=it.expiryDate||'';
   invCurrentType=it.type;
   document.querySelectorAll('.itype-opt').forEach((o,i)=>o.classList.toggle('sel',i===(it.type==='expiry'?1:0)));
@@ -1494,11 +1518,13 @@ function invOpenEdit(id){
 function invSaveItem(){
   const name=document.getElementById('inv-f-name').value.trim();if(!name){showToast('請輸入物品名稱','error');return}
   const location=document.getElementById('inv-f-location').value;
+  const catSel=document.getElementById('inv-f-category').value;
+  const category=catSel==='__custom'?document.getElementById('inv-f-category-custom').value.trim()||'其他':catSel;
   const srcSel=document.getElementById('inv-f-source').value;
   const source=srcSel==='__custom'?document.getElementById('inv-f-source-custom').value.trim():srcSel;
   const obj={
     id:invEditingId||Date.now().toString(),type:invCurrentType,name,location,
-    category:document.getElementById('inv-f-category').value||'其他',
+    category,
     note:document.getElementById('inv-f-note').value.trim(),
     expiryDate:invCurrentType==='expiry'?document.getElementById('inv-f-expiry').value||null:null,
     restock:invRestockOn,qtyMode:invQtyMode,
