@@ -338,6 +338,9 @@
       <button id="global-import-btn" onclick="invOpenImport()" style="display:none;background:rgba(255,255,255,.15);border:none;color:#fff;border-radius:10px;padding:8px 12px;align-items:center;gap:5px;cursor:pointer" title="匯入物品資料">
         <span class="material-symbols-outlined" style="font-size:18px">upload_file</span>
       </button>
+      <button id="global-iphone-btn" onclick="sendAllProgressToShortcut()" style="display:none;background:rgba(255,255,255,.18);border:none;color:#fff;border-radius:10px;padding:8px 12px;font-size:13px;font-weight:700;align-items:center;gap:5px;cursor:pointer">
+        <span class="material-symbols-outlined" style="font-size:17px">send_to_mobile</span>傳送至 iPhone
+      </button>
       <button id="global-add-btn" onclick="openAddModal()" style="background:rgba(255,255,255,.22);border:none;color:#fff;border-radius:10px;padding:8px 14px;font-size:14px;font-weight:700;display:flex;align-items:center;gap:5px;cursor:pointer">
         <span class="material-symbols-outlined" style="font-size:18px">add</span>新增
       </button>
@@ -390,10 +393,8 @@
   <div class="section-header mb-3">
     <div class="section-icon" style="background:#fef3c7"><span class="material-symbols-outlined" style="color:#d97706">cleaning_services</span></div>
     <div class="flex-1"><h2 class="text-lg font-bold text-gray-800">家事管理</h2><p style="color:var(--text-muted);font-size:11px">勾選可批次延後</p></div>
-  </div>
-  <div class="mb-4">
-    <button onclick="sendAllProgressToShortcut()" class="w-full py-3 text-white rounded-2xl shadow flex items-center justify-center gap-2 active:scale-95 transition-transform" style="background:linear-gradient(135deg,var(--primary),var(--accent));font-size:14px;font-weight:700;border:none;cursor:pointer">
-      <span class="material-symbols-outlined" style="font-size:20px">send_to_mobile</span>傳送今日進度至 iPhone
+    <button onclick="openHouseworkModal()" style="background:var(--primary);color:#fff;border:none;border-radius:8px;padding:7px 13px;font-size:12px;font-weight:700;cursor:pointer;display:flex;align-items:center;gap:4px;flex-shrink:0">
+      <span class="material-symbols-outlined" style="font-size:16px">add</span>新增家事
     </button>
   </div>
   <div class="area-tab-bar" id="hw-area-tab-bar"></div>
@@ -713,6 +714,7 @@ let tasks=[],housework=[],inventory=[];
 let hwAreaFilter=null,todoDateFilter='all',todoAreaFilter=null;
 let hwBatchMode=false,hwSelected=new Set();
 let currentDbTab='recurring',calendarWeekOffset=0,openAssignDay=null;
+let todoFilterOpen=false; // collapsible filter state
 
 const DH=[
   {id:'hw1',name:'洗床單',area:'臥室',frequency:30,lastCompleted:'2026-03-01',reminderDate:'2026-03-31',notes:'',weekendMode:true},
@@ -784,15 +786,23 @@ const PT={
 function switchPage(p,b){
   const addBtn=document.getElementById('global-add-btn');
   const importBtn=document.getElementById('global-import-btn');
+  const iphoneBtn=document.getElementById('global-iphone-btn');
   if(p==='tasks'){
     if(addBtn)addBtn.style.setProperty('display','none','important');
     if(importBtn)importBtn.style.setProperty('display','none','important');
+    if(iphoneBtn)iphoneBtn.style.setProperty('display','none','important');
+  } else if(p==='housework'){
+    if(addBtn)addBtn.style.setProperty('display','none','important');
+    if(importBtn)importBtn.style.setProperty('display','none','important');
+    if(iphoneBtn)iphoneBtn.style.setProperty('display','flex','important');
   } else if(p==='inventory'){
     if(addBtn)addBtn.style.setProperty('display','flex','important');
     if(importBtn)importBtn.style.setProperty('display','flex','important');
+    if(iphoneBtn)iphoneBtn.style.setProperty('display','none','important');
   } else {
     if(addBtn)addBtn.style.setProperty('display','flex','important');
     if(importBtn)importBtn.style.setProperty('display','none','important');
+    if(iphoneBtn)iphoneBtn.style.setProperty('display','none','important');
   }
   if(hwSelected.size>0&&p!=='housework')clearSelection();
   document.querySelectorAll('.page').forEach(x=>x.classList.remove('active'));
@@ -975,18 +985,39 @@ function renderTodoPage(){
   const AREA_ORDER=['所有空間','浴室','廚房','臥室'];
   const customAreas=[...new Set(housework.map(h=>h.area))].filter(a=>!AREA_ORDER.includes(a));
   const orderedAreas=[...AREA_ORDER.filter(a=>housework.some(h=>h.area===a)),...customAreas];
-  let fh=`<div class="filter-row"><span class="text-[10px] text-gray-400 font-semibold" style="width:30px">日期</span>
-    <button class="filter-chip ${todoDateFilter==='all'?'active':''}" onclick="setDF('all')">全部</button>
-    <button class="filter-chip ${todoDateFilter==='today'?'active':''}" onclick="setDF('today')">今天</button>
-    <button class="filter-chip ${todoDateFilter==='week'?'active':''}" onclick="setDF('week')">本週</button>
-    <button class="filter-chip ${todoDateFilter==='overdue'?'active':''}" onclick="setDF('overdue')">逾期</button>
-  </div>`;
-  fh+=`<div class="filter-row" style="margin-top:8px"><span class="text-[10px] text-gray-400 font-semibold" style="width:30px">區域</span>
-    <button class="filter-chip ${!todoAreaFilter?'active':''}" onclick="setAF(null)">全部</button>`;
-  orderedAreas.forEach(a=>{const c=areaColor(a);fh+=`<button class="filter-chip ${todoAreaFilter===a?'active':''}" onclick="setAF('${a}')">${c.icon} ${a}</button>`});
-  fh+=`</div>`;
+  const activeFilters=[];
+  if(todoDateFilter!=='all'){const labels={today:'今天',week:'本週',overdue:'逾期'};activeFilters.push(labels[todoDateFilter]||todoDateFilter);}
+  if(todoAreaFilter)activeFilters.push(areaColor(todoAreaFilter).icon+' '+todoAreaFilter);
+  const summaryText=activeFilters.join(' · ');
+  let fh=`<div style="background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-sm);overflow:hidden;margin-bottom:4px">
+    <button onclick="todoToggleFilters()" style="display:flex;align-items:center;justify-content:space-between;padding:8px 14px;width:100%;border:none;background:none;font-family:'Noto Sans TC',sans-serif;gap:8px;cursor:pointer">
+      <div style="display:flex;align-items:center;gap:7px;min-width:0">
+        <span class="material-symbols-outlined" style="font-size:16px;color:var(--text-muted)">tune</span>
+        <span style="font-size:12px;font-weight:600;color:var(--text-secondary)">篩選</span>
+        ${summaryText?`<span style="font-size:11px;color:var(--primary);font-weight:600;flex:1;text-align:left;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${summaryText}</span>`:''}
+      </div>
+      <div style="display:flex;align-items:center;gap:6px">
+        ${activeFilters.length?`<button onclick="event.stopPropagation();todoResetFilters()" style="font-size:11px;color:var(--text-muted);cursor:pointer;border:none;background:none;padding:2px 6px;font-family:'Noto Sans TC',sans-serif">✕ 清除</button>`:''}
+        <span class="material-symbols-outlined" style="font-size:20px;color:var(--text-muted);transition:transform .2s;${todoFilterOpen?'transform:rotate(180deg)':''}">expand_more</span>
+      </div>
+    </button>
+    <div style="display:${todoFilterOpen?'block':'none'};padding:0 14px 10px;border-top:1px solid var(--border-light)">
+      <div class="filter-row" style="margin-top:8px">
+        <span style="font-size:10px;color:var(--text-muted);font-weight:700;flex-shrink:0;min-width:28px">日期</span>
+        <button class="filter-chip ${todoDateFilter==='all'?'active':''}" onclick="setDF('all')">全部</button>
+        <button class="filter-chip ${todoDateFilter==='today'?'active':''}" onclick="setDF('today')">今天</button>
+        <button class="filter-chip ${todoDateFilter==='week'?'active':''}" onclick="setDF('week')">本週</button>
+        <button class="filter-chip ${todoDateFilter==='overdue'?'active':''}" onclick="setDF('overdue')">逾期</button>
+      </div>
+      <div class="filter-row" style="margin-top:8px">
+        <span style="font-size:10px;color:var(--text-muted);font-weight:700;flex-shrink:0;min-width:28px">區域</span>
+        <button class="filter-chip ${!todoAreaFilter?'active':''}" onclick="setAF(null)">全部</button>`;
+  orderedAreas.forEach(a=>{const c=areaColor(a);fh+=`<button class="filter-chip ${todoAreaFilter===a?'active':''}" onclick="setAF('${a}')">${c.icon} ${a}</button>`;});
+  fh+=`</div></div></div>`;
   document.getElementById('todo-filter-area').innerHTML=fh;renderTodoContent();
 }
+function todoToggleFilters(){todoFilterOpen=!todoFilterOpen;renderTodoPage()}
+function todoResetFilters(){todoDateFilter='all';todoAreaFilter=null;renderTodoPage()}
 function setDF(f){todoDateFilter=f;renderTodoPage()}
 function setAF(a){todoAreaFilter=a;renderTodoPage()}
 function renderTodoContent(){
@@ -1044,7 +1075,24 @@ function getWeekDays(offset){
   const dow=base.getDay(),monday=new Date(base);monday.setDate(base.getDate()-(dow===0?6:dow-1));
   return Array.from({length:7},(_,i)=>{const d=new Date(monday);d.setDate(monday.getDate()+i);return toLD(d);});
 }
-function assignTaskToDay(tid,dateStr){tasks=tasks.map(t=>t.id===tid?{...t,plannedDate:dateStr,status:'待辦'}:t);saveData();openAssignDay=null;renderTasksPage()}
+function assignTaskToDay(tid,dateStr){
+  // Find the template task
+  const tpl=tasks.find(t=>t.id===tid);if(!tpl)return;
+  // Check if there's already an instance on this day
+  const existing=tasks.find(t=>t.templateId===tid&&t.plannedDate===dateStr);
+  if(existing){showToast('此任務已排在該日','warn');openAssignDay=null;renderTasksPage();return;}
+  // Create a new instance (copy) for this day
+  const instance={
+    ...tpl,
+    id:Date.now().toString()+'_'+Math.random().toString(36).slice(2,6),
+    templateId:tid,   // link back to the template
+    plannedDate:dateStr,
+    status:'待辦',
+    createdAt:new Date().toISOString()
+  };
+  tasks.push(instance);
+  saveData();openAssignDay=null;renderTasksPage();
+}
 function toggleAssignDropdown(dateStr){openAssignDay=(openAssignDay===dateStr)?null:dateStr;renderTasksPage()}
 const DOW_LABELS=['一','二','三','四','五','六','日'];
 function renderTasksPage(){
@@ -1060,8 +1108,10 @@ function renderTasksPage(){
     const dayTasks=tasks.filter(t=>t.plannedDate===d);
     const pillsHtml=dayTasks.map(t=>{const done=t.status==='已完成',isOv=!done&&d<todayStr;return `<div class="day-task-pill ${done?'done-pill':isOv?'overdue-pill':''}" onclick="markTaskDone('${t.id}')" title="${t.title}"><p>${t.title}</p></div>`;}).join('');
     const isOpen=openAssignDay===d;
-    const recurringTasks=tasks.filter(t=>t.freqType&&t.freqType!=='none');
-    const onceTasks=tasks.filter(t=>!t.freqType||t.freqType==='none');
+    // Templates = tasks that are NOT instances (no templateId)
+    const templates=tasks.filter(t=>!t.templateId);
+    const recurringTasks=templates.filter(t=>t.freqType&&t.freqType!=='none');
+    const onceTasks=templates.filter(t=>!t.freqType||t.freqType==='none');
     const groupHtml=recurringTasks.length||onceTasks.length
       ?`${recurringTasks.length?`<div style="padding:6px 14px 3px;font-size:10px;font-weight:700;color:var(--text-muted);letter-spacing:.05em">定期任務</div>${recurringTasks.map(t=>`<button onclick="assignTaskToDay('${t.id}','${d}')">${t.title}</button>`).join('')}`:''}${onceTasks.length?`<div style="padding:6px 14px 3px;font-size:10px;font-weight:700;color:var(--text-muted);letter-spacing:.05em">一次性任務</div>${onceTasks.map(t=>`<button onclick="assignTaskToDay('${t.id}','${d}')">${t.title}</button>`).join('')}`:''}`
       :`<div class="empty-opt">沒有任務可指派</div>`;
@@ -1069,7 +1119,7 @@ function renderTasksPage(){
     return `<div class="day-tasks-col">${pillsHtml}<div class="day-assign-dropdown"><button class="day-add-btn" onclick="toggleAssignDropdown('${d}')"><span class="material-symbols-outlined" style="font-size:13px">${isOpen?'close':'add'}</span></button>${dropdownHtml}</div></div>`;
   }).join('');
   document.getElementById('unscheduled-section').innerHTML='';
-  const activeTasks=tasks;
+  const activeTasks=tasks.filter(t=>!t.templateId); // only templates in DB
   const recurring=activeTasks.filter(t=>t.freqType&&t.freqType!=='none'),once=activeTasks.filter(t=>!t.freqType||t.freqType==='none');
   const emptyRow='<p style="padding:20px 0;text-align:center;color:var(--text-muted);font-size:13px">目前沒有任務</p>';
   const dbRec=document.getElementById('task-db-recurring'),dbOnce=document.getElementById('task-db-once');
