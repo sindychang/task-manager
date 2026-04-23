@@ -10,7 +10,51 @@
   <meta name="apple-mobile-web-app-title" content="我的管理App">
   <meta name="theme-color" content="#5b52e8">
   <title>家事與任務管理 App</title>
-  <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+    /* Tailwind utilities used in this app */
+    .flex{display:flex}.inline-flex{display:inline-flex}.grid{display:grid}
+    .hidden{display:none}.block{display:block}
+    .flex-1{flex:1 1 0%}.flex-col{flex-direction:column}.flex-wrap{flex-wrap:wrap}
+    .flex-shrink-0{flex-shrink:0}
+    .items-center{align-items:center}.items-start{align-items:flex-start}
+    .justify-center{justify-content:center}.justify-between{justify-content:space-between}
+    .gap-0{gap:0}.gap-0\.5{gap:0.125rem}.gap-1{gap:0.25rem}.gap-2{gap:0.5rem}
+    .gap-3{gap:0.75rem}.gap-4{gap:1rem}.gap-6{gap:1.5rem}.gap-8{gap:2rem}
+    .w-full{width:100%}.h-full{height:100%}
+    .min-w-0{min-width:0}.max-w-2xl{max-width:42rem}
+    .overflow-hidden{overflow:hidden}.overflow-x-auto{overflow-x:auto}
+    .truncate{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+    .whitespace-nowrap{white-space:nowrap}
+    .px-4{padding-left:1rem;padding-right:1rem}
+    .py-1{padding-top:0.25rem;padding-bottom:0.25rem}
+    .py-2{padding-top:0.5rem;padding-bottom:0.5rem}
+    .py-2\.5{padding-top:0.625rem;padding-bottom:0.625rem}
+    .py-3{padding-top:0.75rem;padding-bottom:0.75rem}
+    .py-6{padding-top:1.5rem;padding-bottom:1.5rem}
+    .p-4{padding:1rem}
+    .mb-2{margin-bottom:0.5rem}.mb-3{margin-bottom:0.75rem}
+    .mb-4{margin-bottom:1rem}.mb-5{margin-bottom:1.25rem}.mb-6{margin-bottom:1.5rem}
+    .mt-1{margin-top:0.25rem}.mt-2{margin-top:0.5rem}.mt-4{margin-top:1rem}
+    .mt-10{margin-top:2.5rem}.mx-auto{margin-left:auto;margin-right:auto}
+    .text-xs{font-size:0.75rem;line-height:1rem}
+    .text-sm{font-size:0.875rem;line-height:1.25rem}
+    .text-lg{font-size:1.125rem;line-height:1.75rem}
+    .text-white{color:#fff}
+    .font-bold{font-weight:700}.font-semibold{font-weight:600}
+    .text-gray-400{color:#9ca3af}.text-gray-500{color:#6b7280}
+    .text-gray-600{color:#4b5563}.text-gray-700{color:#374151}
+    .text-gray-800{color:#1f2937}
+    .line-through{text-decoration:line-through}
+    .rounded-2xl{border-radius:1rem}.rounded-xl{border-radius:0.75rem}
+    .shadow{box-shadow:0 1px 3px rgba(0,0,0,.1),0 1px 2px rgba(0,0,0,.06)}
+    .transition-transform{transition:transform .15s}
+    .active\:scale-95:active{transform:scale(.95)}
+    .border{border-width:1px}.border-none{border:none}
+    .border-bottom{border-bottom-width:1px}
+    .relative{position:relative}.absolute{position:absolute}.fixed{position:fixed}
+    .inset-0{inset:0}.top-0{top:0}.bottom-0{bottom:0}.left-0{left:0}.right-0{right:0}
+    .z-\[100\]{z-index:100}
+  </style>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -286,6 +330,111 @@
     .import-zone input{display:none}
     .import-result{padding:12px;background:var(--bg);border-radius:var(--radius-sm);font-size:13px;margin-bottom:12px;display:none}
     .import-result.show{display:block}
+
+    /* ══ TO DO WEEKLY (page-todo) ══ */
+    .tw-pg{max-width:600px;margin:0 auto;padding:12px 14px 0}
+    .tw-wnav{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px}
+    .tw-wnbtn{background:var(--surface);border:1px solid var(--border);width:34px;height:34px;border-radius:10px;display:flex;align-items:center;justify-content:center;cursor:pointer;box-shadow:var(--shadow-sm)}
+    .tw-wnbtn:active{transform:scale(.93)}
+    .tw-wnc{text-align:center}
+    .tw-wnl{font-size:14px;font-weight:700;color:var(--text-primary)}
+    .tw-wns{font-size:11px;color:var(--text-muted);margin-top:2px}
+    /* Progress card */
+    .tw-prog{background:var(--surface);border-radius:var(--radius-md);border:1px solid var(--border-light);box-shadow:var(--shadow-sm);padding:12px 14px;margin-bottom:10px;display:flex;align-items:center;gap:12px}
+    .tw-prog-ring{width:44px;height:44px;flex-shrink:0;position:relative}
+    .tw-prog-ring svg{transform:rotate(-90deg)}
+    .tw-prog-pct{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:800;color:var(--primary)}
+    .tw-prog-info{flex:1;min-width:0}
+    .tw-prog-t{font-size:13px;font-weight:700;color:var(--text-primary)}
+    .tw-prog-s{font-size:11px;color:var(--text-muted);margin-top:1px}
+    .tw-prog-chips{display:flex;gap:5px;margin-top:5px;flex-wrap:wrap}
+    .tw-chip{padding:2px 8px;border-radius:999px;font-size:10px;font-weight:700}
+    /* Day cards */
+    .tw-wlist{display:flex;flex-direction:column;gap:6px}
+    .tw-dc{background:var(--surface);border-radius:var(--radius-md);border:1px solid var(--border-light);box-shadow:var(--shadow-sm);overflow:visible;transition:box-shadow .15s,border-color .15s}
+    .tw-dc.tw-today{border-color:var(--primary);box-shadow:0 0 0 1.5px var(--primary),var(--shadow-sm)}
+    .tw-dc.tw-past{opacity:.72}
+    .tw-dc.tw-has-ov{border-left:3px solid var(--danger)}
+    .tw-dc.tw-drag-over{background:#f0effe;border-color:var(--primary);box-shadow:0 0 0 2px var(--primary)!important}
+    /* Day header */
+    .tw-dhdr{display:flex;align-items:center;gap:10px;padding:11px 12px;cursor:pointer;user-select:none;transition:background .1s;border-radius:var(--radius-md)}
+    .tw-dhdr:active{background:var(--bg)}
+    .tw-ddate{flex-shrink:0;width:42px;text-align:center}
+    .tw-ddate .tw-dow{font-size:9px;font-weight:700;letter-spacing:.06em;color:var(--text-muted);text-transform:uppercase}
+    .tw-ddate .tw-dom{font-size:22px;font-weight:800;color:var(--text-secondary);line-height:1.05;margin-top:1px}
+    .tw-dc.tw-today .tw-dow{color:var(--primary)}
+    .tw-dc.tw-today .tw-dom{color:var(--primary)}
+    .tw-dc.tw-past .tw-dom{color:#cbd5e1}
+    .tw-dc.tw-past .tw-dow{color:#d1d5db}
+    /* Pills */
+    .tw-pstrip{flex:1;min-width:0;display:flex;flex-wrap:wrap;gap:4px;align-items:center}
+    .tw-mp{display:inline-flex;align-items:center;gap:3px;padding:3px 8px 3px 5px;border-radius:6px;font-size:11px;font-weight:600;white-space:nowrap;max-width:110px;overflow:hidden;text-overflow:ellipsis;border-left:2.5px solid transparent;line-height:1.3;cursor:grab;transition:opacity .15s,transform .15s;user-select:none;touch-action:none}
+    .tw-mp.tw-task-p{background:var(--primary-light);color:var(--primary);border-left-color:var(--primary)}
+    .tw-mp.tw-hw-p{background:#fffbeb;color:#d97706;border-left-color:#d97706}
+    .tw-mp.tw-done-p{background:#f1f5f9;color:var(--text-muted);border-left-color:#d1d5db;text-decoration:line-through;opacity:.55;cursor:default;touch-action:auto}
+    .tw-mp.tw-ov-p{background:var(--danger-light);color:var(--danger);border-left-color:var(--danger)}
+    .tw-mp.tw-dragging{opacity:.35;transform:scale(.95)}
+    .tw-morep{padding:3px 7px;border-radius:6px;font-size:10px;font-weight:700;background:var(--border-light);color:var(--text-muted)}
+    .tw-emptyp{font-size:11px;color:var(--text-muted);font-style:italic}
+    /* Day right */
+    .tw-dright{display:flex;align-items:center;gap:4px;flex-shrink:0}
+    .tw-dawrap{position:relative}
+    .tw-dabtn{width:28px;height:28px;border-radius:7px;border:1.5px dashed var(--border);background:none;cursor:pointer;display:flex;align-items:center;justify-content:center;color:var(--text-muted);transition:all .15s}
+    .tw-dabtn:hover,.tw-dabtn.open{border-color:var(--primary);color:var(--primary);background:var(--primary-light);border-style:solid}
+    .tw-dchev{color:#b0bbc8;font-size:20px;transition:transform .22s;display:flex;align-items:center}
+    .tw-dchev.open{transform:rotate(180deg)}
+    /* Detail */
+    .tw-ddet{display:none;border-top:1px solid var(--border-light);background:#fafafa;border-radius:0 0 var(--radius-md) var(--radius-md);overflow:hidden}
+    .tw-ddet.open{display:block}
+    .tw-det-empty{padding:14px 13px;text-align:center;font-size:12px;color:var(--text-muted)}
+    /* Item row */
+    .tw-irow{display:flex;align-items:center;gap:9px;padding:10px 13px;border-bottom:1px solid var(--border-light)}
+    .tw-irow:last-child{border-bottom:none}
+    .tw-icb{width:22px;height:22px;border-radius:6px;border:2px solid #d1d5db;flex-shrink:0;display:flex;align-items:center;justify-content:center;cursor:pointer;transition:all .15s}
+    .tw-icb.tw-done{background:var(--primary);border-color:var(--primary)}
+    .tw-icb.tw-done::after{content:'';width:5px;height:9px;border:2px solid #fff;border-top:none;border-left:none;transform:rotate(40deg) translateY(-1px);display:block}
+    .tw-icb.tw-hw-done{background:#d97706;border-color:#d97706}
+    .tw-iinfo{flex:1;min-width:0}
+    .tw-iname{font-size:13px;font-weight:600;color:var(--text-primary);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+    .tw-iname.tw-done-t{text-decoration:line-through;color:var(--text-muted)}
+    .tw-imeta{display:flex;align-items:center;gap:5px;margin-top:2px}
+    .tw-idot{width:5px;height:5px;border-radius:50%;flex-shrink:0}
+    .tw-ilbl{font-size:10px;font-weight:600;color:var(--text-muted)}
+    .tw-ovbadge{font-size:10px;font-weight:700;color:var(--danger);background:var(--danger-light);padding:1px 6px;border-radius:4px}
+    .tw-ibtns{display:flex;align-items:center;gap:2px;flex-shrink:0}
+    .tw-ib{width:28px;height:28px;border-radius:7px;border:none;background:none;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:background .12s}
+    .tw-ib:hover{background:var(--border-light)}
+    .tw-ib.tw-dly{color:#d97706}
+    .tw-ib.tw-del{color:#d1d5db}
+    .tw-ib.tw-del:hover{background:var(--danger-light);color:var(--danger)}
+    /* Add dropdown */
+    .tw-adrop{position:absolute;right:0;top:calc(100% + 4px);background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-md);box-shadow:var(--shadow-lg);z-index:400;min-width:180px;max-height:290px;overflow-y:auto}
+    .tw-adrop.flip{top:auto;bottom:calc(100% + 4px)}
+    .tw-dgh{padding:6px 13px 2px;font-size:9px;font-weight:700;color:var(--text-muted);letter-spacing:.06em;text-transform:uppercase;background:var(--surface);position:sticky;top:0}
+    .tw-adrop button{display:flex;align-items:center;gap:6px;width:100%;padding:9px 13px;border:none;background:none;font-size:13px;font-weight:500;color:var(--text-primary);cursor:pointer;font-family:'Noto Sans TC',sans-serif;transition:background .1s}
+    .tw-adrop button:hover{background:var(--bg)}
+    .tw-adrop button.tw-hwo{color:#d97706}
+    .tw-adrop button.tw-alr{opacity:.4;pointer-events:none}
+    .tw-adrop .tw-anote{font-size:10px;color:var(--text-muted);margin-left:auto}
+    /* Drag ghost */
+    .tw-drag-ghost{position:fixed;pointer-events:none;z-index:9999;padding:5px 10px;border-radius:8px;font-size:12px;font-weight:700;display:flex;align-items:center;gap:5px;box-shadow:0 8px 28px rgba(0,0,0,.22);transform:translate(-50%,-50%) rotate(3deg);white-space:nowrap;max-width:180px;overflow:hidden;text-overflow:ellipsis}
+    .tw-drag-ghost.tw-task-g{background:var(--primary);color:#fff}
+    .tw-drag-ghost.tw-hw-g{background:#d97706;color:#fff}
+    /* Drag hint */
+    .tw-drag-hint{display:flex;align-items:center;gap:6px;padding:8px 13px;background:var(--primary-light);border-radius:var(--radius-sm);margin-bottom:10px;font-size:11px;color:var(--primary);font-weight:600}
+    /* Delay sheet */
+    .tw-scrim{position:fixed;inset:0;background:rgba(15,23,42,.4);z-index:700;opacity:0;pointer-events:none;transition:opacity .22s;backdrop-filter:blur(1px)}
+    .tw-scrim.show{opacity:1;pointer-events:all}
+    .tw-dlysh{position:fixed;bottom:0;left:0;right:0;background:var(--surface);border-radius:22px 22px 0 0;padding:20px 16px calc(84px + env(safe-area-inset-bottom,0px));box-shadow:0 -6px 40px rgba(0,0,0,.16);z-index:800;transform:translateY(100%);transition:transform .26s cubic-bezier(.4,0,.2,1)}
+    .tw-dlysh.show{transform:translateY(0)}
+    .tw-dlyh{width:36px;height:4px;background:var(--border);border-radius:2px;margin:0 auto 16px}
+    .tw-dlygrid{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-top:14px}
+    .tw-dlyopt{padding:12px 0;border-radius:var(--radius-sm);border:1.5px solid var(--border);background:var(--surface);cursor:pointer;text-align:center;transition:all .15s;font-family:'Noto Sans TC',sans-serif}
+    .tw-dlyopt:hover{border-color:var(--primary);background:var(--primary-light)}
+    .tw-dlyopt:active{transform:scale(.96)}
+    .tw-dlyopt .tw-dn{font-size:20px;font-weight:800;color:var(--primary)}
+    .tw-dlyopt .tw-du{font-size:10px;color:var(--text-muted);font-weight:600;margin-top:2px}
+    .tw-dlycancel{margin-top:12px;width:100%;padding:12px;border-radius:var(--radius-sm);border:none;background:var(--border-light);font-size:14px;font-weight:600;cursor:pointer;font-family:'Noto Sans TC',sans-serif;color:var(--text-secondary)}
   </style>
 </head>
 <body>
@@ -349,9 +498,43 @@
 </header>
 
 <!-- ── PAGES ── -->
-<div id="page-todo" class="page active max-w-2xl mx-auto px-4 py-6">
-  <div class="mb-4" id="todo-filter-area"></div>
-  <div id="todo-content"></div>
+<div id="page-todo" class="page active">
+  <div class="tw-pg">
+    <div class="tw-wnav">
+      <button class="tw-wnbtn" onclick="twShiftW(-1)"><span class="material-symbols-outlined" style="font-size:20px;color:#64748b">chevron_left</span></button>
+      <div class="tw-wnc">
+        <div class="tw-wnl" id="tw-wnl"></div>
+        <div class="tw-wns" id="tw-wns"></div>
+      </div>
+      <button class="tw-wnbtn" onclick="twShiftW(1)"><span class="material-symbols-outlined" style="font-size:20px;color:#64748b">chevron_right</span></button>
+    </div>
+    <div class="tw-prog" id="tw-prog"></div>
+    <div class="tw-drag-hint" id="tw-drag-hint">
+      <span class="material-symbols-outlined" style="font-size:15px">drag_indicator</span>長按色條，拖曳到另一天換日
+    </div>
+    <div class="tw-wlist" id="tw-wlist"></div>
+  </div>
+</div>
+<!-- TW Delay sheet -->
+<div class="tw-scrim" id="tw-scrim" onclick="twCloseDelay()"></div>
+<div class="tw-dlysh" id="tw-dlysh">
+  <div class="tw-dlyh"></div>
+  <div style="display:flex;align-items:center;gap:10px">
+    <div style="width:34px;height:34px;background:#fef3c7;border-radius:9px;display:flex;align-items:center;justify-content:center;flex-shrink:0">
+      <span class="material-symbols-outlined" style="color:#d97706;font-size:19px">schedule</span>
+    </div>
+    <div>
+      <div style="font-size:14px;font-weight:700;color:var(--text-primary)">延後項目</div>
+      <div style="font-size:12px;color:var(--text-muted);margin-top:2px" id="tw-dly-name"></div>
+    </div>
+  </div>
+  <div class="tw-dlygrid">
+    <button class="tw-dlyopt" onclick="twApplyDelay(1)"><div class="tw-dn">1</div><div class="tw-du">天</div></button>
+    <button class="tw-dlyopt" onclick="twApplyDelay(2)"><div class="tw-dn">2</div><div class="tw-du">天</div></button>
+    <button class="tw-dlyopt" onclick="twApplyDelay(3)"><div class="tw-dn">3</div><div class="tw-du">天</div></button>
+    <button class="tw-dlyopt" onclick="twApplyDelay(7)"><div class="tw-dn">7</div><div class="tw-du">天</div></button>
+  </div>
+  <button class="tw-dlycancel" onclick="twCloseDelay()">取消</button>
 </div>
 
 <div id="page-tasks" class="page max-w-2xl mx-auto px-4 py-6">
@@ -815,11 +998,13 @@ function switchPage(p,b){
   document.getElementById('pageSubtitle').textContent=pg.sub;
   closeAllPopups();
   if(p==='inventory')renderInventoryPage();
+  else if(p==='todo'){twRender();setTimeout(()=>document.getElementById('tw-dr-'+todayStr)?.scrollIntoView({behavior:'smooth',block:'nearest'}),80);}
   else renderAll();
 }
 function openAddModal(){
   if(currentPage==='housework')openHouseworkModal();
   else if(currentPage==='inventory')invOpenAdd();
+  else if(currentPage==='todo'){twOpenDropDay=todayStr;twRender();}
   else openTaskModal();
 }
 function closeModal(id){document.getElementById(id).classList.remove('open')}
@@ -952,94 +1137,6 @@ function emptyS(m){return `<div class="empty-state"><span class="material-symbol
 function freqLabel(t){if(!t||t.freqType==='none'||!t.freqVal)return '';return t.freqType==='days'?`每${t.freqVal}天`:`每月${t.freqVal}號`}
 
 // ── RENDER: TO DO ─────────────────────────────────────────
-function renderTodoTaskItem(t){
-  const done=t.status==='已完成';
-  return `<div class="hw-row task-row animate-in">
-    <button onclick="markTaskDone('${t.id}')" style="background:none;border:none;cursor:pointer">
-      <span class="material-symbols-outlined" style="font-size:22px;color:${done?'#5b52e8':'#d1d5db'}">${done?'check_circle':'radio_button_unchecked'}</span>
-    </button>
-    <div style="min-width:0">
-      <p class="text-sm font-semibold text-gray-700 ${done?'line-through text-gray-400':''} truncate">${t.title}</p>
-      <div class="flex items-center gap-2 mt-1">${priorityBadge(t.priority)}</div>
-    </div>
-    <div class="hw-date-col">${t.plannedDate?`<button class="date-tag ${dtCls(t.plannedDate)}" onclick="openDelayModal('task','${t.id}')">${dtLbl(t.plannedDate)}</button>`:''}</div>
-  </div>`;
-}
-function renderTodoHouseworkItem(h){
-  const col=areaColor(h.area);
-  return `<div class="hw-row task-row animate-in">
-    <button onclick="markHouseworkDone('${h.id}')" style="background:none;border:none;cursor:pointer">
-      <span class="material-symbols-outlined" style="font-size:22px;color:#d1d5db">radio_button_unchecked</span>
-    </button>
-    <div style="min-width:0">
-      <p class="text-sm font-semibold text-gray-700 truncate">${h.name}</p>
-      <div style="display:flex;align-items:center;gap:5px;margin-top:2px;flex-wrap:wrap">
-        <span class="badge" style="background:${col.bg};color:${col.dot};font-size:10px;padding:1px 7px">${h.area}</span>
-        ${h.notes?`<span class="text-xs text-gray-400 truncate" style="max-width:120px">${h.notes}</span>`:''}
-      </div>
-    </div>
-    <div class="hw-date-col">${h.reminderDate?`<button class="date-tag ${dtCls(h.reminderDate)}" onclick="openDelayModal('hw','${h.id}')">${dtLbl(h.reminderDate)}</button>`:''}</div>
-  </div>`;
-}
-function renderTodoPage(){
-  const AREA_ORDER=['所有空間','浴室','廚房','臥室'];
-  const customAreas=[...new Set(housework.map(h=>h.area))].filter(a=>!AREA_ORDER.includes(a));
-  const orderedAreas=[...AREA_ORDER.filter(a=>housework.some(h=>h.area===a)),...customAreas];
-  const activeFilters=[];
-  if(todoDateFilter!=='all'){const labels={today:'今天',week:'本週',overdue:'逾期'};activeFilters.push(labels[todoDateFilter]||todoDateFilter);}
-  if(todoAreaFilter)activeFilters.push(areaColor(todoAreaFilter).icon+' '+todoAreaFilter);
-  const summaryText=activeFilters.join(' · ');
-  let fh=`<div style="background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-sm);overflow:hidden;margin-bottom:4px">
-    <button onclick="todoToggleFilters()" style="display:flex;align-items:center;justify-content:space-between;padding:8px 14px;width:100%;border:none;background:none;font-family:'Noto Sans TC',sans-serif;gap:8px;cursor:pointer">
-      <div style="display:flex;align-items:center;gap:7px;min-width:0">
-        <span class="material-symbols-outlined" style="font-size:16px;color:var(--text-muted)">tune</span>
-        <span style="font-size:12px;font-weight:600;color:var(--text-secondary)">篩選</span>
-        ${summaryText?`<span style="font-size:11px;color:var(--primary);font-weight:600;flex:1;text-align:left;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${summaryText}</span>`:''}
-      </div>
-      <div style="display:flex;align-items:center;gap:6px">
-        ${activeFilters.length?`<button onclick="event.stopPropagation();todoResetFilters()" style="font-size:11px;color:var(--text-muted);cursor:pointer;border:none;background:none;padding:2px 6px;font-family:'Noto Sans TC',sans-serif">✕ 清除</button>`:''}
-        <span class="material-symbols-outlined" style="font-size:20px;color:var(--text-muted);transition:transform .2s;${todoFilterOpen?'transform:rotate(180deg)':''}">expand_more</span>
-      </div>
-    </button>
-    <div style="display:${todoFilterOpen?'block':'none'};padding:0 14px 10px;border-top:1px solid var(--border-light)">
-      <div class="filter-row" style="margin-top:8px">
-        <span style="font-size:10px;color:var(--text-muted);font-weight:700;flex-shrink:0;min-width:28px">日期</span>
-        <button class="filter-chip ${todoDateFilter==='all'?'active':''}" onclick="setDF('all')">全部</button>
-        <button class="filter-chip ${todoDateFilter==='today'?'active':''}" onclick="setDF('today')">今天</button>
-        <button class="filter-chip ${todoDateFilter==='week'?'active':''}" onclick="setDF('week')">本週</button>
-        <button class="filter-chip ${todoDateFilter==='overdue'?'active':''}" onclick="setDF('overdue')">逾期</button>
-      </div>
-      <div class="filter-row" style="margin-top:8px">
-        <span style="font-size:10px;color:var(--text-muted);font-weight:700;flex-shrink:0;min-width:28px">區域</span>
-        <button class="filter-chip ${!todoAreaFilter?'active':''}" onclick="setAF(null)">全部</button>`;
-  orderedAreas.forEach(a=>{const c=areaColor(a);fh+=`<button class="filter-chip ${todoAreaFilter===a?'active':''}" onclick="setAF('${a}')">${c.icon} ${a}</button>`;});
-  fh+=`</div></div></div>`;
-  document.getElementById('todo-filter-area').innerHTML=fh;renderTodoContent();
-}
-function todoToggleFilters(){todoFilterOpen=!todoFilterOpen;renderTodoPage()}
-function todoResetFilters(){todoDateFilter='all';todoAreaFilter=null;renderTodoPage()}
-function setDF(f){todoDateFilter=f;renderTodoPage()}
-function setAF(a){todoAreaFilter=a;renderTodoPage()}
-function renderTodoContent(){
-  let filteredTasks=tasks.filter(t=>t.status!=='已完成');let filteredHW=[...housework];
-  if(todoAreaFilter){filteredHW=filteredHW.filter(h=>h.area===todoAreaFilter);filteredTasks=[]}
-  let sections=[];
-  const tt=filteredTasks.filter(t=>t.plannedDate===todayStr),th=filteredHW.filter(h=>h.reminderDate&&h.reminderDate<=todayStr);
-  sections.push({title:`Today — ${NOW.getFullYear()}/${NOW.getMonth()+1}/${NOW.getDate()}`,tasks:tt,hw:th,icon:'today',iconBg:'#dbeafe',iconColor:'#2563eb'});
-  const wt=filteredTasks.filter(t=>t.plannedDate>todayStr&&t.plannedDate<=weekEndStr),wh=filteredHW.filter(h=>h.reminderDate>todayStr&&h.reminderDate<=weekEndStr);
-  sections.push({title:'This Week',sub:'明天起 7 天內',tasks:wt,hw:wh,icon:'date_range',iconBg:'#d1fae5',iconColor:'#059669'});
-  const ot=filteredTasks.filter(t=>t.plannedDate&&t.plannedDate<todayStr),oh=filteredHW.filter(h=>h.reminderDate&&h.reminderDate<todayStr);
-  if(ot.length||oh.length)sections.push({title:'已逾期',tasks:ot,hw:oh,icon:'warning',iconBg:'#fee2e2',iconColor:'#dc2626'});
-  let html='';
-  sections.forEach(s=>{
-    html+=`<section class="mb-6 animate-in"><div class="section-header"><div class="section-icon" style="background:${s.iconBg}"><span class="material-symbols-outlined" style="color:${s.iconColor}">${s.icon}</span></div><div><h2 class="text-lg font-bold text-gray-800">${s.title}</h2>${s.sub?`<p class="text-gray-400 text-xs">${s.sub}</p>`:''}</div></div>`;
-    if(s.tasks.length)html+=`<div class="card p-4 mb-3"><h3 class="text-sm font-semibold text-gray-600 mb-2">任務</h3>${s.tasks.map(renderTodoTaskItem).join('')}</div>`;
-    if(s.hw.length)html+=`<div class="card p-4"><h3 class="text-sm font-semibold text-gray-600 mb-2">家事</h3>${s.hw.map(renderTodoHouseworkItem).join('')}</div>`;
-    if(!s.tasks.length&&!s.hw.length)html+=`<div class="card p-4">${emptyS('沒有項目')}</div>`;
-    html+=`</section>`;
-  });
-  document.getElementById('todo-content').innerHTML=html;
-}
 
 // ── RENDER: TASKS / WEEK CALENDAR ─────────────────────────
 function switchDbTab(tab){
@@ -1393,7 +1490,16 @@ function invRenderRow(it,showLoc=true){
   if(it.type==='expiry'&&it.expiryDate){
     const d=daysBetween(todayStr,it.expiryDate),pct=Math.max(0,Math.min(100,Math.round(d/365*100)));
     const bc=d<0?'#dc2626':d<=14?'#d97706':'#059669';
-    detailHtml+=`<div class="drow"><span class="dlabel">到期日</span><span class="dvalue" style="color:${bc}">${fmtDateFull(it.expiryDate)}（剩 ${d>=0?d+' 天':'已過期'}）</span></div>`;
+    const expiryStatus=d<0?'已過期':d===0?'今天到期':d+' 天後到期';
+    detailHtml+=`<div class="drow">
+      <span class="dlabel">到期日</span>
+      <div style="display:flex;align-items:center;gap:6px" onclick="event.stopPropagation()">
+        <input type="date" value="${it.expiryDate}"
+          style="border:1px solid var(--border);border-radius:6px;padding:3px 7px;font-size:11px;font-weight:600;color:${bc};background:var(--bg);font-family:'Noto Sans TC',sans-serif;outline:none;cursor:pointer"
+          onchange="invUpdateExpiry('${it.id}',this.value)">
+        <span style="font-size:11px;font-weight:600;color:${bc}">${expiryStatus}</span>
+      </div>
+    </div>`;
     detailHtml+=`<div class="drow"><span class="dlabel">效期剩餘</span><span class="dvalue"><span style="display:inline-block;width:80px;height:4px;background:var(--border-light);border-radius:99px;overflow:hidden;vertical-align:middle"><span style="display:block;width:${pct}%;height:100%;background:${bc};border-radius:99px"></span></span></span></div>`;
   }
   if(it.restock){
@@ -1439,6 +1545,15 @@ function invRenderRow(it,showLoc=true){
 }
 
 function invToggleDetail(id){const d=document.getElementById('inv-detail-'+id);if(d)d.classList.toggle('open')}
+function invUpdateExpiry(id,val){
+  if(!val)return;
+  inventory=inventory.map(it=>it.id===id?{...it,expiryDate:val}:it);
+  saveInv();
+  // Re-render just this item's detail without closing it
+  renderInventoryPage();
+  // Re-open the detail panel
+  setTimeout(()=>{const d=document.getElementById('inv-detail-'+id);if(d)d.classList.add('open');},10);
+}
 function invChQty(id,delta,e){
   e.stopPropagation();
   inventory=inventory.map(it=>{
@@ -1705,7 +1820,7 @@ function appInputOk(){
 }
 function appInputCancel(){document.getElementById('app-input-overlay').style.display='none';_inputCb=null;}
 
-function renderAll(){renderTodoPage();renderTasksPage();renderHouseworkPage();}
+function renderAll(){twRenderAll();renderTasksPage();renderHouseworkPage();}
 
 // ── EXPORT / IMPORT ───────────────────────────────────────
 function exportData(){const data=JSON.stringify({tasks,housework,inventory,settings:appSettings},null,2);const blob=new Blob([data],{type:'application/json'});const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='家事任務管理_'+todayStr+'.json';a.click();}
@@ -1722,8 +1837,312 @@ document.addEventListener('click',function(e){
   if(openAssignDay&&!e.target.closest('.day-assign-dropdown')){openAssignDay=null;renderTasksPage();}
 });
 
+// ══════════════════════════════════════════════════════════
+// TO DO WEEKLY CALENDAR
+// ══════════════════════════════════════════════════════════
+let twWeekOffset=0,twOpenDays=new Set([todayStr]),twOpenDropDay=null,twDelayTarget=null;
+let twDragHintShown=false,twProgMode='day';
+let twDrag={active:false,sid:null,ghost:null,overDate:null,startEl:null,longPressTimer:null,startX:0,startY:0};
+
+const TW_DOW=['SUN','MON','TUE','WED','THU','FRI','SAT'];
+
+function twGetWeekDays(off){
+  const base=new Date(NOW);base.setDate(base.getDate()+off*7);
+  const dow=base.getDay(),mon=new Date(base);mon.setDate(base.getDate()-(dow===0?6:dow-1));
+  return Array.from({length:7},(_,i)=>{const d=new Date(mon);d.setDate(mon.getDate()+i);return toLD(d)});
+}
+function twShiftW(d){twWeekOffset+=d;twOpenDropDay=null;twRender()}
+function twJumpToday(){twWeekOffset=0;twOpenDays.add(todayStr);twOpenDropDay=null;twRender();setTimeout(()=>document.getElementById('tw-dr-'+todayStr)?.scrollIntoView({behavior:'smooth',block:'center'}),80)}
+
+// Build schedule from tasks + housework
+function twGetSchedule(){
+  const sched=[];
+  // Tasks with plannedDate that are not template instances just use tasks array directly
+  tasks.forEach(t=>{
+    if(!t.plannedDate)return;
+    sched.push({id:t.id,type:'task',title:t.title,date:t.plannedDate,status:t.status==='已完成'?'done':'pending',isTask:true});
+  });
+  // Housework with reminderDate
+  housework.forEach(h=>{
+    if(!h.reminderDate)return;
+    sched.push({id:h.id,type:'hw',title:h.name,date:h.reminderDate,status:'pending',isHw:true});
+  });
+  return sched;
+}
+
+function twRenderAll(){
+  const el=document.getElementById('page-todo');
+  if(!el||!el.classList.contains('active'))return;
+  twRender();
+}
+
+function twRender(){
+  const days=twGetWeekDays(twWeekOffset);
+  const wnl=document.getElementById('tw-wnl');
+  const wns=document.getElementById('tw-wns');
+  if(!wnl)return;
+  wnl.textContent=twWeekOffset===0?'本週':twWeekOffset===-1?'上週':twWeekOffset===1?'下週':fmtD(days[0])+' 那週';
+  wns.textContent=fmtD(days[0])+' – '+fmtD(days[6]);
+  twRenderProg(days);
+  const hint=document.getElementById('tw-drag-hint');
+  if(hint)hint.style.display=twDragHintShown?'none':'flex';
+  const wlist=document.getElementById('tw-wlist');
+  if(wlist)wlist.innerHTML=days.map(d=>twRenderDay(d)).join('');
+  twBindDragEvents();
+}
+
+function twRenderProg(days){
+  const el=document.getElementById('tw-prog');if(!el)return;
+  const sched=twGetSchedule();
+  let items=twProgMode==='day'?sched.filter(s=>s.date===todayStr):sched.filter(s=>days.includes(s.date));
+  const done=items.filter(s=>s.status==='done').length;
+  const total=items.length;
+  const pct=total?Math.round(done/total*100):0;
+  const taskP=items.filter(s=>s.type==='task'&&s.status==='pending').length;
+  const hwP=items.filter(s=>s.type==='hw'&&s.status==='pending').length;
+  const ovCnt=twProgMode==='day'
+    ? sched.filter(s=>s.status==='pending'&&s.date<todayStr).length
+    : sched.filter(s=>s.status==='pending'&&s.date<todayStr&&days.includes(s.date)).length;
+  const r=17,circ=2*Math.PI*r,col=pct===100?'#10b981':'var(--primary)';
+  const dash=circ*pct/100,gap=circ-dash;
+  const label=twProgMode==='day'?'今日進度':'本週進度';
+  const sub=twProgMode==='day'?new Date().toLocaleDateString('zh-TW',{month:'long',day:'numeric',weekday:'short'}):fmtD(days[0])+' – '+fmtD(days[6]);
+  let ch='';
+  if(ovCnt>0)ch+=`<span class="tw-chip" style="background:var(--danger-light);color:var(--danger)">⚠️ ${ovCnt} 件逾期</span>`;
+  if(taskP>0)ch+=`<span class="tw-chip" style="background:var(--primary-light);color:var(--primary)">📝 任務 ${taskP}</span>`;
+  if(hwP>0)ch+=`<span class="tw-chip" style="background:#fffbeb;color:#d97706">🏠 家事 ${hwP}</span>`;
+  if(pct===100&&total>0)ch+=`<span class="tw-chip" style="background:#d1fae5;color:#059669">✓ 全完成！</span>`;
+  if(total===0&&ovCnt===0)ch+=`<span class="tw-chip" style="background:var(--border-light);color:var(--text-muted)">尚未安排</span>`;
+  el.innerHTML=`
+    <div class="tw-prog-ring">
+      <svg width="44" height="44" viewBox="0 0 44 44">
+        <circle cx="22" cy="22" r="${r}" fill="none" stroke="#e8edf5" stroke-width="4.5"/>
+        <circle cx="22" cy="22" r="${r}" fill="none" stroke="${col}" stroke-width="4.5" stroke-dasharray="${dash} ${gap}" stroke-linecap="round"/>
+      </svg>
+      <div class="tw-prog-pct">${pct}%</div>
+    </div>
+    <div class="tw-prog-info">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:2px">
+        <div class="tw-prog-t">${label}${total>0?' — '+done+'/'+total+' 件':''}</div>
+        <div style="display:flex;gap:2px;background:var(--border-light);border-radius:6px;padding:2px;flex-shrink:0">
+          <button onclick="twProgMode='day';twRender()" style="padding:3px 9px;border-radius:5px;border:none;background:${twProgMode==='day'?'var(--surface)':'transparent'};font-size:10px;font-weight:700;color:${twProgMode==='day'?'var(--text-primary)':'var(--text-muted)'};cursor:pointer;font-family:'Noto Sans TC',sans-serif">今日</button>
+          <button onclick="twProgMode='week';twRender()" style="padding:3px 9px;border-radius:5px;border:none;background:${twProgMode==='week'?'var(--surface)':'transparent'};font-size:10px;font-weight:700;color:${twProgMode==='week'?'var(--text-primary)':'var(--text-muted)'};cursor:pointer;font-family:'Noto Sans TC',sans-serif">本週</button>
+        </div>
+      </div>
+      <div class="tw-prog-s">${sub}</div>
+      <div class="tw-prog-chips">${ch}</div>
+    </div>`;
+}
+
+function twRenderDay(d){
+  const sched=twGetSchedule();
+  const items=sched.filter(s=>s.date===d);
+  const pending=items.filter(s=>s.status==='pending');
+  const isToday=d===todayStr,isPast=d<todayStr;
+  const hasOv=isPast&&pending.length>0;
+  const isOpen=twOpenDays.has(d),isDropOpen=twOpenDropDay===d;
+  const dt=new Date(d+'T00:00:00'),dowIdx=dt.getDay();
+  // Pills
+  const MAX=4;let pillHtml='';
+  if(!items.length){pillHtml=`<span class="tw-emptyp">空閒</span>`;}
+  else{
+    items.slice(0,MAX).forEach(s=>{
+      const isDone=s.status==='done',isOv=!isDone&&isPast;
+      let cls=s.type==='hw'?'tw-hw-p':'tw-task-p';
+      if(isDone)cls='tw-done-p';else if(isOv)cls='tw-ov-p';
+      const draggable=!isDone;
+      pillHtml+=`<span class="tw-mp ${cls}" data-sid="${s.id}" data-stype="${s.type}" data-date="${d}" data-draggable="${draggable}">${s.title}</span>`;
+    });
+    if(items.length>MAX)pillHtml+=`<span class="tw-morep">+${items.length-MAX}</span>`;
+  }
+  // Detail rows
+  let detHtml='';
+  if(!items.length){detHtml=`<div class="tw-det-empty">這天還沒有安排 · 點 <b>+</b> 新增</div>`;}
+  else{
+    detHtml=items.map(s=>{
+      const isDone=s.status==='done',isOv=!isDone&&isPast;
+      return`<div class="tw-irow">
+        <div class="tw-icb ${s.type==='hw'&&isDone?'tw-hw-done':isDone?'tw-done':''}" onclick="twToggleDone('${s.id}','${s.type}')"></div>
+        <div class="tw-iinfo">
+          <div class="tw-iname ${isDone?'tw-done-t':''}">${s.title}</div>
+          <div class="tw-imeta">
+            <div class="tw-idot" style="background:${s.type==='hw'?'#d97706':'var(--primary)'}"></div>
+            <span class="tw-ilbl">${s.type==='hw'?'家事':'任務'}</span>
+            ${isOv?`<span class="tw-ovbadge">逾期</span>`:''}
+          </div>
+        </div>
+        <div class="tw-ibtns">
+          ${!isDone?`<button class="tw-ib tw-dly" onclick="twOpenDelay('${s.id}','${s.type}',event)"><span class="material-symbols-outlined" style="font-size:17px">schedule</span></button>`:''}
+        </div>
+      </div>`;
+    }).join('');
+  }
+  // Add dropdown — tasks without date + housework without date (unscheduled)
+  const assignedTaskIds=new Set(items.filter(s=>s.isTask).map(s=>s.id));
+  const assignedHwIds=new Set(items.filter(s=>s.isHw).map(s=>s.id));
+  const unscheduledTasks=tasks.filter(t=>(!t.plannedDate||t.plannedDate!==d)&&t.status!=='已完成');
+  const unscheduledHw=housework.filter(h=>!assignedHwIds.has(h.id));
+  let dropHtml='';
+  if(isDropOpen){
+    let inner=`<div class="tw-dgh">📝 任務</div>`;
+    if(unscheduledTasks.length){unscheduledTasks.forEach(t=>{inner+=`<button onclick="twAssignTask('${t.id}','${d}',event)">${t.title}</button>`;});}
+    else{inner+=`<div style="padding:6px 13px;font-size:11px;color:var(--text-muted)">無可排任務</div>`;}
+    inner+=`<div class="tw-dgh" style="margin-top:2px">🏠 家事</div>`;
+    if(unscheduledHw.length){unscheduledHw.forEach(h=>{const already=assignedHwIds.has(h.id);inner+=`<button onclick="twAssignHw('${h.id}','${d}',event)" class="tw-hwo ${already?'tw-alr':''}">${h.name}${already?'<span class="tw-anote">已排</span>':''}</button>`;});}
+    else{inner+=`<div style="padding:6px 13px;font-size:11px;color:var(--text-muted)">無家事可排</div>`;}
+    dropHtml=`<div class="tw-adrop" id="tw-adrop-${d}">${inner}</div>`;
+  }
+  return`<div class="tw-dc ${isToday?'tw-today':''} ${isPast?'tw-past':''} ${hasOv?'tw-has-ov':''}" id="tw-dr-${d}" data-date="${d}">
+    <div class="tw-dhdr" onclick="twToggleDay('${d}')">
+      <div class="tw-ddate">
+        <div class="tw-dow">${TW_DOW[dowIdx]}</div>
+        <div class="tw-dom">${dt.getDate()}</div>
+      </div>
+      <div class="tw-pstrip">${pillHtml}</div>
+      <div class="tw-dright" onclick="event.stopPropagation()">
+        <div class="tw-dawrap">
+          <button class="tw-dabtn ${isDropOpen?'open':''}" onclick="twToggleDrop('${d}',event)">
+            <span class="material-symbols-outlined" style="font-size:15px">${isDropOpen?'close':'add'}</span>
+          </button>
+          ${dropHtml}
+        </div>
+        <span class="material-symbols-outlined tw-dchev ${isOpen?'open':''}">expand_more</span>
+      </div>
+    </div>
+    <div class="tw-ddet ${isOpen?'open':''}">${detHtml}</div>
+  </div>`;
+}
+
+// ── Actions ──
+function twToggleDay(d){if(twOpenDays.has(d))twOpenDays.delete(d);else twOpenDays.add(d);twOpenDropDay=null;twRender()}
+function twToggleDrop(d,e){
+  e.stopPropagation();twOpenDropDay=(twOpenDropDay===d)?null:d;twRender();
+  if(twOpenDropDay){requestAnimationFrame(()=>{const el=document.getElementById('tw-adrop-'+d);if(!el)return;if(el.getBoundingClientRect().bottom>window.innerHeight-100)el.classList.add('flip');});}
+}
+function twAssignTask(tid,d,e){
+  e.stopPropagation();
+  tasks=tasks.map(t=>t.id===tid?{...t,plannedDate:d,status:'待辦'}:t);
+  saveData();twOpenDropDay=null;twOpenDays.add(d);showToast('已排入 '+fmtD(d));twRender();
+}
+function twAssignHw(hid,d,e){
+  e.stopPropagation();
+  housework=housework.map(h=>h.id===hid?{...h,reminderDate:d}:h);
+  saveData();twOpenDropDay=null;twOpenDays.add(d);showToast('已排入 '+fmtD(d));twRender();
+}
+function twToggleDone(sid,stype){
+  if(stype==='task'){
+    tasks=tasks.map(t=>t.id===sid?{...t,status:t.status==='已完成'?'待辦':'已完成'}:t);
+    saveData();showToast('任務狀態已更新');
+  }else{
+    markHouseworkDone(sid);return;
+  }
+  twRender();
+}
+function twOpenDelay(sid,stype,e){
+  e.stopPropagation();twDelayTarget={sid,stype};
+  const name=stype==='task'?tasks.find(t=>t.id===sid)?.title:housework.find(h=>h.id===sid)?.name;
+  document.getElementById('tw-dly-name').textContent=name||'';
+  document.getElementById('tw-dlysh').classList.add('show');document.getElementById('tw-scrim').classList.add('show');
+}
+function twCloseDelay(){document.getElementById('tw-dlysh').classList.remove('show');document.getElementById('tw-scrim').classList.remove('show');}
+function twApplyDelay(days){
+  if(!twDelayTarget)return;
+  const{sid,stype}=twDelayTarget;
+  if(stype==='task'){tasks=tasks.map(t=>t.id===sid?{...t,plannedDate:addD(t.plannedDate||todayStr,days),status:'延後'}:t);}
+  else{housework=housework.map(h=>h.id===sid?{...h,reminderDate:addD(h.reminderDate||todayStr,days)}:h);}
+  saveData();twCloseDelay();showToast('已延後 '+days+' 天');twRender();
+}
+
+// ── Drag & Drop ──
+function twBindDragEvents(){
+  document.querySelectorAll('.tw-mp[data-draggable="true"]').forEach(el=>{
+    el.addEventListener('touchstart',twOnTouchStart,{passive:false});
+    el.addEventListener('mousedown',twOnMouseDown);
+  });
+}
+function twOnTouchStart(e){
+  const el=e.currentTarget;
+  twDrag.startX=e.touches[0].clientX;twDrag.startY=e.touches[0].clientY;twDrag.startEl=el;
+  twDrag.longPressTimer=setTimeout(()=>twStartDrag(el,twDrag.startX,twDrag.startY),350);
+  el.addEventListener('touchmove',twOnTouchMove,{passive:false});
+  el.addEventListener('touchend',twOnTouchEnd);
+  el.addEventListener('touchcancel',twCleanup);
+}
+function twOnTouchMove(e){
+  const dx=e.touches[0].clientX-twDrag.startX,dy=e.touches[0].clientY-twDrag.startY;
+  if(!twDrag.active){if(Math.abs(dx)>6||Math.abs(dy)>6){clearTimeout(twDrag.longPressTimer);twDrag.longPressTimer=null;}return;}
+  e.preventDefault();twMoveGhost(e.touches[0].clientX,e.touches[0].clientY);twHighlight(e.touches[0].clientX,e.touches[0].clientY);
+}
+function twOnTouchEnd(e){
+  clearTimeout(twDrag.longPressTimer);twDrag.longPressTimer=null;
+  if(!twDrag.active){twCleanup();return;}
+  const t=e.changedTouches[0];twDrop(t.clientX,t.clientY);twCleanup();
+}
+function twOnMouseDown(e){
+  if(e.button!==0)return;
+  const el=e.currentTarget;twDrag.startX=e.clientX;twDrag.startY=e.clientY;twDrag.startEl=el;
+  twDrag.longPressTimer=setTimeout(()=>twStartDrag(el,twDrag.startX,twDrag.startY),300);
+  document.addEventListener('mousemove',twOnMouseMove);document.addEventListener('mouseup',twOnMouseUp);
+}
+function twOnMouseMove(e){
+  const dx=e.clientX-twDrag.startX,dy=e.clientY-twDrag.startY;
+  if(!twDrag.active){if(Math.abs(dx)>6||Math.abs(dy)>6){clearTimeout(twDrag.longPressTimer);twDrag.longPressTimer=null;}return;}
+  twMoveGhost(e.clientX,e.clientY);twHighlight(e.clientX,e.clientY);
+}
+function twOnMouseUp(e){
+  clearTimeout(twDrag.longPressTimer);twDrag.longPressTimer=null;
+  document.removeEventListener('mousemove',twOnMouseMove);document.removeEventListener('mouseup',twOnMouseUp);
+  if(!twDrag.active){twCleanup();return;}
+  twDrop(e.clientX,e.clientY);twCleanup();
+}
+function twStartDrag(el,x,y){
+  twDrag.active=true;twDrag.sid=el.dataset.sid;twDrag.stype=el.dataset.stype;
+  el.classList.add('tw-dragging');
+  const ghost=document.createElement('div');
+  ghost.className='tw-drag-ghost '+(twDrag.stype==='hw'?'tw-hw-g':'tw-task-g');
+  ghost.innerHTML=`<span class="material-symbols-outlined" style="font-size:14px">drag_indicator</span>${el.textContent.trim()}`;
+  document.body.appendChild(ghost);twDrag.ghost=ghost;
+  twDragHintShown=true;
+  const hint=document.getElementById('tw-drag-hint');if(hint)hint.style.display='none';
+  twMoveGhost(x,y);navigator.vibrate&&navigator.vibrate(40);
+}
+function twMoveGhost(x,y){if(twDrag.ghost){twDrag.ghost.style.left=x+'px';twDrag.ghost.style.top=y+'px';}}
+function twHighlight(x,y){
+  document.querySelectorAll('.tw-dc').forEach(el=>el.classList.remove('tw-drag-over'));
+  const card=document.elementFromPoint(x,y)?.closest('.tw-dc');
+  if(card)card.classList.add('tw-drag-over');
+}
+function twDrop(x,y){
+  const card=document.elementFromPoint(x,y)?.closest('.tw-dc');
+  if(!card){twCleanup();return;}
+  const targetDate=card.dataset.date;
+  const {sid,stype}=twDrag;
+  const currentDate=twDrag.startEl?.dataset.date;
+  if(targetDate===currentDate){showToast('已在同一天','info');return;}
+  if(stype==='task'){tasks=tasks.map(t=>t.id===sid?{...t,plannedDate:targetDate}:t);}
+  else{housework=housework.map(h=>h.id===sid?{...h,reminderDate:targetDate}:h);}
+  saveData();twOpenDays.add(targetDate);showToast('已移至 '+fmtD(targetDate));
+}
+function twCleanup(){
+  twDrag.active=false;twDrag.sid=null;twDrag.stype=null;
+  twDrag.startEl?.classList.remove('tw-dragging');twDrag.startEl=null;
+  twDrag.ghost?.remove();twDrag.ghost=null;
+  clearTimeout(twDrag.longPressTimer);twDrag.longPressTimer=null;
+  document.querySelectorAll('.tw-dc').forEach(el=>el.classList.remove('tw-drag-over'));
+  document.querySelectorAll('.tw-mp').forEach(el=>{
+    el.removeEventListener('touchmove',twOnTouchMove);
+    el.removeEventListener('touchend',twOnTouchEnd);
+    el.removeEventListener('touchcancel',twCleanup);
+  });
+  twRender();
+}
+document.addEventListener('click',e=>{if(twOpenDropDay&&!e.target.closest('.tw-dawrap')){twOpenDropDay=null;twRender();}});
+
+
 // ── INIT ──────────────────────────────────────────────────
 loadData();renderAll();
+// Init TW weekly on load
+setTimeout(()=>{twRender();document.getElementById('tw-dr-'+todayStr)?.scrollIntoView({behavior:'smooth',block:'center'});},200);
 </script>
 </body>
 </html>
