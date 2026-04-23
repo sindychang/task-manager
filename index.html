@@ -1392,7 +1392,7 @@ function toggleAreaFilter(a){hwAreaFilter=hwAreaFilter===a?null:a;renderHousewor
 const LOC_META={'廚房':{icon:'🍳'},'浴室':{icon:'🚿'},'臥室':{icon:'🛏'},'客廳':{icon:'🛋'},'儲藏室':{icon:'📦'},'冰箱':{icon:'❄️'},'藥箱':{icon:'💊'},'其他':{icon:'📍'}};
 function lm(loc){return LOC_META[loc]||{icon:'📍'}}
 function fmtDateFull(s){if(!s)return '';return s.replace(/-/g,'/')}
-const INV_SOURCES={'蝦皮':'🛒','酷澎':'📦','全聯':'🏪','大潤發':'🏬','家樂福':'🏬','momo':'💻','藥局':'💊'};
+const INV_SOURCES={'蝦皮':'','酷澎':'','全聯':'','大潤發':'','家樂福':'','momo':'','藥局':''};
 function invSrcIcon(s){return s&&INV_SOURCES[s]?INV_SOURCES[s]+' ':''}
 
 function invExpiryStatus(it){
@@ -1780,14 +1780,18 @@ function invSaveItem(){
   const srcSel=document.getElementById('inv-f-source').value;
   const source=srcSel==='__custom'?document.getElementById('inv-f-source-custom').value.trim():srcSel;
   const subLocVal=document.getElementById('inv-f-subloc')?.value||'';
+  // 先把輸入框的值抓出來當字串判斷
+  const rawQty = document.getElementById('inv-f-qty').value;
+  const rawThr = document.getElementById('inv-f-threshold').value;
+  
   const obj={
     id:invEditingId||Date.now().toString(),type:invCurrentType,name,location,
     category,
     note:document.getElementById('inv-f-note').value.trim(),
     expiryDate:invCurrentType==='expiry'?document.getElementById('inv-f-expiry').value||null:null,
     restock:invRestockOn,qtyMode:invQtyMode,
-    qty:invRestockOn&&invQtyMode==='qty'?parseInt(document.getElementById('inv-f-qty').value)||0:null,
-    threshold:invRestockOn&&invQtyMode==='qty'?parseInt(document.getElementById('inv-f-threshold').value)||1:null,
+    qty:invRestockOn&&invQtyMode==='qty'?(rawQty===''?0:parseInt(rawQty)):null,
+    threshold:invRestockOn&&invQtyMode==='qty'?(rawThr===''?1:parseInt(rawThr)):null,
     ratio:invRestockOn&&invQtyMode==='ratio'?parseInt(document.getElementById('inv-f-ratio').value):null,
     ratioThr:invRestockOn&&invQtyMode==='ratio'?parseInt(document.getElementById('inv-f-ratio-thr').value):null,
     source:invRestockOn?source:'',
@@ -1801,7 +1805,17 @@ function invSaveItem(){
     }
   }
   if(invEditingId)inventory=inventory.map(x=>x.id===invEditingId?obj:x);else inventory.push(obj);
-  saveInv();closeModal('invItemModal');renderInventoryPage();
+  saveInv();
+  closeModal('invItemModal');
+
+  // 🌟 修正點：根據當前頁籤狀態，決定回傳到哪個畫面
+  if(invCurrentTab === 'floorplan') {
+    renderFloorplanPage(); // 回到平面圖及原區域清單
+  } else if(invCurrentTab === 'locmgr') {
+    renderLocMgrPage();    // 回到位置管理頁面
+  } else {
+    renderInventoryPage(); // 回到標準物品清單
+  }
 }
 
 // ── INVENTORY IMPORT ──────────────────────────────────────
@@ -1839,11 +1853,15 @@ function invHandleImport(e){
         const isRatio=restockRaw.includes('比例');
         const ratioThrRaw=parseInt(String(r[9]||'').replace('%',''))||25;
         
+        // 抓出匯入欄位的原始字串
+        const rawQty = String(r[8]||'').trim();
+        const rawThr = String(r[9]||'').trim();
+        
         invPendingImport.push({
           id:Date.now().toString()+i, type, name, location:loc, subLocationName:subLocName, 
           category:cat, note, expiryDate, restock, qtyMode:isRatio?'ratio':'qty',
-          qty:restock&&!isRatio?parseInt(r[8])||0:null,
-          threshold:restock&&!isRatio?parseInt(r[9])||1:null,
+          qty:restock&&!isRatio?(rawQty===''?0:parseInt(rawQty)):null,
+          threshold:restock&&!isRatio?(rawThr===''?1:parseInt(rawThr)):null,
           ratio:restock&&isRatio?50:null, ratioThr:restock&&isRatio?ratioThrRaw:null,
           source:String(r[10]||'').trim()
         });
