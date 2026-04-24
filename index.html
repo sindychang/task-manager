@@ -114,7 +114,7 @@
     /* ── MODALS ── */
     input[type="date"]{-webkit-appearance:none;appearance:auto}
     /* 改為 align-items:center 讓視窗垂直置中，並加上 padding 避免貼齊邊緣 */
-    .modal-overlay{display:none;position:fixed;inset:0;background:rgba(15,23,42,.55);z-index:1000;align-items:center;justify-content:center;padding:16px;backdrop-filter:blur(2px)}
+    .modal-overlay{display:none;position:fixed;inset:0;background:rgba(15,23,42,.55);z-index:2100;align-items:center;justify-content:center;padding:16px;backdrop-filter:blur(2px)}
     .modal-overlay.open{display:flex}
     /* 將 border-radius 改為四周都是 24px，並縮減 max-height 確保高度不會被截斷 */
     .modal-sheet{width:100%;max-width:480px;border-radius:24px;box-shadow:var(--shadow-lg);background:var(--surface);padding:24px 20px;max-height:80vh;overflow-y:auto}
@@ -196,7 +196,7 @@
     .hw-cb{width:22px;height:22px;border-radius:6px;border:2px solid #d1d5db;background:var(--surface);cursor:pointer;flex-shrink:0;display:flex;align-items:center;justify-content:center;transition:all .15s}
     .hw-cb.checked{background:var(--primary);border-color:var(--primary)}
     .hw-cb.checked::after{content:'';width:5px;height:9px;border:2px solid #fff;border-top:none;border-left:none;transform:rotate(40deg) translateY(-1px);display:block}
-    .float-batch-bar{position:fixed;bottom:90px;left:0;right:0;z-index:200;display:flex;justify-content:center;pointer-events:none}
+    .float-batch-bar{position:fixed;bottom:90px;left:0;right:0;z-index:200;display:flex;justify-content:center;pointer-events:auto}
     .float-batch-bar.show{pointer-events:all}
     .float-batch-inner{background:#1e293b;border-radius:18px;padding:10px 6px 10px 14px;display:flex;align-items:center;gap:6px;box-shadow:0 8px 32px rgba(0,0,0,.32);transform:translateY(24px);opacity:0;transition:transform .22s cubic-bezier(.34,1.56,.64,1),opacity .22s ease;max-width:calc(100vw - 24px);overflow-x:auto}
     .float-batch-bar.show .float-batch-inner{transform:translateY(0);opacity:1}
@@ -1396,6 +1396,9 @@ const INV_SOURCES={'蝦皮':'','酷澎':'','全聯':'','大潤發':'','家樂福
 function invSrcIcon(s){return s&&INV_SOURCES[s]?INV_SOURCES[s]+' ':''}
 
 function invExpiryStatus(it){
+  // 🌟 判斷：如果是效期物品，卻沒有填寫日期，直接回傳紅色緊急狀態
+  if(it.type === 'expiry' && !it.expiryDate) return {cls:'red', urgent:true, rowCls:'row-danger'};
+  
   if(!it.expiryDate)return null;
   const d=daysBetween(todayStr,it.expiryDate);
   if(d<0)return{cls:'red',urgent:true,rowCls:'row-danger'};
@@ -1574,11 +1577,16 @@ function invRenderRow(it,showLoc=true){
   const rowCls=invWorstCls(es,rs)||'';
 
   let rightHtml='';
-  if(it.type==='expiry'&&it.expiryDate){
-    const d=daysBetween(todayStr,it.expiryDate);
-    if(d<0)rightHtml+=`<div class="expiry-chip-row red">已過期</div>`;
-    else if(d<=7)rightHtml+=`<div class="expiry-chip-row red">${d} 天後到期</div>`;
-    else if(d<=14)rightHtml+=`<div class="expiry-chip-row amber">${d} 天後到期</div>`;
+  if(it.type==='expiry'){
+    if(it.expiryDate){
+      const d=daysBetween(todayStr,it.expiryDate);
+      if(d<0)rightHtml+=`<div class="expiry-chip-row red">已過期</div>`;
+      else if(d<=7)rightHtml+=`<div class="expiry-chip-row red">${d} 天後到期</div>`;
+      else if(d<=14)rightHtml+=`<div class="expiry-chip-row amber">${d} 天後到期</div>`;
+    } else {
+      // 🌟 顯示明顯的虛線警告標籤
+      rightHtml+=`<div class="expiry-chip-row red" style="border-style:dashed">⚠️ 未填效期</div>`;
+    }
   }
   if(it.restock){
     if(it.qtyMode==='ratio'){
@@ -1594,12 +1602,17 @@ function invRenderRow(it,showLoc=true){
   rightHtml+=`<button style="background:none;border:none;cursor:pointer;width:30px;height:30px;border-radius:6px;display:flex;align-items:center;justify-content:center;color:var(--text-muted);flex-shrink:0" onclick="invTogglePopup('${it.id}',event)"><span class="material-symbols-outlined" style="font-size:18px">more_vert</span></button>`;
 
   let detailHtml='';
-  if(it.type==='expiry'&&it.expiryDate){
-    const d=daysBetween(todayStr,it.expiryDate),pct=Math.max(0,Math.min(100,Math.round(d/365*100)));
-    const bc=d<0?'#dc2626':d<=14?'#d97706':'#059669';
-    const expiryStatus=d<0?'已過期':d===0?'今天到期':d+' 天後到期';
-    detailHtml+=`<div class="drow"><span class="dlabel">到期日</span><div style="display:flex;align-items:center;gap:6px" onclick="event.stopPropagation()"><input type="date" value="${it.expiryDate}" style="border:1px solid var(--border);border-radius:6px;padding:3px 7px;font-size:11px;font-weight:600;color:${bc};background:var(--bg);font-family:'Noto Sans TC',sans-serif;outline:none;cursor:pointer" onchange="invUpdateExpiry('${it.id}',this.value)"><span style="font-size:11px;font-weight:600;color:${bc}">${expiryStatus}</span></div></div>`;
-    detailHtml+=`<div class="drow"><span class="dlabel">效期剩餘</span><span class="dvalue"><span style="display:inline-block;width:80px;height:4px;background:var(--border-light);border-radius:99px;overflow:hidden;vertical-align:middle"><span style="display:block;width:${pct}%;height:100%;background:${bc};border-radius:99px"></span></span></span></div>`;
+  if(it.type==='expiry'){
+    if(it.expiryDate){
+      const d=daysBetween(todayStr,it.expiryDate),pct=Math.max(0,Math.min(100,Math.round(d/365*100)));
+      const bc=d<0?'#dc2626':d<=14?'#d97706':'#059669';
+      const expiryStatus=d<0?'已過期':d===0?'今天到期':d+' 天後到期';
+      detailHtml+=`<div class="drow"><span class="dlabel">到期日</span><div style="display:flex;align-items:center;gap:6px" onclick="event.stopPropagation()"><input type="date" value="${it.expiryDate}" style="border:1px solid var(--border);border-radius:6px;padding:3px 7px;font-size:11px;font-weight:600;color:${bc};background:var(--bg);font-family:'Noto Sans TC',sans-serif;outline:none;cursor:pointer" onchange="invUpdateExpiry('${it.id}',this.value)"><span style="font-size:11px;font-weight:600;color:${bc}">${expiryStatus}</span></div></div>`;
+      detailHtml+=`<div class="drow"><span class="dlabel">效期剩餘</span><span class="dvalue"><span style="display:inline-block;width:80px;height:4px;background:var(--border-light);border-radius:99px;overflow:hidden;vertical-align:middle"><span style="display:block;width:${pct}%;height:100%;background:${bc};border-radius:99px"></span></span></span></div>`;
+    } else {
+      // 🌟 當沒填日期時，顯示紅色的輸入框提示補填
+      detailHtml+=`<div class="drow"><span class="dlabel" style="color:#dc2626;font-weight:700">⚠️ 尚未填寫到期日</span><div style="display:flex;align-items:center;gap:6px" onclick="event.stopPropagation()"><input type="date" style="border:1.5px dashed #fca5a5;border-radius:6px;padding:3px 7px;font-size:11px;font-weight:600;color:#dc2626;background:#fef2f2;outline:none;cursor:pointer" onchange="invUpdateExpiry('${it.id}',this.value)"></div></div>`;
+    }
   }
   if(it.restock){
     if(it.qtyMode==='ratio'){
@@ -1719,12 +1732,17 @@ function invOnSourceChange(){
   const v=document.getElementById('inv-f-source').value;
   document.getElementById('inv-f-source-custom').style.display=v==='__custom'?'block':'none';
 }
-function invOpenAdd(){
+function invOpenAdd(prefillLoc = null, prefillSub = null){
   invEditingId=null;invCurrentType='item';invQtyMode='qty';invRestockOn=false;
   document.getElementById('inv-modal-title').textContent='新增物品';
   document.getElementById('inv-edit-id').value='';
   document.getElementById('inv-f-name').value='';document.getElementById('inv-f-note').value='';
-  document.getElementById('inv-f-location').value='廚房';document.getElementById('inv-f-category').value='日常用品';
+
+  // 🌟 修正點 1：自動帶入存放位置
+  const targetLoc = prefillLoc || '廚房';
+  document.getElementById('inv-f-location').value = targetLoc;
+
+  document.getElementById('inv-f-category').value='日常用品';
   document.getElementById('inv-f-category-custom').style.display='none';document.getElementById('inv-f-category-custom').value='';
   document.getElementById('inv-f-expiry').value='';
   document.getElementById('inv-f-qty').value='';document.getElementById('inv-f-threshold').value='1';
@@ -1736,7 +1754,10 @@ function invOpenAdd(){
   document.getElementById('inv-tgl-restock').classList.remove('on');
   document.getElementById('inv-g-restock').classList.remove('show');
   invSetMode('qty',document.getElementById('inv-mode-qty'));
-  invPopulateSublocDropdown('',null);
+
+  // 🌟 修正點 2：自動帶入並選取「細分位置」
+  invPopulateSublocDropdown(targetLoc, prefillSub);
+
   document.getElementById('invItemModal').classList.add('open');
 }
 function invOpenEdit(id){
@@ -2458,8 +2479,7 @@ function renderFloorplanPage(){
     const sl=room.subLocations.find(s=>s.id===fpHighlightSubloc);
     if(sl){
       const slItems=inventory.filter(it=>it.subLocationId===fpHighlightSubloc);
-      html+=`<div class="fp-wrap"><div class="fp-header"><div style="font-size:13px;font-weight:700;color:var(--text-primary)"># ${sl.name} 的物品</div><button onclick="fpHighlightSubloc=null;renderFloorplanPage()" style="background:none;border:none;cursor:pointer;font-size:12px;color:var(--text-muted)">清除篩選</button></div><div class="fp-item-list">`;
-      if(!slItems.length){html+=`<div style="padding:14px;text-align:center;font-size:12px;color:var(--text-muted)">此位置尚無物品</div>`;}
+      html+=`<div class="fp-wrap"><div class="fp-header"><div style="font-size:13px;font-weight:700;color:var(--text-primary)"># ${sl.name} 的物品</div><div style="display:flex;align-items:center;gap:12px"><button onclick="invOpenAdd('${room.name}','${sl.id}')" style="background:var(--primary);color:#fff;border:none;border-radius:6px;padding:5px 10px;font-size:11px;font-weight:700;cursor:pointer;display:flex;align-items:center;gap:3px"><span class="material-symbols-outlined" style="font-size:14px">add</span>新增</button><button onclick="fpHighlightSubloc=null;renderFloorplanPage()" style="background:none;border:none;cursor:pointer;font-size:12px;color:var(--text-muted)">清除</button></div></div><div class="fp-item-list">`;      if(!slItems.length){html+=`<div style="padding:14px;text-align:center;font-size:12px;color:var(--text-muted)">此位置尚無物品</div>`;}
       else slItems.forEach(it=>{const warn=(invExpiryStatus(it)?.urgent||invRestockStatus(it)?.urgent)?'<span style="font-size:10px;color:var(--danger);margin-left:6px">⚠️</span>':'';html+=`<div class="fp-item-row"><div class="fp-item-dot" style="background:${sl.color}"></div><div class="fp-item-name">${it.name}${warn}</div><div class="fp-item-cnt">${it.category||''}</div><button onclick="invOpenEdit('${it.id}')" style="background:none;border:none;cursor:pointer;padding:2px;color:var(--text-muted)"><span class="material-symbols-outlined" style="font-size:16px">edit</span></button></div>`;});
       html+=`</div></div>`;
     }
