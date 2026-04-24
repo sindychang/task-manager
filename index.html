@@ -822,7 +822,7 @@
       </div>
     </div>
     <div class="form-group"><label>物品名稱 *</label><input type="text" id="inv-f-name" placeholder="例：感冒藥、洗碗精"></div>
-    <div class="form-group"><label>存放位置</label><select id="inv-f-location" onchange="invOnLocationChange()"><option>廚房</option><option>浴室</option><option>臥室</option><option>客廳</option><option>儲藏室</option><option>冰箱</option><option>藥箱</option><option>其他</option></select></div>
+    <div class="form-group"><label>存放位置</label><select id="inv-f-location" onchange="invOnLocationChange()"><option>廚房</option><option>浴室</option><option>臥室</option><option>客廳</option><option>陽台</option><option>其他</option></select></div>
     <div class="form-group" id="inv-f-subloc-group"><label>細分位置 <span style="font-size:10px;color:var(--text-muted);font-weight:400">（選填）</span></label><select id="inv-f-subloc"><option value="">未設定</option></select></div>
     <div class="form-group"><label>物品類別</label>
       <select id="inv-f-category" onchange="invOnCatChange()">
@@ -868,7 +868,7 @@
       </div>
       <div class="form-group" style="margin-top:10px;margin-bottom:0"><label>補貨來源</label>
         <select id="inv-f-source" onchange="invOnSourceChange()">
-          <option value="">不指定</option><option>蝦皮</option><option>酷澎</option><option>全聯</option><option>大潤發</option><option>家樂福</option><option>momo</option><option>藥局</option><option value="__custom">自訂…</option>
+          <option value="">不指定</option><option>蝦皮</option><option>酷澎</option><option>全聯</option><option>Costco</option><option>淘寶</option><option>家裡</option><option>藥局</option><option value="__custom">自訂…</option>
         </select>
         <input type="text" id="inv-f-source-custom" placeholder="輸入來源名稱" style="display:none;margin-top:8px">
       </div>
@@ -1389,7 +1389,7 @@ function renderHouseworkPage(){
 function toggleAreaFilter(a){hwAreaFilter=hwAreaFilter===a?null:a;renderHouseworkPage()}
 
 // ── INVENTORY HELPERS ─────────────────────────────────────
-const LOC_META={'廚房':{icon:'🍳'},'浴室':{icon:'🚿'},'臥室':{icon:'🛏'},'客廳':{icon:'🛋'},'儲藏室':{icon:'📦'},'冰箱':{icon:'❄️'},'藥箱':{icon:'💊'},'其他':{icon:'📍'}};
+const LOC_META={'廚房':{icon:'🍳'},'浴室':{icon:'🚿'},'臥室':{icon:'🛏'},'客廳':{icon:'🛋'},'陽台':{icon:'📦'},'其他':{icon:'📍'}};
 function lm(loc){return LOC_META[loc]||{icon:'📍'}}
 function fmtDateFull(s){if(!s)return '';return s.replace(/-/g,'/')}
 const INV_SOURCES={'蝦皮':'','酷澎':'','全聯':'','大潤發':'','家樂福':'','momo':'','藥局':''};
@@ -2422,7 +2422,7 @@ const DL=[
   {id:'room-3',name:'浴室',icon:'🚿',bgColor:'#ECFEFF',subLocations:[{id:'subloc-7',name:'浴室收納櫃',color:'#0891b2',x:40,y:40,w:140,h:100},{id:'subloc-8',name:'鏡櫃',color:'#0284c7',x:220,y:40,w:120,h:80}]},
   {id:'room-4',name:'廚房',icon:'🍳',bgColor:'#FFFBEB',subLocations:[{id:'subloc-9',name:'流理台下',color:'#d97706',x:40,y:40,w:160,h:90},{id:'subloc-10',name:'冰箱旁',color:'#b45309',x:240,y:40,w:100,h:90}]},
   {id:'room-5',name:'藥箱',icon:'💊',bgColor:'#FFF5F5',subLocations:[{id:'subloc-11',name:'藥箱上層',color:'#dc2626',x:40,y:40,w:180,h:90},{id:'subloc-12',name:'藥箱下層',color:'#b91c1c',x:40,y:150,w:180,h:90}]},
-  {id:'room-6',name:'儲藏室',icon:'📦',bgColor:'#F8FAFC',subLocations:[{id:'subloc-13',name:'上層架',color:'#475569',x:40,y:30,w:200,h:80},{id:'subloc-14',name:'下層地板',color:'#64748b',x:40,y:140,w:200,h:80}]}
+  {id:'room-6',name:'陽台',icon:'📦',bgColor:'#F8FAFC',subLocations:[{id:'subloc-13',name:'上層架',color:'#475569',x:40,y:30,w:200,h:80},{id:'subloc-14',name:'下層地板',color:'#64748b',x:40,y:140,w:200,h:80}]}
 ];
 
 let locations=[];
