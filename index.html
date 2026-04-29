@@ -71,7 +71,7 @@
       --radius-sm:8px;--radius-md:14px;
     }
     *{font-family:'Noto Sans TC',sans-serif;-webkit-tap-highlight-color:transparent;box-sizing:border-box}
-    body{background:var(--bg);padding-bottom:84px;min-height:100vh;margin:0}
+    body{background:var(--bg);padding-bottom:60px;min-height:100vh;margin:0}
     .page{display:none}.page.active{display:block}
 
     /* ── NAV ── */
@@ -380,7 +380,7 @@
     .tw-prog-chips{display:flex;gap:5px;margin-top:5px;flex-wrap:wrap}
     .tw-chip{padding:2px 8px;border-radius:999px;font-size:10px;font-weight:700}
     /* Day cards */
-    .tw-wlist{display:flex;flex-direction:column;gap:6px}
+    .tw-wlist{display:flex;flex-direction:column;gap:6px;padding-bottom:60px}
     .tw-dc{background:var(--surface);border-radius:var(--radius-md);border:1px solid var(--border-light);box-shadow:var(--shadow-sm);overflow:visible;transition:box-shadow .15s,border-color .15s}
     .tw-dc.tw-today{border-color:var(--primary);box-shadow:0 0 0 1.5px var(--primary),var(--shadow-sm)}
     .tw-dc.tw-past{opacity:.72}
@@ -618,9 +618,19 @@
     <button class="inv-tab active" onclick="invSwitchTab('all',this)"><span class="material-symbols-outlined" style="font-size:13px">apps</span>全部<span class="tcnt" id="inv-cnt-all"></span></button>
     <button class="inv-tab" onclick="invSwitchTab('expiry',this)"><span class="material-symbols-outlined" style="font-size:13px">event</span>有效期限<span class="tcnt" id="inv-cnt-expiry"></span></button>
     <button class="inv-tab" onclick="invSwitchTab('restock',this)"><span class="material-symbols-outlined" style="font-size:13px">shopping_bag</span>補貨追蹤<span class="tcnt" id="inv-cnt-restock"></span></button>
-    <button class="inv-tab" onclick="invSwitchTab('location',this)"><span class="material-symbols-outlined" style="font-size:13px">place</span>位置索引<span class="tcnt" id="inv-cnt-loc"></span></button>
-    <button class="inv-tab" onclick="invSwitchTab('floorplan',this)"><span class="material-symbols-outlined" style="font-size:13px">map</span>平面圖</button>
+    <button class="inv-tab" id="inv-tab-location" onclick="invSwitchTab('location',this)"><span class="material-symbols-outlined" style="font-size:13px">place</span>位置<span class="tcnt" id="inv-cnt-loc"></span></button>
     <button class="inv-tab" onclick="invSwitchTab('locmgr',this)"><span class="material-symbols-outlined" style="font-size:13px">settings</span>位置管理</button>
+  </div>
+  <!-- 位置子模式切換列（只在 location tab 時顯示） -->
+  <div id="inv-loc-mode-bar" style="display:none;padding:8px 14px 0;max-width:640px;margin:0 auto">
+    <div style="display:flex;background:var(--border-light);border-radius:var(--radius-sm);padding:3px;gap:3px">
+      <button id="locmode-btn-list" class="lmgr-tab on" onclick="invSwitchLocMode('list')">
+        <span class="material-symbols-outlined" style="font-size:14px;vertical-align:-3px">list</span> 清單模式
+      </button>
+      <button id="locmode-btn-fp" class="lmgr-tab" onclick="invSwitchLocMode('fp')">
+        <span class="material-symbols-outlined" style="font-size:14px;vertical-align:-3px">map</span> 平面圖模式
+      </button>
+    </div>
   </div>
   <div class="inv-alert-strip" id="inv-alert-strip" style="display:none"></div>
   <div style="padding:0 14px;max-width:640px;margin:0 auto">
@@ -1429,13 +1439,41 @@ let invCurrentTab='all',invCurrentType='item',invEditingId=null;
 let invLocFilter=null,invCatFilter=null,invSrcFilter=null,invDateFrom=null,invDateTo=null;
 let invQtyMode='qty',invRestockOn=false,invFilterOpen=false,invLocFilterOpen=false,invPendingImport=[];
 
+let invLocMode='list'; // 'list' or 'fp'
+
 function invSwitchTab(tab,btn){
   invCurrentTab=tab;invLocFilter=null;invCatFilter=null;invSrcFilter=null;invDateFrom=null;invDateTo=null;
   document.querySelectorAll('.inv-tab').forEach(b=>b.classList.remove('active'));btn.classList.add('active');
   const si=document.getElementById('inv-search-input');if(si)si.value='';
-  if(tab==='floorplan'){renderFloorplanPage();return;}
+  // 子模式列只在 location tab 時顯示
+  const modeBar=document.getElementById('inv-loc-mode-bar');
+  if(modeBar)modeBar.style.display=tab==='location'?'block':'none';
+  if(tab==='location'){
+    invLocMode='list'; // 預設進入清單模式
+    _syncLocModeBtns();
+    renderInventoryPage();return;
+  }
   if(tab==='locmgr'){renderLocMgrPage();return;}
   renderInventoryPage();
+}
+
+function invSwitchLocMode(mode){
+  invLocMode=mode;
+  _syncLocModeBtns();
+  if(mode==='fp'){
+    // 隱藏 filter panels，渲染平面圖
+    const fp=document.getElementById('inv-filter-panel');if(fp)fp.style.display='none';
+    const lp=document.getElementById('inv-loc-filter-panel');if(lp)lp.style.display='none';
+    renderFloorplanPage();
+  } else {
+    renderInventoryPage();
+  }
+}
+
+function _syncLocModeBtns(){
+  const lb=document.getElementById('locmode-btn-list'),fb=document.getElementById('locmode-btn-fp');
+  if(lb){lb.classList.toggle('on',invLocMode==='list');}
+  if(fb){fb.classList.toggle('on',invLocMode==='fp');}
 }
 
 // ── INVENTORY FILTER PANEL ─────────────────────────────────
@@ -1532,6 +1570,7 @@ function renderInventoryPage(){
 
   // Location tab
   if(invCurrentTab==='location'){
+    if(invLocMode==='fp'){renderFloorplanPage();return;}
     const fp=document.getElementById('inv-filter-panel');if(fp)fp.style.display='none';
     const lp=document.getElementById('inv-loc-filter-panel');if(lp)lp.style.display='block';
     const q=(document.getElementById('inv-search-input')?.value||'').toLowerCase();
@@ -1829,9 +1868,9 @@ function invSaveItem(){
   saveInv();
   closeModal('invItemModal');
 
-  // 🌟 修正點：根據當前頁籤狀態，決定回傳到哪個畫面
-  if(invCurrentTab === 'floorplan') {
-    renderFloorplanPage(); // 回到平面圖及原區域清單
+  // 根據當前頁籤狀態，決定回傳到哪個畫面
+  if(invCurrentTab === 'location' && invLocMode === 'fp') {
+    renderFloorplanPage(); // 回到平面圖子模式
   } else if(invCurrentTab === 'locmgr') {
     renderLocMgrPage();    // 回到位置管理頁面
   } else {
@@ -2203,8 +2242,8 @@ function twRenderDay(d){
         <div class="tw-dom">${dt.getDate()}</div>
       </div>
       <div class="tw-pstrip">${pillHtml}</div>
-      <div class="tw-dright" onclick="event.stopPropagation()">
-        <div class="tw-dawrap">
+      <div class="tw-dright">
+        <div class="tw-dawrap" onclick="event.stopPropagation()">
           <button class="tw-dabtn ${isDropOpen?'open':''}" onclick="twToggleDrop('${d}',event)">
             <span class="material-symbols-outlined" style="font-size:15px">${isDropOpen?'close':'add'}</span>
           </button>
@@ -2371,6 +2410,7 @@ function twOnMouseUp(e){
 function twStartDrag(el,x,y){
   twDrag.active=true;twDrag.sid=el.dataset.sid;twDrag.stype=el.dataset.stype;
   el.classList.add('tw-dragging');
+  const nav = document.querySelector('nav'); if(nav) nav.style.pointerEvents = 'none';
   const ghost=document.createElement('div');
   ghost.className='tw-drag-ghost '+(twDrag.stype==='hw'?'tw-hw-g':'tw-task-g');
   ghost.innerHTML=`<span class="material-symbols-outlined" style="font-size:14px">drag_indicator</span>${el.textContent.trim()}`;
@@ -2398,6 +2438,7 @@ function twDrop(x,y){
 }
 function twCleanup(){
   twDrag.active=false;twDrag.sid=null;twDrag.stype=null;
+  const nav = document.querySelector('nav'); if(nav) nav.style.pointerEvents = '';
   twDrag.startEl?.classList.remove('tw-dragging');twDrag.startEl=null;
   twDrag.ghost?.remove();twDrag.ghost=null;
   clearTimeout(twDrag.longPressTimer);twDrag.longPressTimer=null;
@@ -2453,9 +2494,13 @@ function invPopulateSublocDropdown(locationName,selectedId){
 function invGoToFloorplan(sublocId){
   const room=locFindRoomBySubloc(sublocId);if(!room){showToast('找不到對應房間','error');return;}
   fpCurrentRoom=room.id;fpHighlightSubloc=sublocId;
-  invCurrentTab='floorplan';
+  invCurrentTab='location';invLocMode='fp';
+  // 切換 tab active 狀態
   document.querySelectorAll('.inv-tab').forEach(t=>t.classList.remove('active'));
-  const fpTab=[...document.querySelectorAll('.inv-tab')].find(t=>t.textContent.includes('平面圖'));if(fpTab)fpTab.classList.add('active');
+  const locTab=document.getElementById('inv-tab-location');if(locTab)locTab.classList.add('active');
+  // 顯示子模式列並切換到平面圖模式
+  const modeBar=document.getElementById('inv-loc-mode-bar');if(modeBar)modeBar.style.display='block';
+  _syncLocModeBtns();
   const fp=document.getElementById('inv-filter-panel');if(fp)fp.style.display='none';
   const lp=document.getElementById('inv-loc-filter-panel');if(lp)lp.style.display='none';
   renderFloorplanPage();
@@ -2468,24 +2513,61 @@ function renderFloorplanPage(){
   if(!fpCurrentRoom&&locations.length)fpCurrentRoom=locations[0].id;
   const room=locations.find(r=>r.id===fpCurrentRoom);
   const roomOpts=locations.map(r=>`<option value="${r.id}" ${r.id===fpCurrentRoom?'selected':''}>${r.icon} ${r.name}</option>`).join('');
-  let html=`<div class="fp-wrap"><div class="fp-header"><select class="fp-room-sel" style="width:100%;font-size:14px" onchange="fpSelectRoom(this.value)">${roomOpts||'<option>（無房間）</option>'}</select></div>`;  if(!room){html+='<div style="padding:32px;text-align:center;color:var(--text-muted)">請先在「位置管理」新增房間</div></div>';content.innerHTML=html;return;}
+  let html=`<div class="fp-wrap"><div class="fp-header"><select class="fp-room-sel" style="width:100%;font-size:14px" onchange="fpSelectRoom(this.value)">${roomOpts||'<option>（無房間）</option>'}</select></div>`;
+  if(!room){html+='<div style="padding:32px;text-align:center;color:var(--text-muted)">請先在「位置管理」新增房間</div></div>';content.innerHTML=html;return;}
   const W=600,H=400;let svgInner='';
   room.subLocations.forEach(sl=>{
     const cnt=inventory.filter(it=>it.subLocationId===sl.id).length,isHL=fpHighlightSubloc===sl.id;
-    svgInner+=`<g onclick="fpClickSubloc('${sl.id}',event)" style="cursor:pointer"><rect x="${sl.x}" y="${sl.y}" width="${sl.w}" height="${sl.h}" fill="${sl.color}" fill-opacity="${isHL?'0.38':'0.18'}" stroke="${sl.color}" stroke-width="${isHL?3:1.5}" rx="6"/><text x="${sl.x+sl.w/2}" y="${sl.y+sl.h/2-6}" text-anchor="middle" font-size="11" font-weight="700" fill="${sl.color}" font-family="Noto Sans TC,sans-serif">${sl.name}</text><text x="${sl.x+sl.w/2}" y="${sl.y+sl.h/2+10}" text-anchor="middle" font-size="10" fill="${sl.color}" font-family="Noto Sans TC,sans-serif" opacity="0.8">${cnt} 件</text></g>`;
+    const hasUrgent=inventory.filter(it=>it.subLocationId===sl.id).some(it=>invExpiryStatus(it)?.urgent||invRestockStatus(it)?.urgent);
+    svgInner+=`<g onclick="fpClickSubloc('${sl.id}',event)" style="cursor:pointer">
+      <rect x="${sl.x}" y="${sl.y}" width="${sl.w}" height="${sl.h}" fill="${sl.color}" fill-opacity="${isHL?'0.38':'0.18'}" stroke="${sl.color}" stroke-width="${isHL?3:1.5}" rx="6"/>
+      ${hasUrgent?`<circle cx="${sl.x+sl.w-8}" cy="${sl.y+8}" r="5" fill="#dc2626"/>`:''} 
+      <text x="${sl.x+sl.w/2}" y="${sl.y+sl.h/2-6}" text-anchor="middle" font-size="11" font-weight="700" fill="${sl.color}" font-family="Noto Sans TC,sans-serif">${sl.name}</text>
+      <text x="${sl.x+sl.w/2}" y="${sl.y+sl.h/2+10}" text-anchor="middle" font-size="10" fill="${sl.color}" font-family="Noto Sans TC,sans-serif" opacity="0.8">${cnt} 件</text>
+    </g>`;
   });
   html+=`<div class="fp-svg-area"><svg width="${W}" height="${H}" viewBox="0 0 ${W} ${H}" style="background:${room.bgColor};border-radius:8px;max-width:100%">${svgInner}</svg></div></div>`;
+
   if(fpHighlightSubloc){
     const sl=room.subLocations.find(s=>s.id===fpHighlightSubloc);
     if(sl){
       const slItems=inventory.filter(it=>it.subLocationId===fpHighlightSubloc);
-      html+=`<div class="fp-wrap"><div class="fp-header"><div style="font-size:13px;font-weight:700;color:var(--text-primary)"># ${sl.name} 的物品</div><div style="display:flex;align-items:center;gap:12px"><button onclick="invOpenAdd('${room.name}','${sl.id}')" style="background:var(--primary);color:#fff;border:none;border-radius:6px;padding:5px 10px;font-size:11px;font-weight:700;cursor:pointer;display:flex;align-items:center;gap:3px"><span class="material-symbols-outlined" style="font-size:14px">add</span>新增</button><button onclick="fpHighlightSubloc=null;renderFloorplanPage()" style="background:none;border:none;cursor:pointer;font-size:12px;color:var(--text-muted)">清除</button></div></div><div class="fp-item-list">`;      if(!slItems.length){html+=`<div style="padding:14px;text-align:center;font-size:12px;color:var(--text-muted)">此位置尚無物品</div>`;}
-      else slItems.forEach(it=>{const warn=(invExpiryStatus(it)?.urgent||invRestockStatus(it)?.urgent)?'<span style="font-size:10px;color:var(--danger);margin-left:6px">⚠️</span>':'';html+=`<div class="fp-item-row"><div class="fp-item-dot" style="background:${sl.color}"></div><div class="fp-item-name">${it.name}${warn}</div><div class="fp-item-cnt">${it.category||''}</div><button onclick="invOpenEdit('${it.id}')" style="background:none;border:none;cursor:pointer;padding:2px;color:var(--text-muted)"><span class="material-symbols-outlined" style="font-size:16px">edit</span></button></div>`;});
-      html+=`</div></div>`;
+      html+=`<div class="fp-wrap">
+        <div class="fp-header">
+          <div style="display:flex;align-items:center;gap:8px">
+            <div style="width:8px;height:8px;border-radius:50%;background:${sl.color};flex-shrink:0"></div>
+            <span style="font-size:13px;font-weight:700;color:var(--text-primary)">${sl.name}</span>
+            <span style="font-size:11px;color:var(--text-muted)">${slItems.length} 件</span>
+          </div>
+          <div style="display:flex;align-items:center;gap:8px">
+            <button onclick="invOpenAdd('${room.name}','${sl.id}')" style="background:var(--primary);color:#fff;border:none;border-radius:6px;padding:5px 10px;font-size:11px;font-weight:700;cursor:pointer;display:flex;align-items:center;gap:3px"><span class="material-symbols-outlined" style="font-size:14px">add</span>新增</button>
+            <button onclick="fpHighlightSubloc=null;renderFloorplanPage()" style="background:none;border:none;cursor:pointer;padding:4px;color:var(--text-muted)"><span class="material-symbols-outlined" style="font-size:18px">close</span></button>
+          </div>
+        </div>`;
+      if(!slItems.length){
+        html+=`<div style="padding:20px 14px;text-align:center;font-size:12px;color:var(--text-muted)">此位置尚無物品，點「新增」來加入</div>`;
+      }else{
+        // 使用完整的 invRenderRow，與位置索引一致
+        html+=`<div class="inv-list" style="border-radius:0;border:none;box-shadow:none">${slItems.map(it=>invRenderRow(it,false)).join('')}</div>`;
+      }
+      html+=`</div>`;
     }
   }else{
     html+=`<div class="fp-wrap"><div class="fp-header"><div style="font-size:13px;font-weight:700;color:var(--text-primary)">點擊區域查看物品</div></div><div class="fp-item-list">`;
-    room.subLocations.forEach(sl=>{const cnt=inventory.filter(it=>it.subLocationId===sl.id).length;html+=`<div class="fp-item-row" onclick="fpClickSubloc('${sl.id}',event)" style="cursor:pointer"><div class="fp-item-dot" style="background:${sl.color}"></div><div class="fp-item-name">${sl.name}</div><div class="fp-item-cnt">${cnt} 件物品</div><span class="material-symbols-outlined" style="font-size:16px;color:var(--text-muted)">chevron_right</span></div>`;});
+    if(!room.subLocations.length){
+      html+=`<div style="padding:14px;text-align:center;font-size:12px;color:var(--text-muted)">此房間尚無細分位置，請至「位置管理」設定</div>`;
+    }else{
+      room.subLocations.forEach(sl=>{
+        const cnt=inventory.filter(it=>it.subLocationId===sl.id).length;
+        const hasUrgent=inventory.filter(it=>it.subLocationId===sl.id).some(it=>invExpiryStatus(it)?.urgent||invRestockStatus(it)?.urgent);
+        html+=`<div class="fp-item-row" onclick="fpClickSubloc('${sl.id}',event)" style="cursor:pointer">
+          <div class="fp-item-dot" style="background:${sl.color}"></div>
+          <div class="fp-item-name">${sl.name}</div>
+          <div class="fp-item-cnt">${cnt} 件物品${hasUrgent?' ⚠️':''}</div>
+          <span class="material-symbols-outlined" style="font-size:16px;color:var(--text-muted)">chevron_right</span>
+        </div>`;
+      });
+    }
     html+=`</div></div>`;
   }
   content.innerHTML=html;
