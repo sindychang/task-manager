@@ -71,7 +71,7 @@
       --radius-sm:8px;--radius-md:14px;
     }
     *{font-family:'Noto Sans TC',sans-serif;-webkit-tap-highlight-color:transparent;box-sizing:border-box}
-    body{background:var(--bg);padding-bottom:60px;min-height:100vh;margin:0}
+    body{background:var(--bg);padding-bottom:calc(env(safe-area-inset-bottom,0px) + 80px);min-height:100vh;margin:0}
     .page{display:none}.page.active{display:block}
 
     /* ── NAV ── */
@@ -90,6 +90,8 @@
     .fp-wrap{background:var(--surface);border-radius:var(--radius-md);border:1px solid var(--border-light);box-shadow:var(--shadow-sm);overflow:hidden;margin-bottom:12px}
     .fp-header{display:flex;align-items:center;justify-content:space-between;padding:12px 14px;border-bottom:1px solid var(--border-light)}
     .fp-room-sel{padding:6px 12px;border:1px solid var(--border);border-radius:var(--radius-sm);font-size:13px;font-weight:600;color:var(--text-primary);background:var(--surface);cursor:pointer;font-family:'Noto Sans TC',sans-serif}
+    .fp-room-chip-bar{display:flex;flex-wrap:wrap;gap:6px;padding:6px 0 10px;overflow-x:auto}
+    .fp-room-chip-bar::-webkit-scrollbar{display:none}
     .fp-svg-area{width:100%;overflow-x:auto;padding:8px}
     .fp-svg-area svg{display:block;margin:0 auto}
     .fp-item-list{padding:8px 14px}
@@ -196,10 +198,10 @@
     .hw-cb{width:22px;height:22px;border-radius:6px;border:2px solid #d1d5db;background:var(--surface);cursor:pointer;flex-shrink:0;display:flex;align-items:center;justify-content:center;transition:all .15s}
     .hw-cb.checked{background:var(--primary);border-color:var(--primary)}
     .hw-cb.checked::after{content:'';width:5px;height:9px;border:2px solid #fff;border-top:none;border-left:none;transform:rotate(40deg) translateY(-1px);display:block}
-    .float-batch-bar{position:fixed;bottom:90px;left:0;right:0;z-index:200;display:flex;justify-content:center;pointer-events:auto}
+    .float-batch-bar{position:fixed;bottom:90px;left:0;right:0;z-index:200;display:flex;justify-content:center;pointer-events:none}
     .float-batch-bar.show{pointer-events:all}
-    .float-batch-inner{background:#1e293b;border-radius:18px;padding:10px 6px 10px 14px;display:flex;align-items:center;gap:6px;box-shadow:0 8px 32px rgba(0,0,0,.32);transform:translateY(24px);opacity:0;transition:transform .22s cubic-bezier(.34,1.56,.64,1),opacity .22s ease;max-width:calc(100vw - 24px);overflow-x:auto}
-    .float-batch-bar.show .float-batch-inner{transform:translateY(0);opacity:1}
+    .float-batch-inner{background:#1e293b;border-radius:18px;padding:10px 6px 10px 14px;display:flex;align-items:center;gap:6px;box-shadow:0 8px 32px rgba(0,0,0,.32);transform:translateY(24px);opacity:0;transition:transform .22s cubic-bezier(.34,1.56,.64,1),opacity .22s ease;max-width:calc(100vw - 24px);overflow-x:auto;pointer-events:none}
+    .float-batch-bar.show .float-batch-inner{transform:translateY(0);opacity:1;pointer-events:auto}
     .float-batch-count{color:#94a3b8;font-size:12px;font-weight:700;white-space:nowrap;padding-right:4px;border-right:1px solid rgba(255,255,255,.15);margin-right:2px}
     .fba{background:rgba(255,255,255,.1);color:#fff;border:none;border-radius:10px;padding:8px 11px;font-size:12px;font-weight:700;cursor:pointer;display:flex;align-items:center;gap:5px;transition:background .13s;white-space:nowrap;flex-shrink:0}
     .fba:active{transform:scale(.95)}
@@ -296,8 +298,30 @@
     .inv-content{max-width:640px;margin:0 auto;padding:10px 16px}
     .inv-sec-head{display:flex;align-items:center;justify-content:space-between;margin:10px 0 6px}
     .inv-sec-title{font-size:10px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--text-muted)}
-    .inv-sec-title.red{color:#dc2626}.inv-sec-title.orange{color:#c2410c}
+    .inv-sec-title.red{color:#dc2626}.inv-sec-title.orange{color:#c2410c}.inv-sec-title.amber{color:#a16207}
     .inv-list{background:var(--surface);border-radius:var(--radius-md);border:1px solid var(--border-light);box-shadow:var(--shadow-sm);overflow:hidden;margin-bottom:10px}
+    .missing-list{background:#fffbeb;border:1.5px dashed #fcd34d;box-shadow:none}
+    .missing-list .inv-row{background:transparent}
+    .missing-head{margin-top:4px}
+    .shop-bar{display:flex;align-items:center;justify-content:space-between;gap:10px;background:linear-gradient(135deg,#fff7ed,#fffbeb);border:1px solid #fed7aa;border-radius:12px;padding:9px 12px;margin:8px 0 10px}
+    .shop-bar-info{display:flex;align-items:center;gap:8px;min-width:0;flex:1}
+    .shop-bar-acts{display:flex;gap:6px;flex-shrink:0}
+    .shop-bar-btn{display:inline-flex;align-items:center;gap:4px;padding:6px 10px;border-radius:8px;border:1px solid var(--border);background:var(--surface);font-size:11px;font-weight:700;color:var(--text-secondary);cursor:pointer;font-family:'Noto Sans TC',sans-serif;transition:all .15s}
+    .shop-bar-btn:hover{border-color:#d97706;color:#d97706}
+    .shop-bar-btn.primary{background:#d97706;border-color:#d97706;color:#fff}
+    .shop-bar-btn.primary:hover{background:#b45309}
+    /* 滑動快速操作 */
+    .inv-swipe-wrap{position:relative;overflow:hidden;touch-action:pan-y}
+    .inv-swipe-wrap .inv-row{position:relative;z-index:1;background:var(--surface);transition:transform .25s cubic-bezier(.2,.7,.3,1);will-change:transform}
+    .inv-swipe-wrap.swiped .inv-row{transform:translateX(var(--swipe-w,-180px))}
+    .inv-row-actions{position:absolute;top:0;right:0;height:100%;display:flex;align-items:stretch;z-index:0}
+    .swipe-act{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;width:60px;border:none;cursor:pointer;font-size:10.5px;font-weight:700;color:#fff;font-family:'Noto Sans TC',sans-serif;padding:0}
+    .swipe-act.sw-amber{background:#d97706}
+    .swipe-act.sw-green{background:#059669}
+    .swipe-act.sw-red{background:#dc2626}
+    .swipe-act.sw-blue{background:#0369a1}
+    .swipe-act:active{filter:brightness(.92)}
+    .inv-swipe-wrap.swiped{--swipe-w:calc(-1 * var(--actions-w,180px))}
     .inv-item-wrap{position:relative}
     .inv-row{display:flex;align-items:center;gap:8px;padding:11px 10px 11px 13px;border-bottom:1px solid var(--border-light);cursor:pointer;transition:background .1s;border-left:3px solid transparent}
     .inv-row:last-child{border-bottom:none}
@@ -615,11 +639,17 @@
 
 <div id="page-inventory" class="page">
   <div class="inv-tab-bar">
-    <button class="inv-tab active" onclick="invSwitchTab('all',this)"><span class="material-symbols-outlined" style="font-size:13px">apps</span>全部<span class="tcnt" id="inv-cnt-all"></span></button>
-    <button class="inv-tab" onclick="invSwitchTab('expiry',this)"><span class="material-symbols-outlined" style="font-size:13px">event</span>有效期限<span class="tcnt" id="inv-cnt-expiry"></span></button>
-    <button class="inv-tab" onclick="invSwitchTab('restock',this)"><span class="material-symbols-outlined" style="font-size:13px">shopping_bag</span>補貨追蹤<span class="tcnt" id="inv-cnt-restock"></span></button>
+    <button class="inv-tab active" onclick="invSwitchTab('alert',this)"><span class="material-symbols-outlined" style="font-size:13px">notifications_active</span>待注意<span class="tcnt" id="inv-cnt-alert"></span></button>
     <button class="inv-tab" id="inv-tab-location" onclick="invSwitchTab('location',this)"><span class="material-symbols-outlined" style="font-size:13px">place</span>位置<span class="tcnt" id="inv-cnt-loc"></span></button>
     <button class="inv-tab" onclick="invSwitchTab('locmgr',this)"><span class="material-symbols-outlined" style="font-size:13px">settings</span>位置管理</button>
+  </div>
+  <!-- 待注意子篩選列（只在 alert tab 時顯示） -->
+  <div id="inv-alert-sub-bar" style="display:none;padding:8px 14px 0;max-width:640px;margin:0 auto">
+    <div style="display:flex;background:var(--border-light);border-radius:var(--radius-sm);padding:3px;gap:3px">
+      <button id="alertsub-btn-all" class="lmgr-tab on" onclick="invSwitchAlertSub('all')">全部待注意</button>
+      <button id="alertsub-btn-expiry" class="lmgr-tab" onclick="invSwitchAlertSub('expiry')">效期管理</button>
+      <button id="alertsub-btn-restock" class="lmgr-tab" onclick="invSwitchAlertSub('restock')">補貨追蹤</button>
+    </div>
   </div>
   <!-- 位置子模式切換列（只在 location tab 時顯示） -->
   <div id="inv-loc-mode-bar" style="display:none;padding:8px 14px 0;max-width:640px;margin:0 auto">
@@ -1468,11 +1498,12 @@ function invWorstCls(es,rs){
 }
 
 // ── INVENTORY STATE ────────────────────────────────────────
-let invCurrentTab='all',invCurrentType='item',invEditingId=null;
+let invCurrentTab='alert',invCurrentType='item',invEditingId=null;
 let invLocFilter=null,invCatFilter=null,invSrcFilter=null,invDateFrom=null,invDateTo=null;
 let invQtyMode='qty',invRestockOn=false,invFilterOpen=false,invLocFilterOpen=false,invPendingImport=[];
 
 let invLocMode='list'; // 'list' or 'fp'
+let invAlertSubMode='all'; // 'all' | 'expiry' | 'restock' （待注意頁簽下的子篩選）
 
 function invSwitchTab(tab,btn){
   invCurrentTab=tab;invLocFilter=null;invCatFilter=null;invSrcFilter=null;invDateFrom=null;invDateTo=null;
@@ -1481,13 +1512,36 @@ function invSwitchTab(tab,btn){
   // 子模式列只在 location tab 時顯示
   const modeBar=document.getElementById('inv-loc-mode-bar');
   if(modeBar)modeBar.style.display=tab==='location'?'block':'none';
+  // 待注意子篩選列只在 alert tab 時顯示
+  const alertBar=document.getElementById('inv-alert-sub-bar');
+  if(alertBar)alertBar.style.display=tab==='alert'?'block':'none';
+  if(tab==='alert'){
+    invAlertSubMode='all'; // 預設「全部待注意」
+    _syncAlertSubBtns();
+    renderInventoryPage();return;
+  }
   if(tab==='location'){
-    invLocMode='list'; // 預設進入清單模式
+    invLocMode='fp'; // 預設進入平面圖模式
     _syncLocModeBtns();
     renderInventoryPage();return;
   }
   if(tab==='locmgr'){renderLocMgrPage();return;}
   renderInventoryPage();
+}
+
+function invSwitchAlertSub(mode){
+  invAlertSubMode=mode;
+  // 切換子篩選時重置會被影響到的篩選條件
+  invDateFrom=null;invDateTo=null;invSrcFilter=null;
+  _syncAlertSubBtns();
+  renderInventoryPage();
+}
+
+function _syncAlertSubBtns(){
+  ['all','expiry','restock'].forEach(m=>{
+    const b=document.getElementById('alertsub-btn-'+m);
+    if(b)b.classList.toggle('on',invAlertSubMode===m);
+  });
 }
 
 function invSwitchLocMode(mode){
@@ -1545,15 +1599,27 @@ function invRenderFilterPanel(){
   [null,...cats].forEach(c=>{const a=(invCatFilter===null&&c===null)||(invCatFilter===c&&c!==null);ch+=`<button class="inv-chip${a?' active':''}" onclick="invSetCat(${c===null?'null':`'${c}'`})">${c||'全部'}</button>`;});
 
   let th='';
-  if(invCurrentTab==='expiry'){
-    th=`<span class="inv-filter-row-label">效期</span>
-      <input type="date" value="${invDateFrom||''}" onchange="invSetDateFrom(this.value)" style="height:26px;font-size:11px;padding:0 7px;border:1px solid var(--border);border-radius:var(--radius-sm);background:var(--surface);color:var(--text-primary);font-family:'Noto Sans TC',sans-serif;outline:none;flex-shrink:0;max-width:130px">
-      <span style="font-size:11px;color:var(--text-muted);flex-shrink:0">至</span>
-      <input type="date" value="${invDateTo||''}" onchange="invSetDateTo(this.value)" style="height:26px;font-size:11px;padding:0 7px;border:1px solid var(--border);border-radius:var(--radius-sm);background:var(--surface);color:var(--text-primary);font-family:'Noto Sans TC',sans-serif;outline:none;flex-shrink:0;max-width:130px">`;
+  // 是否要顯示第三列：效期 / 來源 / 隱藏
+  // - 待注意 + 效期管理：顯示日期範圍
+  // - 待注意 + 補貨追蹤：顯示來源
+  // - 待注意 + 全部待注意：隱藏第三列
+  // - 其他頁簽：維持原邏輯（expiry → 日期、其餘 → 來源）
+  const isAlertAll=(invCurrentTab==='alert'&&invAlertSubMode==='all');
+  const showExpiryRange=(invCurrentTab==='expiry')||(invCurrentTab==='alert'&&invAlertSubMode==='expiry');
+  if(isAlertAll){
+    thirdRow.style.display='none';
   }else{
-    th=`<span class="inv-filter-row-label">來源</span>`;
-    if(srcs.length){[null,...srcs].forEach(s=>{const a=(invSrcFilter===null&&s===null)||(invSrcFilter===s&&s!==null);th+=`<button class="inv-chip${a?' active':''}" onclick="invSetSrc(${s===null?'null':`'${s}'`})">${s?invSrcIcon(s)+s:'全部'}</button>`;});}
-    else{th+=`<span style="font-size:11px;color:var(--text-muted)">（無補貨來源）</span>`;}
+    thirdRow.style.display='';
+    if(showExpiryRange){
+      th=`<span class="inv-filter-row-label">效期</span>
+        <input type="date" value="${invDateFrom||''}" onchange="invSetDateFrom(this.value)" style="height:26px;font-size:11px;padding:0 7px;border:1px solid var(--border);border-radius:var(--radius-sm);background:var(--surface);color:var(--text-primary);font-family:'Noto Sans TC',sans-serif;outline:none;flex-shrink:0;max-width:130px">
+        <span style="font-size:11px;color:var(--text-muted);flex-shrink:0">至</span>
+        <input type="date" value="${invDateTo||''}" onchange="invSetDateTo(this.value)" style="height:26px;font-size:11px;padding:0 7px;border:1px solid var(--border);border-radius:var(--radius-sm);background:var(--surface);color:var(--text-primary);font-family:'Noto Sans TC',sans-serif;outline:none;flex-shrink:0;max-width:130px">`;
+    }else{
+      th=`<span class="inv-filter-row-label">來源</span>`;
+      if(srcs.length){[null,...srcs].forEach(s=>{const a=(invSrcFilter===null&&s===null)||(invSrcFilter===s&&s!==null);th+=`<button class="inv-chip${a?' active':''}" onclick="invSetSrc(${s===null?'null':`'${s}'`})">${s?invSrcIcon(s)+s:'全部'}</button>`;});}
+      else{th+=`<span style="font-size:11px;color:var(--text-muted)">（無補貨來源）</span>`;}
+    }
   }
 
   locRow.innerHTML=lh; catRow.innerHTML=ch; thirdRow.innerHTML=th;
@@ -1572,6 +1638,12 @@ function invRenderFilterPanel(){
 // ── INVENTORY FILTER / POOL ────────────────────────────────
 function invFilterByTab(){
   if(invCurrentTab==='all')return inventory;
+  if(invCurrentTab==='alert'){
+    if(invAlertSubMode==='expiry')return inventory.filter(it=>it.type==='expiry');
+    if(invAlertSubMode==='restock')return inventory.filter(it=>it.restock);
+    // 全部待注意：有效期限物品 ∪ 需補貨物品
+    return inventory.filter(it=>it.type==='expiry'||it.restock);
+  }
   if(invCurrentTab==='expiry')return inventory.filter(it=>it.type==='expiry');
   if(invCurrentTab==='restock')return inventory.filter(it=>it.restock);
   if(invCurrentTab==='location')return inventory;
@@ -1591,10 +1663,13 @@ function invFilterPool(){
 function renderInventoryPage(){
   const strip=document.getElementById('inv-alert-strip'),content=document.getElementById('inv-content');
   if(!strip||!content)return;
-  document.getElementById('inv-cnt-all').textContent=inventory.length;
-  document.getElementById('inv-cnt-expiry').textContent=inventory.filter(i=>i.type==='expiry').length;
-  document.getElementById('inv-cnt-restock').textContent=inventory.filter(i=>i.restock).length;
-  document.getElementById('inv-cnt-loc').textContent=inventory.length;
+  // 待注意徽章：有效期限物品 ∪ 需補貨物品 的聯集數
+  const alertCnt=inventory.filter(i=>i.type==='expiry'||i.restock).length;
+  const cntAlertEl=document.getElementById('inv-cnt-alert');if(cntAlertEl)cntAlertEl.textContent=alertCnt;
+  const cntLocEl=document.getElementById('inv-cnt-loc');if(cntLocEl)cntLocEl.textContent=inventory.length;
+  // 確保進入頁面時 alert sub-bar 在 alert 頁簽下顯示
+  const _alertBar=document.getElementById('inv-alert-sub-bar');
+  if(_alertBar)_alertBar.style.display=invCurrentTab==='alert'?'block':'none';
 
   invRenderFilterPanel();
 
@@ -1627,24 +1702,84 @@ function renderInventoryPage(){
   const lp=document.getElementById('inv-loc-filter-panel');if(lp)lp.style.display='none';
 
   let pool=invFilterPool();
-  pool.sort((a,b)=>{
+  // 🌟 把「未填效期」獨立成一個分區，不混在 urgent 裡
+  const missingDate=pool.filter(it=>it.type==='expiry'&&!it.expiryDate);
+  const datedPool=pool.filter(it=>!(it.type==='expiry'&&!it.expiryDate));
+  datedPool.sort((a,b)=>{
     function s(it){if(invExpiryStatus(it)?.urgent||invRestockStatus(it)?.urgent)return 0;if(invExpiryStatus(it)?.cls==='orange'||invRestockStatus(it)?.cls==='orange')return 1;return 2;}
     return s(a)-s(b)||a.name.localeCompare(b.name);
   });
-  const urgent=pool.filter(it=>invExpiryStatus(it)?.urgent||invRestockStatus(it)?.urgent);
-  const warn=pool.filter(it=>!urgent.includes(it)&&(invExpiryStatus(it)?.cls==='orange'||invRestockStatus(it)?.cls==='orange'));
-  const normal=pool.filter(it=>!urgent.includes(it)&&!warn.includes(it));
+  const urgent=datedPool.filter(it=>invExpiryStatus(it)?.urgent||invRestockStatus(it)?.urgent);
+  const warn=datedPool.filter(it=>!urgent.includes(it)&&(invExpiryStatus(it)?.cls==='orange'||invRestockStatus(it)?.cls==='orange'));
+  const normal=datedPool.filter(it=>!urgent.includes(it)&&!warn.includes(it));
   let html='';
+  // 🛒 補貨追蹤頁面頂端：購物清單動作列（只在 alert + 補貨追蹤 / restock 頁簽顯示）
+  if((invCurrentTab==='alert'&&invAlertSubMode==='restock')||invCurrentTab==='restock'){
+    const lowItems=pool.filter(it=>{
+      if(!it.restock)return false;
+      if(it.qtyMode==='ratio'){const r=it.ratio??100,t=it.ratioThr??25;return r<=t;}
+      const q=it.qty??0,thr=it.threshold??1;return q<=thr;
+    });
+    if(lowItems.length){
+      html+=`<div class="shop-bar"><div class="shop-bar-info"><span class="material-symbols-outlined" style="font-size:18px;color:#d97706">shopping_cart</span><div><div style="font-size:12px;font-weight:700;color:var(--text-primary)">購物清單可用</div><div style="font-size:10.5px;color:var(--text-muted)">${lowItems.length} 項物品需要補貨</div></div></div><div class="shop-bar-acts"><button class="shop-bar-btn" onclick="invShopCopy()"><span class="material-symbols-outlined" style="font-size:14px">content_copy</span>複製</button><button class="shop-bar-btn primary" onclick="invShopExport()"><span class="material-symbols-outlined" style="font-size:14px">download</span>匯出</button></div></div>`;
+    }
+  }
+  if(missingDate.length)html+=`<div class="inv-sec-head missing-head"><span class="inv-sec-title amber">📝 待補效期</span><span style="font-size:11px;color:#a16207">${missingDate.length} 項，請點選日期補填</span></div><div class="inv-list missing-list">${missingDate.map(it=>invRenderRow(it,true,true)).join('')}</div>`;
   if(urgent.length)html+=`<div class="inv-sec-head"><span class="inv-sec-title red">需要注意</span><span style="font-size:11px;color:var(--text-muted)">${urgent.length}</span></div><div class="inv-list">${urgent.map(it=>invRenderRow(it)).join('')}</div>`;
   if(warn.length)html+=`<div class="inv-sec-head"><span class="inv-sec-title orange">即將到期 / 快用完</span><span style="font-size:11px;color:var(--text-muted)">${warn.length}</span></div><div class="inv-list">${warn.map(it=>invRenderRow(it)).join('')}</div>`;
   if(normal.length)html+=`<div class="inv-sec-head"><span class="inv-sec-title">其他</span><span style="font-size:11px;color:var(--text-muted)">${normal.length}</span></div><div class="inv-list">${normal.map(it=>invRenderRow(it)).join('')}</div>`;
   if(!pool.length)html='<p style="text-align:center;padding:32px 0;color:var(--text-muted)">目前沒有項目</p>';
   content.innerHTML=html;
+  if(typeof _invSwipeBind==='function')_invSwipeBind();
 }
 function invSetLocFilter2(l){invLocFilter=l;renderInventoryPage()}
 function invSetCatFilter2(c){invCatFilter=c;renderInventoryPage()}
 
-function invRenderRow(it,showLoc=true){
+// 🛒 購物清單：產生 / 複製 / 匯出
+function invBuildShoppingList(){
+  const lows=inventory.filter(it=>{
+    if(!it.restock)return false;
+    if(it.qtyMode==='ratio'){const r=it.ratio??100,t=it.ratioThr??25;return r<=t;}
+    const q=it.qty??0,thr=it.threshold??1;return q<=thr;
+  });
+  // 依來源分組
+  const grouped={};
+  lows.forEach(it=>{const k=it.source||'未指定來源';if(!grouped[k])grouped[k]=[];grouped[k].push(it);});
+  let txt=`🛒 購物清單（${lows.length} 項）\n更新時間：${todayStr}\n\n`;
+  Object.keys(grouped).sort().forEach(src=>{
+    txt+=`【${invSrcIcon(src)}${src}】\n`;
+    grouped[src].forEach(it=>{
+      let line=`☐ ${it.name}`;
+      if(it.qtyMode==='ratio'){line+=` （剩 ${it.ratio??100}%）`;}
+      else{const q=it.qty??0,thr=it.threshold??1;line+=` （剩 ${q} 個 · 門檻 ${thr}）`;}
+      if(it.location)line+=` — ${it.location}`;
+      txt+=line+'\n';
+    });
+    txt+='\n';
+  });
+  return {text:txt.trim(),count:lows.length};
+}
+function invShopCopy(){
+  const {text,count}=invBuildShoppingList();
+  if(!count){showToast('沒有需要補貨的物品','error');return;}
+  const fallback=()=>{const ta=document.createElement('textarea');ta.value=text;ta.style.position='fixed';ta.style.opacity='0';document.body.appendChild(ta);ta.select();try{document.execCommand('copy');showToast(`已複製 ${count} 項到剪貼簿`,'success');}catch(e){showToast('複製失敗，請手動複製','error');}document.body.removeChild(ta);};
+  if(navigator.clipboard&&navigator.clipboard.writeText){
+    navigator.clipboard.writeText(text).then(()=>showToast(`已複製 ${count} 項到剪貼簿`,'success')).catch(fallback);
+  }else fallback();
+}
+function invShopExport(){
+  const {text,count}=invBuildShoppingList();
+  if(!count){showToast('沒有需要補貨的物品','error');return;}
+  const blob=new Blob(['﻿'+text],{type:'text/plain;charset=utf-8'});
+  const url=URL.createObjectURL(blob);
+  const a=document.createElement('a');
+  a.href=url;a.download=`shopping-list_${todayStr}.txt`;
+  document.body.appendChild(a);a.click();document.body.removeChild(a);
+  setTimeout(()=>URL.revokeObjectURL(url),100);
+  showToast(`已匯出 ${count} 項購物清單`,'success');
+}
+
+function invRenderRow(it,showLoc=true,hideMissingChip=false){
   const es=invExpiryStatus(it),rs=invRestockStatus(it);
   const rowCls=invWorstCls(es,rs)||'';
 
@@ -1655,8 +1790,8 @@ function invRenderRow(it,showLoc=true){
       if(d<0)rightHtml+=`<div class="expiry-chip-row red">已過期</div>`;
       else if(d<=7)rightHtml+=`<div class="expiry-chip-row red">${d} 天後到期</div>`;
       else if(d<=14)rightHtml+=`<div class="expiry-chip-row amber">${d} 天後到期</div>`;
-    } else {
-      // 🌟 顯示明顯的虛線警告標籤
+    } else if(!hideMissingChip){
+      // 在「待補效期」區塊以外才顯示行內提示（區塊本身已表達此狀態）
       rightHtml+=`<div class="expiry-chip-row red" style="border-style:dashed">⚠️ 未填效期</div>`;
     }
   }
@@ -1707,17 +1842,124 @@ function invRenderRow(it,showLoc=true){
   const locLine=showLoc?`<span class="inv-loc-label">${it.location}</span>`:'';
   const catLine=it.category&&it.category!=='其他'?`<span class="inv-loc-label">${it.category}</span>`:'';
   const subSep=locLine&&catLine?`<span style="color:var(--text-muted);font-size:10px;margin:0 1px">·</span>`:'';
+  // 🌟 滑動快速操作：依物品類型決定動作集
+  let swipeActs='';
+  if(it.restock){
+    swipeActs+=`<button class="swipe-act sw-amber" onclick="event.stopPropagation();invSwipeAct('${it.id}','dec')"><span class="material-symbols-outlined" style="font-size:18px">remove</span><span>-1</span></button>`;
+    swipeActs+=`<button class="swipe-act sw-green" onclick="event.stopPropagation();invSwipeAct('${it.id}','inc')"><span class="material-symbols-outlined" style="font-size:18px">add</span><span>+1</span></button>`;
+    swipeActs+=`<button class="swipe-act sw-red" onclick="event.stopPropagation();invSwipeAct('${it.id}','empty')"><span class="material-symbols-outlined" style="font-size:18px">close</span><span>用完</span></button>`;
+  }
+  if(it.type==='expiry'&&it.expiryDate){
+    swipeActs+=`<button class="swipe-act sw-blue" onclick="event.stopPropagation();invSwipeAct('${it.id}','postpone')"><span class="material-symbols-outlined" style="font-size:18px">event_repeat</span><span>+30天</span></button>`;
+  }
   return `<div class="inv-item-wrap">
-    <div class="inv-row ${rowCls}" onclick="invToggleDetail('${it.id}')">
-      <div class="inv-dot-item"></div>
-      <div class="inv-info">
-        <div class="inv-name">${it.name}</div>
-        <div class="inv-sub">${locLine}${subSep}${catLine}</div>
+    <div class="inv-swipe-wrap" data-id="${it.id}">
+      ${swipeActs?`<div class="inv-row-actions">${swipeActs}</div>`:''}
+      <div class="inv-row ${rowCls}" onclick="invToggleDetail('${it.id}')">
+        <div class="inv-dot-item"></div>
+        <div class="inv-info">
+          <div class="inv-name">${it.name}</div>
+          <div class="inv-sub">${locLine}${subSep}${catLine}</div>
+        </div>
+        <div class="inv-right" onclick="event.stopPropagation()">${rightHtml}</div>
       </div>
-      <div class="inv-right" onclick="event.stopPropagation()">${rightHtml}</div>
     </div>
     <div class="inv-detail ${rowCls}" id="inv-detail-${it.id}">${detailHtml}${warnBox}</div>
   </div>`;
+}
+
+// 🌟 滑動操作邏輯
+function invSwipeAct(id,action){
+  const it=inventory.find(x=>x.id===id);if(!it)return;
+  if(action==='inc'||action==='dec'){
+    inventory=inventory.map(x=>{
+      if(x.id!==id)return x;
+      if(x.qtyMode==='ratio'){const r=x.ratio??100;return{...x,ratio:Math.max(0,Math.min(100,r+(action==='inc'?5:-5)))};}
+      return{...x,qty:Math.max(0,(x.qty??0)+(action==='inc'?1:-1))};
+    });
+    showToast(action==='inc'?`${it.name} +1`:`${it.name} -1`,'success');
+  } else if(action==='empty'){
+    inventory=inventory.map(x=>{
+      if(x.id!==id)return x;
+      if(x.qtyMode==='ratio')return{...x,ratio:0};
+      return{...x,qty:0};
+    });
+    showToast(`${it.name} 已標記為用完`,'success');
+  } else if(action==='postpone'){
+    if(!it.expiryDate)return;
+    const newDate=addD(it.expiryDate,30);
+    inventory=inventory.map(x=>x.id===id?{...x,expiryDate:newDate}:x);
+    showToast(`${it.name} 到期日延後 30 天`,'success');
+  }
+  saveInv();_invSwipeReset();renderInventoryPage();
+}
+function _invSwipeReset(){
+  document.querySelectorAll('.inv-swipe-wrap.swiped').forEach(el=>{
+    el.classList.remove('swiped');
+    const r=el.querySelector('.inv-row');if(r)r.style.transform='';
+  });
+}
+// 觸控滑動偵測（事件委派至 inv-content）
+let _invSwipe=null;
+function _invSwipeBind(){
+  const c=document.getElementById('inv-content');
+  if(!c||c.dataset.swipeBound)return;
+  c.dataset.swipeBound='1';
+  const onStart=(x,y,wrap)=>{_invSwipe={wrap,startX:x,startY:y,dragging:false,base:0};};
+  const onMove=(x,y,e)=>{
+    if(!_invSwipe)return;
+    const dx=x-_invSwipe.startX,dy=y-_invSwipe.startY;
+    if(!_invSwipe.dragging){
+      if(Math.abs(dx)>8&&Math.abs(dx)>Math.abs(dy)*1.2){_invSwipe.dragging=true;}
+      else if(Math.abs(dy)>10){_invSwipe=null;return;}
+    }
+    if(_invSwipe.dragging){
+      if(e&&e.cancelable)e.preventDefault();
+      const row=_invSwipe.wrap.querySelector('.inv-row');
+      const acts=_invSwipe.wrap.querySelector('.inv-row-actions');
+      if(!row||!acts){_invSwipe=null;return;}
+      const max=acts.offsetWidth||0;
+      const target=Math.max(-max,Math.min(0,_invSwipe.base+dx));
+      row.style.transition='none';row.style.transform=`translateX(${target}px)`;
+    }
+  };
+  const onEnd=()=>{
+    if(!_invSwipe||!_invSwipe.dragging){_invSwipe=null;return;}
+    const wrap=_invSwipe.wrap;
+    const row=wrap.querySelector('.inv-row');
+    const acts=wrap.querySelector('.inv-row-actions');
+    if(row&&acts){
+      const m=row.style.transform.match(/-?\d+(\.\d+)?/);
+      const cur=m?parseFloat(m[0]):0;
+      const max=acts.offsetWidth||0;
+      row.style.transition='';
+      if(cur<-max*0.4){wrap.classList.add('swiped');row.style.transform=`translateX(-${max}px)`;}
+      else{wrap.classList.remove('swiped');row.style.transform='';}
+    }
+    _invSwipe=null;
+  };
+  c.addEventListener('touchstart',e=>{
+    const wrap=e.target.closest('.inv-swipe-wrap');if(!wrap)return;
+    // 若另一列已展開，先收回
+    document.querySelectorAll('.inv-swipe-wrap.swiped').forEach(el=>{if(el!==wrap)el.classList.remove('swiped');});
+    const t=e.touches[0];onStart(t.clientX,t.clientY,wrap);
+    _invSwipe.base=wrap.classList.contains('swiped')?-(wrap.querySelector('.inv-row-actions')?.offsetWidth||0):0;
+  },{passive:true});
+  c.addEventListener('touchmove',e=>{if(!_invSwipe)return;const t=e.touches[0];onMove(t.clientX,t.clientY,e);},{passive:false});
+  c.addEventListener('touchend',onEnd);
+  c.addEventListener('touchcancel',onEnd);
+  // 桌面 pointer 支援
+  c.addEventListener('pointerdown',e=>{
+    if(e.pointerType==='touch')return;
+    if(e.target.closest('button,input,a,select,textarea,.inv-right'))return;
+    const wrap=e.target.closest('.inv-swipe-wrap');if(!wrap)return;
+    document.querySelectorAll('.inv-swipe-wrap.swiped').forEach(el=>{if(el!==wrap)el.classList.remove('swiped');});
+    onStart(e.clientX,e.clientY,wrap);
+    _invSwipe.base=wrap.classList.contains('swiped')?-(wrap.querySelector('.inv-row-actions')?.offsetWidth||0):0;
+  });
+  c.addEventListener('pointermove',e=>{if(!_invSwipe||e.pointerType==='touch')return;onMove(e.clientX,e.clientY,null);});
+  c.addEventListener('pointerup',e=>{if(e.pointerType==='touch')return;onEnd();});
+  c.addEventListener('pointercancel',e=>{if(e.pointerType==='touch')return;onEnd();});
 }
 function invToggleDetail(id){const d=document.getElementById('inv-detail-'+id);if(d)d.classList.toggle('open')}
 function invUpdateExpiry(id,val){
@@ -2059,7 +2301,7 @@ function appInputOk(){
 }
 function appInputCancel(){document.getElementById('app-input-overlay').style.display='none';_inputCb=null;}
 
-function renderAll(){twRenderAll();renderTasksPage();renderHouseworkPage();}
+function renderAll(){twRenderAll();renderTasksPage();renderHouseworkPage();if(typeof renderDashCards==='function')renderDashCards();}
 
 // ── EXPORT / IMPORT ───────────────────────────────────────
 function copyShareLink(){const data=JSON.stringify({tasks,housework});const url=location.origin+location.pathname+'#data='+btoa(unescape(encodeURIComponent(data)));navigator.clipboard.writeText(url).then(()=>showToast('連結已複製')).catch(()=>showToast('複製失敗，請手動複製','error'));}
@@ -2641,9 +2883,13 @@ function renderFloorplanPage(){
   const lp=document.getElementById('inv-loc-filter-panel');if(lp)lp.style.display='none';
   if(!fpCurrentRoom&&locations.length)fpCurrentRoom=locations[0].id;
   const room=locations.find(r=>r.id===fpCurrentRoom);
-  const roomOpts=locations.map(r=>`<option value="${r.id}" ${r.id===fpCurrentRoom?'selected':''}>${r.icon} ${r.name}</option>`).join('');
-  let html=`<div class="fp-wrap"><div class="fp-header"><select class="fp-room-sel" style="width:100%;font-size:14px" onchange="fpSelectRoom(this.value)">${roomOpts||'<option>（無房間）</option>'}</select></div>`;
-  if(!room){html+='<div style="padding:32px;text-align:center;color:var(--text-muted)">請先在「位置管理」新增房間</div></div>';content.innerHTML=html;return;}
+  // 房間選擇 chip 列（永遠顯示，不收合）
+  const roomChips=locations.length
+    ? locations.map(r=>`<button class="inv-chip${r.id===fpCurrentRoom?' active':''}" onclick="fpSelectRoom('${r.id}')">${r.icon||''} ${r.name}</button>`).join('')
+    : `<span style="font-size:11px;color:var(--text-muted)">（無房間，請至「位置管理」新增）</span>`;
+  let html=`<div class="fp-room-chip-bar">${roomChips}</div>`;
+  if(!room){html+='<div style="padding:32px;text-align:center;color:var(--text-muted)">請先在「位置管理」新增房間</div>';content.innerHTML=html;return;}
+  html+=`<div class="fp-wrap">`;
   const W=600,H=400;let svgInner='';
   room.subLocations.forEach(sl=>{
     const cnt=inventory.filter(it=>it.subLocationId===sl.id).length,isHL=fpHighlightSubloc===sl.id;
