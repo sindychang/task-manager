@@ -1260,6 +1260,39 @@ function areaColor(a){const m={'臥室':{bg:'#f5f3ff',dot:'#8b5cf6',icon:'🛏'}
 function emptyS(m){return `<div class="empty-state"><span class="material-symbols-outlined">inbox</span><p>${m}</p></div>`}
 function freqLabel(t){if(!t||t.freqType==='none'||!t.freqVal)return '';return t.freqType==='days'?`每${t.freqVal}天`:`每月${t.freqVal}號`}
 
+// ── 定期任務 Virtual ID 輔助函式 ──────────────────────────────
+// Virtual ID 格式：'VIRTUAL::templateId::date'
+function isVirtualTaskId(sid){return typeof sid==='string'&&sid.startsWith('VIRTUAL::');}
+function parseVirtualTaskId(sid){const p=sid.split('::');return{templateId:p[1],date:p[2]};}
+/**
+ * 將 virtual 入口「實體化」：在 tasks 陣列中建立一筆真正的 instance。
+ * @param {string} templateId 定期任務模板 id
+ * @param {string} dateStr    自然排程日期 (YYYY-MM-DD)
+ * @param {string} status     初始狀態，預設 '待辦'
+ * @param {boolean} forDelay  若為 true，則在 instance 中寫入 originalMonthlyDate，
+ *                            讓該自然日期的 virtual 入口被隱藏（避免延後後重複出現）
+ * @returns {object|null} 建立或找到的 instance task
+ */
+function materializeMonthlyTask(templateId, dateStr, status, forDelay){
+  const template=tasks.find(t=>t.id===templateId&&!t.templateId);
+  if(!template)return null;
+  // 若已存在同日期的 instance，直接回傳
+  const existing=tasks.find(t=>t.templateId===templateId&&t.plannedDate===dateStr&&!t.originalMonthlyDate);
+  if(existing)return existing;
+  const instance={
+    ...template,
+    id:Date.now().toString()+'_'+Math.random().toString(36).slice(2,6),
+    templateId:templateId,
+    plannedDate:dateStr,
+    status:status||'待辦',
+    createdAt:new Date().toISOString()
+  };
+  if(forDelay) instance.originalMonthlyDate=dateStr; // 用於封鎖原始自然日期
+  tasks.push(instance);
+  saveData();
+  return instance;
+}
+
 // ── RENDER: TO DO ─────────────────────────────────────────
 
 // ── RENDER: TASKS / WEEK CALENDAR ─────────────────────────
@@ -2063,19 +2096,89 @@ function twJumpToday(){twWeekOffset=0;twOpenDays.add(todayStr);twOpenDropDay=nul
 // Build schedule from tasks + housework
 function twGetSchedule(){
   const sched=[];
+  const today=new Date(NOW);
+
+  // ── 預處理：建立「月定期任務」的 instance 索引 ────────────────
+  // instanceMap: templateId+'_'+plannedDate → instance（自然日期上的已完成/待辦 instance）
+  // deferredNaturalDates: Set of templateId+'_'+originalMonthlyDate（被延後後用來封鎖自然日期 virtual 項目）
+  const monthlyInstanceMap={};
+  const deferredNaturalDates=new Set();
   tasks.forEach(t=>{
-    if(!t.plannedDate)return;
-    sched.push({id:t.id,type:'task',title:t.title,date:t.plannedDate,status:t.status==='已完成'?'done':'pending',isTask:true});
+    if(!t.templateId)return;
+    const tmpl=tasks.find(x=>x.id===t.templateId&&!x.templateId);
+    if(!tmpl||tmpl.freqType!=='monthly')return;
+    if(t.originalMonthlyDate){
+      // 這筆 instance 是從自然日期延後出去的，封鎖自然日期 virtual
+      deferredNaturalDates.add(t.templateId+'_'+t.originalMonthlyDate);
+    } else if(t.plannedDate){
+      // 這筆 instance 坐在自然日期上（已完成或待辦）
+      monthlyInstanceMap[t.templateId+'_'+t.plannedDate]=t;
+    }
   });
+
+  // ── 主迴圈 ────────────────────────────────────────────────
+  tasks.forEach(t=>{
+    // ① 已是某模板的 instance
+    if(t.templateId){
+      if(!t.plannedDate)return;
+      const tmpl=tasks.find(x=>x.id===t.templateId&&!x.templateId);
+      if(!tmpl)return;
+      if(tmpl.freqType==='monthly'){
+        // 月定期的 instance 分兩種：
+        // a) 自然日期上（已由 monthlyInstanceMap 在下方月定期迴圈處理）
+        // b) 被延後至新日期（originalMonthlyDate 存在）→ 在此直接加入
+        if(t.originalMonthlyDate){
+          sched.push({id:t.id,type:'task',title:tmpl.title,date:t.plannedDate,
+            status:t.status==='已完成'?'done':'pending',isTask:true,isMonthly:true,
+            freqHint:'每月'+tmpl.freqVal+'號（延後）'});
+        }
+        // 自然日期的 instance 交由月定期段落處理，此處略過
+        return;
+      }
+      // 非月定期的 instance（例如透過 assignTaskToDay 建立的一次性排程）
+      sched.push({id:t.id,type:'task',title:t.title,date:t.plannedDate,
+        status:t.status==='已完成'?'done':'pending',isTask:true});
+      return;
+    }
+
+    // ② 月定期模板：自動為前後數個月的「每月X號」產生排程項目
+    if(t.freqType==='monthly'&&t.freqVal>0){
+      const dom=t.freqVal;
+      for(let mo=-2;mo<=6;mo++){
+        const d=new Date(today.getFullYear(),today.getMonth()+mo,dom);
+        if(d.getDate()!==dom)continue; // 該月無此日（如 2月沒有30號）
+        const dateStr=toLD(d);
+        const key=t.id+'_'+dateStr;
+        if(deferredNaturalDates.has(key))continue; // 此自然日期已被延後，略過 virtual
+        const inst=monthlyInstanceMap[key];
+        if(inst){
+          // 已有 instance：顯示其完成狀態
+          sched.push({id:inst.id,type:'task',title:t.title,date:dateStr,
+            status:inst.status==='已完成'?'done':'pending',isTask:true,isMonthly:true,
+            freqHint:'每月'+dom+'號'});
+        } else {
+          // 無 instance：建立 virtual 入口（尚未被使用者互動）
+          sched.push({id:'VIRTUAL::'+t.id+'::'+dateStr,type:'task',title:t.title,date:dateStr,
+            status:'pending',isTask:true,isMonthly:true,freqHint:'每月'+dom+'號'});
+        }
+      }
+      return;
+    }
+
+    // ③ 不重複 / 每N天 任務：維持原本邏輯（依 plannedDate 顯示）
+    if(!t.plannedDate)return;
+    sched.push({id:t.id,type:'task',title:t.title,date:t.plannedDate,
+      status:t.status==='已完成'?'done':'pending',isTask:true});
+  });
+
+  // ── 家事排程（維持原本邏輯）────────────────────────────────
   housework.forEach(h=>{
-    // 1. 尚未完成的排程
     if(h.reminderDate){
       sched.push({id:h.id,type:'hw',title:h.name,date:h.reminderDate,status:'pending',isHw:true});
     }
-    // 2. 已完成的歷史紀錄 (讓它留在畫面上顯示灰底劃線)
-    if(h.history && h.history.length > 0) {
-      h.history.forEach(d => {
-        if(d !== h.reminderDate) {
+    if(h.history&&h.history.length>0){
+      h.history.forEach(d=>{
+        if(d!==h.reminderDate){
           sched.push({id:h.id,type:'hw',title:h.name,date:d,status:'done',isHw:true});
         }
       });
@@ -2164,7 +2267,7 @@ function twRenderDay(d){
       const isDone=s.status==='done',isOv=!isDone&&isPast;
       let cls=s.type==='hw'?'tw-hw-p':'tw-task-p';
       if(isDone)cls='tw-done-p';else if(isOv)cls='tw-ov-p';
-      const draggable=!isDone;
+      const draggable=!isDone&&!isVirtualTaskId(s.id); // virtual 定期任務不支援拖曳
       pillHtml+=`<span class="tw-mp ${cls}" data-sid="${s.id}" data-stype="${s.type}" data-date="${d}" data-draggable="${draggable}">${s.title}</span>`;
     });
     if(items.length>MAX)pillHtml+=`<span class="tw-morep">+${items.length-MAX}</span>`;
@@ -2175,6 +2278,8 @@ function twRenderDay(d){
   else{
     detHtml=items.map(s=>{
       const isDone=s.status==='done',isOv=!isDone&&isPast;
+      // 月定期任務徽章
+      const recurBadge=s.isMonthly?`<span style="font-size:9px;background:#ede9fe;color:#7c3aed;padding:1px 6px;border-radius:999px;font-weight:700;flex-shrink:0" title="${s.freqHint||'定期任務'}">♻ 定期</span>`:'';
       return`<div class="tw-irow">
         <div class="tw-icb ${isDone ? (s.type==='hw' ? 'tw-done tw-hw-done' : 'tw-done') : ''}" onclick="twToggleDone('${s.id}','${s.type}','${d}')"></div>
         <div class="tw-iinfo">
@@ -2182,6 +2287,7 @@ function twRenderDay(d){
           <div class="tw-imeta">
             <div class="tw-idot" style="background:${s.type==='hw'?'#d97706':'var(--primary)'}"></div>
             <span class="tw-ilbl">${s.type==='hw'?'家事':'任務'}</span>
+            ${recurBadge}
             ${isOv?`<span class="tw-ovbadge">逾期</span>`:''}
           </div>
         </div>
@@ -2274,6 +2380,15 @@ function twAssignHw(hid,d,e){
 }
 function twToggleDone(sid, stype, dateStr){
   if(stype==='task'){
+    // ── 月定期 virtual 入口：先實體化再切換狀態 ──
+    if(isVirtualTaskId(sid)){
+      const {templateId,date}=parseVirtualTaskId(sid);
+      const inst=materializeMonthlyTask(templateId,date,'待辦',false);
+      if(!inst){showToast('找不到任務模板','error');return;}
+      tasks=tasks.map(t=>t.id===inst.id?{...t,status:'已完成'}:t);
+      saveData();showToast('✅ 定期任務已完成！下個月將再次出現');
+      twRender();return;
+    }
     tasks=tasks.map(t=>t.id===sid?{...t,status:t.status==='已完成'?'待辦':'已完成'}:t);
     saveData();showToast('任務狀態已更新');
   }else{
@@ -2304,8 +2419,17 @@ function twToggleDone(sid, stype, dateStr){
   twRender();
 }
 function twOpenDelay(sid,stype,e){
-  e.stopPropagation();twDelayTarget={sid,stype};
-  const name=stype==='task'?tasks.find(t=>t.id===sid)?.title:housework.find(h=>h.id===sid)?.name;
+  e.stopPropagation();
+  // ── 月定期 virtual 入口：先實體化（帶 forDelay=true，封鎖自然日期 virtual）──
+  let actualSid=sid;
+  if(stype==='task'&&isVirtualTaskId(sid)){
+    const {templateId,date}=parseVirtualTaskId(sid);
+    const inst=materializeMonthlyTask(templateId,date,'待辦',true);
+    if(!inst){showToast('找不到任務模板','error');return;}
+    actualSid=inst.id;
+  }
+  twDelayTarget={sid:actualSid,stype};
+  const name=stype==='task'?tasks.find(t=>t.id===actualSid)?.title:housework.find(h=>h.id===sid)?.name;
   document.getElementById('tw-dly-name').textContent=name||'';
   document.getElementById('tw-dlysh').classList.add('show');document.getElementById('tw-scrim').classList.add('show');
 }
@@ -2353,6 +2477,11 @@ function twApplyDelay(days){
 }
 function twRemoveItem(sid, stype, e) {
   e.stopPropagation();
+  // ── 月定期 virtual 入口：不允許直接刪除，引導使用者至任務設定 ──
+  if(stype==='task'&&isVirtualTaskId(sid)){
+    showToast('定期任務會自動出現，如需停用請至「任務」頁面修改頻率','warn');
+    return;
+  }
   appConfirm('移除項目', '確定要將此項目從這天移除嗎？', () => {
     if (stype === 'task') {
       tasks = tasks.map(t => t.id === sid ? {...t, plannedDate: '', status: '待辦'} : t); // 狀態順便改回待辦
