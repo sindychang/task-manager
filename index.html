@@ -303,6 +303,13 @@
     .missing-list{background:#fffbeb;border:1.5px dashed #fcd34d;box-shadow:none}
     .missing-list .inv-row{background:transparent}
     .missing-head{margin-top:4px}
+    /* ── 頂端工具小按鈕 ── */
+    .inv-tool-btn{display:inline-flex;align-items:center;gap:4px;padding:5px 10px;border-radius:7px;border:1px solid var(--border);background:var(--surface);font-size:11px;font-weight:700;color:var(--text-secondary);cursor:pointer;font-family:'Noto Sans TC',sans-serif;transition:all .15s;white-space:nowrap}
+    .inv-tool-btn:hover{border-color:#9ca3af;background:var(--bg)}
+    .inv-tool-btn-primary{background:#fff7ed;border-color:#fed7aa;color:#d97706}
+    .inv-tool-btn-primary:hover{background:#fef3c7}
+    .inv-tool-btn-purple{background:#f5f3ff;border-color:#c4b5fd;color:#7c3aed}
+    .inv-tool-btn-purple:hover{background:#ede9fe}
     .shop-bar{display:flex;align-items:center;justify-content:space-between;gap:10px;background:linear-gradient(135deg,#fff7ed,#fffbeb);border:1px solid #fed7aa;border-radius:12px;padding:9px 12px;margin:8px 0 10px}
     .shop-bar-info{display:flex;align-items:center;gap:8px;min-width:0;flex:1}
     .shop-bar-acts{display:flex;gap:6px;flex-shrink:0}
@@ -393,16 +400,14 @@
     .tw-wnc{text-align:center}
     .tw-wnl{font-size:14px;font-weight:700;color:var(--text-primary)}
     .tw-wns{font-size:11px;color:var(--text-muted);margin-top:2px}
-    /* Progress card */
-    .tw-prog{background:#fffef9;border-radius:var(--radius-md);border:1px solid var(--border-light);box-shadow:var(--shadow-sm);padding:12px 14px;margin-bottom:10px;display:flex;align-items:center;gap:12px}
-    .tw-prog-ring{width:44px;height:44px;flex-shrink:0;position:relative}
+    /* Progress card — compact gradient style */
+    .tw-prog{background:linear-gradient(120deg,#ede9fe 0%,#ddd6fe 100%);border-radius:var(--radius-md);box-shadow:0 2px 10px rgba(91,82,232,.13);padding:8px 11px;margin-bottom:8px;display:flex;align-items:center;gap:10px;border:none}
+    .tw-prog-ring{width:36px;height:36px;flex-shrink:0;position:relative}
     .tw-prog-ring svg{transform:rotate(-90deg)}
-    .tw-prog-pct{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:800;color:var(--primary)}
-    .tw-prog-info{flex:1;min-width:0}
-    .tw-prog-t{font-size:13px;font-weight:700;color:var(--text-primary)}
-    .tw-prog-s{font-size:11px;color:var(--text-muted);margin-top:1px}
-    .tw-prog-chips{display:flex;gap:5px;margin-top:5px;flex-wrap:wrap}
-    .tw-chip{padding:2px 8px;border-radius:999px;font-size:10px;font-weight:700}
+    .tw-prog-pct{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:800;color:var(--primary)}
+    .tw-prog-info{flex:1;min-width:0;display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+    .tw-prog-t{font-size:12px;font-weight:700;color:var(--text-primary)}
+    .tw-chip{padding:2px 7px;border-radius:999px;font-size:10px;font-weight:700}
     /* Day cards */
     .tw-wlist{display:flex;flex-direction:column;gap:6px;padding-bottom:60px}
     .tw-dc{background:var(--surface);border-radius:var(--radius-md);border:1px solid var(--border-light);box-shadow:var(--shadow-sm);overflow:visible;transition:box-shadow .15s,border-color .15s}
@@ -534,18 +539,23 @@
 </div>
 
 <!-- ── HEADER ── -->
-<header style="background:linear-gradient(135deg,#5b52e8 0%,#7c3aed 100%);padding:18px 16px 14px;padding-top:calc(18px + env(safe-area-inset-top,0px));box-shadow:0 2px 16px rgba(91,82,232,.25)">
+<header style="background:linear-gradient(135deg,#5b52e8 0%,#7c3aed 100%);padding:10px 14px 9px;padding-top:calc(10px + env(safe-area-inset-top,0px));box-shadow:0 2px 12px rgba(91,82,232,.2)">
   <div class="max-w-2xl mx-auto flex items-center justify-between">
-    <div class="flex items-center gap-3">
-      <button onclick="openDrawer()" style="background:rgba(255,255,255,.15);border:none;width:36px;height:36px;border-radius:10px;display:flex;align-items:center;justify-content:center;cursor:pointer;flex-shrink:0">
-        <span class="material-symbols-outlined" style="font-size:22px;color:#fff">menu</span>
+    <div class="flex items-center gap-2">
+      <button onclick="openDrawer()" style="background:rgba(255,255,255,.15);border:none;width:32px;height:32px;border-radius:9px;display:flex;align-items:center;justify-content:center;cursor:pointer;flex-shrink:0">
+        <span class="material-symbols-outlined" style="font-size:20px;color:#fff">menu</span>
       </button>
       <div>
-        <h1 class="text-white font-bold" id="pageTitle" style="font-size:17px;letter-spacing:.01em">To Do List</h1>
-        <p style="color:rgba(255,255,255,.7);font-size:11px;margin-top:1px" id="pageSubtitle">管理您的每日任務</p>
+        <h1 class="text-white font-bold" id="pageTitle" style="font-size:15px;letter-spacing:.01em">To Do List</h1>
       </div>
     </div>
     <div style="display:flex;align-items:center;gap:6px">
+      <button id="global-ics-btn" onclick="invExportICS(7)" style="display:none;background:rgba(255,255,255,.15);border:none;color:#fff;border-radius:10px;width:32px;height:32px;align-items:center;justify-content:center;cursor:pointer;flex-shrink:0" title="匯出 .ics 行事曆提醒">
+        <span class="material-symbols-outlined" style="font-size:18px">calendar_month</span>
+      </button>
+      <button id="global-shop-btn" onclick="invShopExport()" style="display:none;background:rgba(255,255,255,.15);border:none;color:#fff;border-radius:10px;width:32px;height:32px;align-items:center;justify-content:center;cursor:pointer;flex-shrink:0" title="匯出購物清單">
+        <span class="material-symbols-outlined" style="font-size:18px">shopping_cart</span>
+      </button>
       <button id="global-import-btn" onclick="invOpenImport()" style="display:none;background:rgba(255,255,255,.15);border:none;color:#fff;border-radius:10px;padding:8px 12px;align-items:center;gap:5px;cursor:pointer" title="匯入物品資料">
         <span class="material-symbols-outlined" style="font-size:18px">upload_file</span>
       </button>
@@ -1110,10 +1120,27 @@ const PT={
   housework:{title:'家事管理',sub:'管理家事項目與頻率'},
   inventory:{title:'物品庫存',sub:'家中物品 · 庫存追蹤 · 補貨提醒'},
 };
+function _syncInvHeaderBtns(){
+  // 依目前 sub-tab 顯示對應的 header icon 按鈕
+  const icsBtn=document.getElementById('global-ics-btn');
+  const shopBtn=document.getElementById('global-shop-btn');
+  if(!icsBtn||!shopBtn)return;
+  const isExp=invCurrentTab==='alert'&&(invAlertSubMode==='expiry'||invAlertSubMode==='all');
+  const isRst=invCurrentTab==='alert'&&invAlertSubMode==='restock';
+  const hasExp=inventory.some(it=>it.type==='expiry'&&it.expiryDate);
+  const hasLow=inventory.some(it=>{if(!it.restock)return false;if(it.qtyMode==='ratio')return(it.ratio??100)<=(it.ratioThr??25);return(it.qty??0)<=(it.threshold??1);});
+  icsBtn.style.setProperty('display',isExp&&hasExp?'flex':'none','important');
+  shopBtn.style.setProperty('display',isRst&&hasLow?'flex':'none','important');
+}
 function switchPage(p,b){
   const addBtn=document.getElementById('global-add-btn');
   const importBtn=document.getElementById('global-import-btn');
   const iphoneBtn=document.getElementById('global-iphone-btn');
+  const icsBtn=document.getElementById('global-ics-btn');
+  const shopBtn=document.getElementById('global-shop-btn');
+  // 先全隱 contextual 按鈕
+  if(icsBtn)icsBtn.style.setProperty('display','none','important');
+  if(shopBtn)shopBtn.style.setProperty('display','none','important');
   if(p==='tasks'){
     if(addBtn)addBtn.style.setProperty('display','none','important');
     if(importBtn)importBtn.style.setProperty('display','none','important');
@@ -1139,7 +1166,7 @@ function switchPage(p,b){
   currentPage=p;
   const pg=PT[p];
   document.getElementById('pageTitle').textContent=pg.title;
-  document.getElementById('pageSubtitle').textContent=pg.sub;
+  const _sub=document.getElementById('pageSubtitle');if(_sub)_sub.textContent=pg.sub;
   closeAllPopups();
   if(p==='inventory')renderInventoryPage();
   else if(p==='todo'){twRender();setTimeout(()=>document.getElementById('tw-dr-'+todayStr)?.scrollIntoView({behavior:'smooth',block:'nearest'}),80);}
@@ -1535,6 +1562,7 @@ function invSwitchAlertSub(mode){
   invDateFrom=null;invDateTo=null;invSrcFilter=null;
   _syncAlertSubBtns();
   renderInventoryPage();
+  if(currentPage==='inventory')_syncInvHeaderBtns();
 }
 
 function _syncAlertSubBtns(){
@@ -1713,24 +1741,25 @@ function renderInventoryPage(){
   const warn=datedPool.filter(it=>!urgent.includes(it)&&(invExpiryStatus(it)?.cls==='orange'||invRestockStatus(it)?.cls==='orange'));
   const normal=datedPool.filter(it=>!urgent.includes(it)&&!warn.includes(it));
   let html='';
-  // 🛒 補貨追蹤頁面頂端：購物清單動作列（只在 alert + 補貨追蹤 / restock 頁簽顯示）
-  if((invCurrentTab==='alert'&&invAlertSubMode==='restock')||invCurrentTab==='restock'){
-    const lowItems=pool.filter(it=>{
-      if(!it.restock)return false;
-      if(it.qtyMode==='ratio'){const r=it.ratio??100,t=it.ratioThr??25;return r<=t;}
-      const q=it.qty??0,thr=it.threshold??1;return q<=thr;
-    });
-    if(lowItems.length){
-      html+=`<div class="shop-bar"><div class="shop-bar-info"><span class="material-symbols-outlined" style="font-size:18px;color:#d97706">shopping_cart</span><div><div style="font-size:12px;font-weight:700;color:var(--text-primary)">購物清單可用</div><div style="font-size:10.5px;color:var(--text-muted)">${lowItems.length} 項物品需要補貨</div></div></div><div class="shop-bar-acts"><button class="shop-bar-btn" onclick="invShopCopy()"><span class="material-symbols-outlined" style="font-size:14px">content_copy</span>複製</button><button class="shop-bar-btn primary" onclick="invShopExport()"><span class="material-symbols-outlined" style="font-size:14px">download</span>匯出</button></div></div>`;
-    }
-  }
-  if(missingDate.length)html+=`<div class="inv-sec-head missing-head"><span class="inv-sec-title amber">📝 待補效期</span><span style="font-size:11px;color:#a16207">${missingDate.length} 項，請點選日期補填</span></div><div class="inv-list missing-list">${missingDate.map(it=>invRenderRow(it,true,true)).join('')}</div>`;
+  // 顯示順序：需要注意 → 即將到期 → 待補效期 → 其他
+  // 補貨追蹤模式下不顯示「待補效期」區塊
+  const isRestockMode=(invCurrentTab==='alert'&&invAlertSubMode==='restock')||invCurrentTab==='restock';
+  const isExpiryMode=(invCurrentTab==='alert'&&(invAlertSubMode==='expiry'||invAlertSubMode==='all'));
+  // ── 頂端工具列：把「購物清單」和「ICS 匯出」合併成一條細列 ──
+  const lowItems=pool.filter(it=>{
+    if(!it.restock)return false;
+    if(it.qtyMode==='ratio'){const r=it.ratio??100,t=it.ratioThr??25;return r<=t;}
+    const q=it.qty??0,thr=it.threshold??1;return q<=thr;
+  });
+  const expiryItems=pool.filter(it=>it.type==='expiry'&&it.expiryDate);
   if(urgent.length)html+=`<div class="inv-sec-head"><span class="inv-sec-title red">需要注意</span><span style="font-size:11px;color:var(--text-muted)">${urgent.length}</span></div><div class="inv-list">${urgent.map(it=>invRenderRow(it)).join('')}</div>`;
   if(warn.length)html+=`<div class="inv-sec-head"><span class="inv-sec-title orange">即將到期 / 快用完</span><span style="font-size:11px;color:var(--text-muted)">${warn.length}</span></div><div class="inv-list">${warn.map(it=>invRenderRow(it)).join('')}</div>`;
+  if(!isRestockMode&&missingDate.length)html+=`<div class="inv-sec-head missing-head"><span class="inv-sec-title amber">📝 待補效期</span><span style="font-size:11px;color:#a16207">${missingDate.length} 項，請點選日期補填</span></div><div class="inv-list missing-list">${missingDate.map(it=>invRenderRow(it,true,true)).join('')}</div>`;
   if(normal.length)html+=`<div class="inv-sec-head"><span class="inv-sec-title">其他</span><span style="font-size:11px;color:var(--text-muted)">${normal.length}</span></div><div class="inv-list">${normal.map(it=>invRenderRow(it)).join('')}</div>`;
   if(!pool.length)html='<p style="text-align:center;padding:32px 0;color:var(--text-muted)">目前沒有項目</p>';
   content.innerHTML=html;
   if(typeof _invSwipeBind==='function')_invSwipeBind();
+  _syncInvHeaderBtns();
 }
 function invSetLocFilter2(l){invLocFilter=l;renderInventoryPage()}
 function invSetCatFilter2(c){invCatFilter=c;renderInventoryPage()}
@@ -1777,6 +1806,65 @@ function invShopExport(){
   document.body.appendChild(a);a.click();document.body.removeChild(a);
   setTimeout(()=>URL.revokeObjectURL(url),100);
   showToast(`已匯出 ${count} 項購物清單`,'success');
+}
+
+// 📅 ICS 行事曆匯出（到期前 N 天提醒）
+function invExportICS(alarmDaysBefore=7){
+  const items=inventory.filter(it=>it.type==='expiry'&&it.expiryDate);
+  if(!items.length){showToast('沒有填寫效期的物品','error');return;}
+  function pad(n){return String(n).padStart(2,'0');}
+  function toICSDate(dateStr){
+    // dateStr = YYYY-MM-DD
+    return dateStr.replace(/-/g,'');
+  }
+  function toICSAlarmDate(dateStr,daysBefore){
+    const d=new Date(dateStr+'T00:00:00');
+    d.setDate(d.getDate()-daysBefore);
+    return `${d.getFullYear()}${pad(d.getMonth()+1)}${pad(d.getDate())}`;
+  }
+  let ics='BEGIN:VCALENDAR\r\nVERSION:2.0\r\nPRODID:-//家務管理App//TC\r\nCALSCALE:GREGORIAN\r\nMETHOD:PUBLISH\r\n';
+  const now=new Date();
+  const stamp=`${now.getFullYear()}${pad(now.getMonth()+1)}${pad(now.getDate())}T${pad(now.getHours())}${pad(now.getMinutes())}${pad(now.getSeconds())}Z`;
+  items.forEach(it=>{
+    const dtstart=toICSDate(it.expiryDate);
+    const dtend=toICSDate(it.expiryDate); // 全天事件同一天
+    const uid=`inv-${it.id}-expiry@home-app`;
+    const loc=it.location?` (${it.location})`:'';
+    const note=it.note?`\\n備註：${it.note}`:'';
+    ics+='BEGIN:VEVENT\r\n';
+    ics+=`UID:${uid}\r\n`;
+    ics+=`DTSTAMP:${stamp}\r\n`;
+    ics+=`DTSTART;VALUE=DATE:${dtstart}\r\n`;
+    ics+=`DTEND;VALUE=DATE:${dtend}\r\n`;
+    ics+=`SUMMARY:【到期】${it.name}${loc}\r\n`;
+    ics+=`DESCRIPTION:${it.name}${loc} 今日到期${note}\r\n`;
+    // 提醒：到期當天
+    ics+='BEGIN:VALARM\r\n';
+    ics+='ACTION:DISPLAY\r\n';
+    ics+='TRIGGER;VALUE=DATE-TIME:'+dtstart+'T090000\r\n';
+    ics+=`DESCRIPTION:【到期提醒】${it.name} 今日到期\r\n`;
+    ics+='END:VALARM\r\n';
+    // 提醒：到期前 N 天
+    if(alarmDaysBefore>0){
+      const alarmDate=toICSAlarmDate(it.expiryDate,alarmDaysBefore);
+      ics+='BEGIN:VALARM\r\n';
+      ics+='ACTION:DISPLAY\r\n';
+      ics+=`TRIGGER;VALUE=DATE-TIME:${alarmDate}T090000\r\n`;
+      ics+=`DESCRIPTION:【即將到期】${it.name} 還有 ${alarmDaysBefore} 天到期\r\n`;
+      ics+='END:VALARM\r\n';
+    }
+    ics+='END:VEVENT\r\n';
+  });
+  ics+='END:VCALENDAR\r\n';
+  const blob=new Blob([ics],{type:'text/calendar;charset=utf-8'});
+  const url=URL.createObjectURL(blob);
+  const a=document.createElement('a');
+  a.href=url;
+  const today=new Date().toLocaleDateString('zh-TW',{year:'numeric',month:'2-digit',day:'2-digit'}).replace(/\//g,'');
+  a.download=`expiry-reminders_${today}.ics`;
+  document.body.appendChild(a);a.click();document.body.removeChild(a);
+  setTimeout(()=>URL.revokeObjectURL(url),100);
+  showToast(`已匯出 ${items.length} 項效期提醒至行事曆`,'success');
 }
 
 function invRenderRow(it,showLoc=true,hideMissingChip=false){
@@ -2453,43 +2541,31 @@ function twRender(){
 function twRenderProg(days){
   const el=document.getElementById('tw-prog');if(!el)return;
   const sched=twGetSchedule();
-  let items=twProgMode==='day'?sched.filter(s=>s.date===todayStr):sched.filter(s=>days.includes(s.date));
+  const items=twProgMode==='day'?sched.filter(s=>s.date===todayStr):sched.filter(s=>days.includes(s.date));
   const done=items.filter(s=>s.status==='done').length;
   const total=items.length;
   const pct=total?Math.round(done/total*100):0;
-  const taskP=items.filter(s=>s.type==='task'&&s.status==='pending').length;
-  const hwP=items.filter(s=>s.type==='hw'&&s.status==='pending').length;
-  const ovCnt=twProgMode==='day'
-    ? sched.filter(s=>s.status==='pending'&&s.date<todayStr).length
-    : sched.filter(s=>s.status==='pending'&&s.date<todayStr&&days.includes(s.date)).length;
-  const r=17,circ=2*Math.PI*r,col=pct===100?'#10b981':'var(--primary)';
+  const ovCnt=sched.filter(s=>s.status==='pending'&&s.date<todayStr).length;
+  const r=13,circ=2*Math.PI*r,col=pct===100?'#10b981':'var(--primary)';
   const dash=circ*pct/100,gap=circ-dash;
-  const label=twProgMode==='day'?'今日進度':'本週進度';
-  const sub=twProgMode==='day'?new Date().toLocaleDateString('zh-TW',{month:'long',day:'numeric',weekday:'short'}):fmtD(days[0])+' – '+fmtD(days[6]);
-  let ch='';
-  if(ovCnt>0)ch+=`<span class="tw-chip" style="background:var(--danger-light);color:var(--danger)">⚠️ ${ovCnt} 件逾期</span>`;
-  if(taskP>0)ch+=`<span class="tw-chip" style="background:var(--primary-light);color:var(--primary)">📝 任務 ${taskP}</span>`;
-  if(hwP>0)ch+=`<span class="tw-chip" style="background:#fffbeb;color:#d97706">🏠 家事 ${hwP}</span>`;
-  if(pct===100&&total>0)ch+=`<span class="tw-chip" style="background:#d1fae5;color:#059669">✓ 全完成！</span>`;
-  if(total===0&&ovCnt===0)ch+=`<span class="tw-chip" style="background:var(--border-light);color:var(--text-muted)">尚未安排</span>`;
+  // 右側資訊：done/total ＋ 逾期 chip（只在有逾期時才出現）
+  const countTxt=total>0?`<span style="font-size:12px;font-weight:700;color:var(--text-primary)">${done}<span style="font-weight:400;color:var(--text-muted)">/${total}</span></span>`:`<span style="font-size:11px;color:var(--text-muted)">尚未安排</span>`;
+  const ovChip=ovCnt>0?`<span class="tw-chip" style="background:var(--danger-light);color:var(--danger)">⚠️ ${ovCnt}</span>`:'';
+  const doneChip=pct===100&&total>0?`<span class="tw-chip" style="background:#d1fae5;color:#059669">✓</span>`:'';
   el.innerHTML=`
     <div class="tw-prog-ring">
-      <svg width="44" height="44" viewBox="0 0 44 44">
-        <circle cx="22" cy="22" r="${r}" fill="none" stroke="#e8edf5" stroke-width="4.5"/>
-        <circle cx="22" cy="22" r="${r}" fill="none" stroke="${col}" stroke-width="4.5" stroke-dasharray="${dash} ${gap}" stroke-linecap="round"/>
+      <svg width="36" height="36" viewBox="0 0 36 36">
+        <circle cx="18" cy="18" r="${r}" fill="none" stroke="rgba(91,82,232,.18)" stroke-width="3.5"/>
+        <circle cx="18" cy="18" r="${r}" fill="none" stroke="${col}" stroke-width="3.5" stroke-dasharray="${dash} ${gap}" stroke-linecap="round"/>
       </svg>
       <div class="tw-prog-pct">${pct}%</div>
     </div>
     <div class="tw-prog-info">
-      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:2px">
-        <div class="tw-prog-t">${label}${total>0?' — '+done+'/'+total+' 件':''}</div>
-        <div style="display:flex;gap:2px;background:var(--border-light);border-radius:6px;padding:2px;flex-shrink:0">
-          <button onclick="twProgMode='day';twRender()" style="padding:3px 9px;border-radius:5px;border:none;background:${twProgMode==='day'?'var(--surface)':'transparent'};font-size:10px;font-weight:700;color:${twProgMode==='day'?'var(--text-primary)':'var(--text-muted)'};cursor:pointer;font-family:'Noto Sans TC',sans-serif">今日</button>
-          <button onclick="twProgMode='week';twRender()" style="padding:3px 9px;border-radius:5px;border:none;background:${twProgMode==='week'?'var(--surface)':'transparent'};font-size:10px;font-weight:700;color:${twProgMode==='week'?'var(--text-primary)':'var(--text-muted)'};cursor:pointer;font-family:'Noto Sans TC',sans-serif">本週</button>
-        </div>
+      <div style="display:flex;gap:2px;background:rgba(255,255,255,.55);border-radius:6px;padding:2px;flex-shrink:0">
+        <button onclick="twProgMode='day';twRender()" style="padding:2px 8px;border-radius:5px;border:none;background:${twProgMode==='day'?'#fff':'transparent'};font-size:10px;font-weight:700;color:${twProgMode==='day'?'var(--primary)':'#7c6fd0'};cursor:pointer;font-family:'Noto Sans TC',sans-serif;box-shadow:${twProgMode==='day'?'0 1px 3px rgba(0,0,0,.1)':'none'}">今日</button>
+        <button onclick="twProgMode='week';twRender()" style="padding:2px 8px;border-radius:5px;border:none;background:${twProgMode==='week'?'#fff':'transparent'};font-size:10px;font-weight:700;color:${twProgMode==='week'?'var(--primary)':'#7c6fd0'};cursor:pointer;font-family:'Noto Sans TC',sans-serif;box-shadow:${twProgMode==='week'?'0 1px 3px rgba(0,0,0,.1)':'none'}">本週</button>
       </div>
-      <div class="tw-prog-s">${sub}</div>
-      <div class="tw-prog-chips">${ch}</div>
+      ${countTxt}${ovChip}${doneChip}
     </div>`;
 }
 
