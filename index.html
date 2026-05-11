@@ -54,6 +54,55 @@
     .relative{position:relative}.absolute{position:absolute}.fixed{position:fixed}
     .inset-0{inset:0}.top-0{top:0}.bottom-0{bottom:0}.left-0{left:0}.right-0{right:0}
     .z-\[100\]{z-index:100}
+
+    /* ── SHOPPING LIST ── */
+    .shop-sub-tabs{display:flex;margin:10px 14px 0;background:var(--border-light);border-radius:var(--radius-sm);padding:3px;gap:3px;max-width:640px;margin-left:auto;margin-right:auto}
+    .shop-stab{flex:1;padding:7px 0;border-radius:6px;border:none;background:none;font-size:12px;font-weight:700;color:var(--text-muted);cursor:pointer;text-align:center;font-family:'Noto Sans TC',sans-serif;transition:all .15s}
+    .shop-stab.on{background:var(--surface);color:var(--primary);box-shadow:0 1px 4px rgba(91,82,232,.1)}
+    .shop-body{padding:10px 14px;display:flex;flex-direction:column;gap:7px;max-width:640px;margin:0 auto}
+    .shop-filter-box{background:var(--surface);border-radius:var(--radius-md);border:1px solid var(--border-light)}
+    .shop-filter-header{display:flex;align-items:center;justify-content:space-between;padding:10px 13px;cursor:pointer;user-select:none}
+    .shop-filter-header-left{display:flex;align-items:center;gap:6px;font-size:12px;font-weight:700;color:var(--text-secondary)}
+    .shop-filter-body{padding:0 13px 10px;display:none;flex-direction:column;gap:8px}
+    .shop-filter-body.open{display:flex}
+    .shop-filter-row{display:flex;align-items:flex-start;gap:8px}
+    .shop-filter-row-label{font-size:10px;font-weight:700;color:var(--text-muted);white-space:nowrap;padding-top:5px;min-width:32px}
+    .shop-chips-wrap{display:flex;gap:4px;flex-wrap:wrap;flex:1}
+    .shop-chip{padding:4px 10px;border-radius:999px;font-size:11px;font-weight:700;border:1.5px solid var(--border);background:var(--surface);color:#64748b;cursor:pointer;white-space:nowrap;font-family:'Noto Sans TC',sans-serif;transition:all .15s}
+    .shop-chip.on{background:var(--primary);color:#fff;border-color:var(--primary)}
+    .shop-card{background:var(--surface);border-radius:var(--radius-md);border:1px solid var(--border-light);cursor:pointer;position:relative;margin-bottom:6px}
+    .shop-card-top{display:flex;align-items:center;gap:9px;padding:11px 13px}
+    .shop-cb{width:20px;height:20px;border-radius:5px;border:2px solid #d1d5db;flex-shrink:0;display:flex;align-items:center;justify-content:center;transition:all .15s;background:var(--surface);cursor:pointer}
+    .shop-cb.checked{background:var(--primary);border-color:var(--primary)}
+    .shop-cb.checked::after{content:'';width:4px;height:8px;border:2px solid #fff;border-top:none;border-left:none;transform:rotate(40deg) translateY(-1px);display:block}
+    .shop-b-high{background:#fee2e2;color:#dc2626}
+    .shop-b-mid{background:#fef3c7;color:#b45309}
+    .shop-b-low{background:#d1fae5;color:#059669}
+    .shop-b-restock{background:#fff7ed;color:#c2410c;border:1px solid #fed7aa}
+    .shop-expand{border-top:1px solid var(--border-light);padding:10px 13px;display:none;flex-direction:column;gap:0}
+    .shop-expand.open{display:flex}
+    .shop-field-row{display:flex;align-items:center;justify-content:space-between;padding:8px 0;border-bottom:1px solid var(--border-light)}
+    .shop-field-row:last-child{border-bottom:none}
+    .shop-field-label{font-size:11px;color:var(--text-muted);font-weight:700}
+    .shop-field-val{display:flex;align-items:center;gap:4px;font-size:12px;font-weight:700;cursor:pointer;padding:4px 10px;border-radius:var(--radius-sm);border:1.5px solid var(--border);background:var(--bg);color:var(--text-primary);font-family:'Noto Sans TC',sans-serif;transition:border-color .15s}
+    .shop-field-val:hover{border-color:var(--primary)}
+    .shop-field-arr{font-size:9px;color:var(--text-muted);margin-left:2px}
+    .shop-dot-btn{background:none;border:none;width:30px;height:30px;display:flex;align-items:center;justify-content:center;cursor:pointer;border-radius:6px;flex-shrink:0;padding:0}
+    .shop-dot-menu{position:absolute;right:8px;top:40px;background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-md);box-shadow:var(--shadow-lg);z-index:600;min-width:130px;overflow:hidden;display:none}
+    .shop-dot-menu.open{display:block}
+    .shop-dot-menu button{display:flex;align-items:center;gap:8px;width:100%;padding:11px 14px;border:none;background:none;font-size:13px;font-weight:500;cursor:pointer;color:var(--text-primary);border-bottom:1px solid var(--border-light);font-family:'Noto Sans TC',sans-serif;text-align:left}
+    .shop-dot-menu button:last-child{border-bottom:none;color:var(--danger)}
+    .shop-dot-menu button:hover{background:var(--bg)}
+    .shop-prio-seg{display:flex;gap:5px;margin-bottom:12px}
+    .shop-prio-seg button{flex:1;padding:8px 0;border-radius:var(--radius-sm);border:1.5px solid var(--border);background:var(--surface);font-size:12px;font-weight:700;color:#64748b;cursor:pointer;font-family:'Noto Sans TC',sans-serif;transition:all .15s}
+    .shop-prio-seg button.on{background:var(--primary);color:#fff;border-color:var(--primary)}
+    .shop-src-row{display:flex;gap:5px;flex-wrap:wrap;margin-bottom:12px}
+    #shop-global-dd{position:fixed;background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-md);box-shadow:var(--shadow-lg);z-index:2000;min-width:130px;overflow:hidden;display:none}
+    #shop-global-dd.open{display:block}
+    #shop-global-dd .dd-opt{padding:10px 14px;font-size:13px;font-weight:500;cursor:pointer;color:var(--text-primary);border-bottom:1px solid var(--border-light);font-family:'Noto Sans TC',sans-serif}
+    #shop-global-dd .dd-opt:last-child{border-bottom:none}
+    #shop-global-dd .dd-opt:hover{background:var(--bg)}
+    #shop-global-dd .dd-opt.sel{color:var(--primary);font-weight:700}
   </style>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -651,7 +700,8 @@
   <div class="inv-tab-bar">
     <button class="inv-tab active" onclick="invSwitchTab('alert',this)"><span class="material-symbols-outlined" style="font-size:13px">notifications_active</span>待注意<span class="tcnt" id="inv-cnt-alert"></span></button>
     <button class="inv-tab" id="inv-tab-location" onclick="invSwitchTab('location',this)"><span class="material-symbols-outlined" style="font-size:13px">place</span>位置<span class="tcnt" id="inv-cnt-loc"></span></button>
-    <button class="inv-tab" onclick="invSwitchTab('locmgr',this)"><span class="material-symbols-outlined" style="font-size:13px">settings</span>位置管理</button>
+    <button class="inv-tab" onclick="invSwitchTab('locmgr',this)"><span class="material-symbols-outlined" style="font-size:13px">settings</span>管理</button>
+    <button class="inv-tab" id="inv-tab-shopping" onclick="invSwitchTab('shopping',this)"><span class="material-symbols-outlined" style="font-size:13px">shopping_cart</span>購物清單<span class="tcnt" id="shop-restock-new-cnt" style="display:none"></span></button>
   </div>
   <!-- 待注意子篩選列（只在 alert tab 時顯示） -->
   <div id="inv-alert-sub-bar" style="display:none;padding:8px 14px 0;max-width:640px;margin:0 auto">
@@ -713,6 +763,149 @@
   </div>
   <div class="inv-content" id="inv-content"></div>
 </div>
+<!-- ── SHOPPING LIST PANEL ── -->
+<div id="inv-shopping-panel" style="display:none">
+  <div class="shop-sub-tabs">
+    <button class="shop-stab on" id="shop-st-buy" onclick="shopSetSub('buy')"><span class="material-symbols-outlined" style="font-size:13px;vertical-align:-2px">shopping_cart</span> 待購買</button>
+    <button class="shop-stab" id="shop-st-done" onclick="shopSetSub('done')"><span class="material-symbols-outlined" style="font-size:13px;vertical-align:-2px">task_alt</span> 已購買</button>
+    <button class="shop-stab" id="shop-st-restock" onclick="shopSetSub('restock')"><span class="material-symbols-outlined" style="font-size:13px;vertical-align:-2px">inventory_2</span> 補貨追蹤<span id="shop-restock-badge" style="display:none;background:#ef4444;color:#fff;border-radius:999px;padding:0 5px;font-size:9px;margin-left:3px;font-weight:700"></span></button>
+  </div>
+  <div id="shop-buy-panel" class="shop-body">
+    <div class="shop-filter-box">
+      <div class="shop-filter-header" onclick="shopToggleFilter()">
+        <div class="shop-filter-header-left">
+          <span class="material-symbols-outlined" style="font-size:15px;color:var(--text-muted)">tune</span>篩選
+        </div>
+        <span class="material-symbols-outlined" id="shop-filter-arrow" style="font-size:18px;color:var(--text-muted)">expand_less</span>
+      </div>
+      <div class="shop-filter-body open" id="shop-filter-body">
+        <div class="shop-filter-row">
+          <span class="shop-filter-row-label">優先度</span>
+          <div class="shop-chips-wrap" id="shop-prio-filter-chips">
+            <button class="shop-chip on" onclick="shopSetFilter('prio','all',this)">全部</button>
+            <button class="shop-chip" onclick="shopSetFilter('prio',0,this)">🔴 高</button>
+            <button class="shop-chip" onclick="shopSetFilter('prio',1,this)">🟡 中</button>
+            <button class="shop-chip" onclick="shopSetFilter('prio',2,this)">🟢 低</button>
+          </div>
+        </div>
+        <div class="shop-filter-row">
+          <span class="shop-filter-row-label">分類</span>
+          <div class="shop-chips-wrap" id="shop-cat-filter-chips">
+            <button class="shop-chip on" onclick="shopSetFilter('cat','all',this)">全部</button>
+            <button class="shop-chip" onclick="shopSetFilter('cat','日常用品',this)">日常用品</button>
+            <button class="shop-chip" onclick="shopSetFilter('cat','保養品',this)">保養品</button>
+            <button class="shop-chip" onclick="shopSetFilter('cat','糧食/飲品',this)">糧食/飲品</button>
+            <button class="shop-chip" onclick="shopSetFilter('cat','藥品保健',this)">藥品保健</button>
+            <button class="shop-chip" onclick="shopSetFilter('cat','清潔用品',this)">清潔用品</button>
+            <button class="shop-chip" onclick="shopSetFilter('cat','文具工具',this)">文具工具</button>
+            <button class="shop-chip" onclick="shopSetFilter('cat','調味料',this)">調味料</button>
+            <button class="shop-chip" onclick="shopSetFilter('cat','其他',this)">其他</button>
+          </div>
+        </div>
+        <div class="shop-filter-row">
+          <span class="shop-filter-row-label">排序</span>
+          <div class="shop-chips-wrap" id="shop-sort-chips">
+            <button class="shop-chip on" onclick="shopSetSort('prio',this)">優先度</button>
+            <button class="shop-chip" onclick="shopSetSort('price-asc',this)">價格低→高</button>
+            <button class="shop-chip" onclick="shopSetSort('price-desc',this)">價格高→低</button>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div id="shop-buy-list"></div>
+  </div>
+  <div id="shop-done-panel" style="display:none">
+    <div style="padding:10px 14px 6px;max-width:640px;margin:0 auto">
+      <div style="display:flex;align-items:center;gap:8px;background:var(--surface);border:1px solid var(--border-light);border-radius:10px;padding:8px 12px;margin-bottom:8px">
+        <span class="material-symbols-outlined" style="font-size:16px;color:var(--text-muted)">search</span>
+        <input type="text" id="shop-done-search" placeholder="搜尋購買紀錄…" oninput="shopSetDoneSearch(this.value)"
+          style="border:none;outline:none;background:transparent;flex:1;font-size:13px;color:var(--text-primary)">
+      </div>
+      <div style="overflow-x:auto;white-space:nowrap;padding-bottom:4px" class="shop-chips-wrap" id="shop-done-cat-chips">
+        <button class="shop-chip on" onclick="shopSetDoneCat('all',this)">全部</button>
+            <button class="shop-chip" onclick="shopSetDoneCat('日常用品',this)">日常用品</button>
+            <button class="shop-chip" onclick="shopSetDoneCat('保養品',this)">保養品</button>
+            <button class="shop-chip" onclick="shopSetDoneCat('糧食/飲品',this)">糧食/飲品</button>
+            <button class="shop-chip" onclick="shopSetDoneCat('藥品保健',this)">藥品保健</button>
+            <button class="shop-chip" onclick="shopSetDoneCat('清潔用品',this)">清潔用品</button>
+            <button class="shop-chip" onclick="shopSetDoneCat('文具工具',this)">文具工具</button>
+            <button class="shop-chip" onclick="shopSetDoneCat('調味料',this)">調味料</button>
+            <button class="shop-chip" onclick="shopSetDoneCat('其他',this)">其他</button>
+      </div>
+    </div>
+    <div class="shop-body" style="padding-top:0">
+      <div id="shop-done-list"></div>
+    </div>
+  </div>
+  <div id="shop-restock-panel" style="display:none;max-width:640px;margin:0 auto;padding:6px 0">
+    <div id="shop-restock-list"></div>
+  </div>
+</div>
+<div id="shop-global-dd"></div>
+
+
+<!-- ── SHOPPING LIST: ADD/EDIT MODAL ── -->
+<div class="modal-overlay" id="shopItemModal">
+  <div class="modal-sheet"><div class="modal-handle"></div>
+    <div class="flex items-center justify-between mb-5">
+      <h2 style="font-size:17px;font-weight:700;color:#1e293b" id="shop-modal-title">新增購物項目</h2>
+      <button onclick="closeModal('shopItemModal')" style="background:var(--border-light);border:none;width:32px;height:32px;border-radius:50%;display:flex;align-items:center;justify-content:center;cursor:pointer"><span class="material-symbols-outlined" style="font-size:18px;color:#64748b">close</span></button>
+    </div>
+    <input type="hidden" id="shop-edit-id">
+    <div class="form-group"><label>商品名稱 *</label><input type="text" id="shop-f-name" placeholder="例：空氣清淨機濾網"></div>
+    <div class="form-group"><label>優先度</label>
+      <div class="shop-prio-seg" id="shop-form-prio-seg">
+        <button onclick="shopSetFormPrio(0,this)">🔴 高</button>
+        <button class="on" onclick="shopSetFormPrio(1,this)">🟡 中</button>
+        <button onclick="shopSetFormPrio(2,this)">🟢 低</button>
+      </div>
+    </div>
+    <div class="form-group"><label>分類</label><select id="shop-f-cat"><option  selected>日常用品</option><option>保養品</option><option>糧食/飲品</option><option>藥品保健</option><option>清潔用品</option><option>文具工具</option><option>調味料</option><option>其他</option></select></div>
+    <div class="form-group"><label>購買來源</label>
+      <div class="shop-src-row" id="shop-form-src-row">
+        <button class="shop-chip on" onclick="shopSetFormSrc(this)">蝦皮</button>
+        <button class="shop-chip" onclick="shopSetFormSrc(this)">momo</button>
+        <button class="shop-chip" onclick="shopSetFormSrc(this)">全聯</button>
+        <button class="shop-chip" onclick="shopSetFormSrc(this)">實體店</button>
+        <button class="shop-chip" onclick="shopSetFormSrc(this)">其他</button>
+      </div>
+    </div>
+    <div class="form-group"><label>購買連結（選填）</label><input type="text" id="shop-f-link" placeholder="https://..."></div>
+    <div class="form-group"><label>預算（選填）</label><input type="text" id="shop-f-price" placeholder="NT$..."></div>
+    <div class="form-group"><label>備註（選填）</label><input type="text" id="shop-f-note" placeholder="顏色、尺寸、等特價..."></div>
+    <div class="flex gap-3 mt-4"><button class="btn-secondary flex-1" onclick="closeModal('shopItemModal')">取消</button><button class="btn-primary flex-1" onclick="shopSaveItem()">儲存</button></div>
+  </div>
+</div>
+
+<!-- ── SHOPPING LIST: REVIEW MODAL ── -->
+<div class="modal-overlay" id="shopReviewModal">
+  <div class="modal-sheet"><div class="modal-handle"></div>
+    <div class="flex items-center justify-between mb-4">
+      <h2 style="font-size:17px;font-weight:700;color:#1e293b">購買評價 🎉</h2>
+      <button onclick="closeModal('shopReviewModal')" style="background:var(--border-light);border:none;width:32px;height:32px;border-radius:50%;display:flex;align-items:center;justify-content:center;cursor:pointer"><span class="material-symbols-outlined" style="font-size:18px;color:#64748b">close</span></button>
+    </div>
+    <input type="hidden" id="shop-review-id">
+    <input type="hidden" id="shop-review-restock-inv-id">
+    <input type="hidden" id="shop-review-qty-mode">
+    <div class="form-group" id="shop-review-qty-row" style="display:none">
+      <label id="shop-review-qty-label">補充數量（件）</label>
+      <input type="number" id="shop-review-qty" min="0" placeholder="購買了幾件？" style="width:100%">
+    </div>
+    <div class="form-group"><label>滿意度</label>
+      <div style="display:flex;gap:8px;margin-top:6px" id="shop-stars-row">
+        <span class="shop-star" data-n="1" onclick="shopSetStar(1)" style="font-size:28px;cursor:pointer;color:#e2e8f0">★</span>
+        <span class="shop-star" data-n="2" onclick="shopSetStar(2)" style="font-size:28px;cursor:pointer;color:#e2e8f0">★</span>
+        <span class="shop-star" data-n="3" onclick="shopSetStar(3)" style="font-size:28px;cursor:pointer;color:#e2e8f0">★</span>
+        <span class="shop-star" data-n="4" onclick="shopSetStar(4)" style="font-size:28px;cursor:pointer;color:#e2e8f0">★</span>
+        <span class="shop-star" data-n="5" onclick="shopSetStar(5)" style="font-size:28px;cursor:pointer;color:#e2e8f0">★</span>
+      </div>
+    </div>
+    <div class="form-group"><label>實際花費</label><input type="text" id="shop-review-price" placeholder="NT$..."></div>
+    <div class="form-group"><label>心得備註</label><input type="text" id="shop-review-note" placeholder="品質如何？值得嗎？"></div>
+    <div class="flex gap-3 mt-4"><button class="btn-secondary flex-1" onclick="closeModal('shopReviewModal')">略過</button><button class="btn-primary flex-1" onclick="shopSaveReview()">儲存評價</button></div>
+  </div>
+</div>
+
 
 <!-- ── BATCH + FLOATING ── -->
 <div class="float-batch-bar" id="float-batch-bar">
@@ -1026,6 +1219,7 @@ function loadData(){
   housework=h?JSON.parse(h):JSON.parse(JSON.stringify(DH));
   inventory=i?JSON.parse(i):JSON.parse(JSON.stringify(DI));
   locations=l?JSON.parse(l):JSON.parse(JSON.stringify(DL));
+  loadShopList();
 }
 function exportData(){
   // 確保 locations 也被包含在導出的物件中
@@ -1174,12 +1368,15 @@ function switchPage(p,b){
 }
 function openAddModal(){
   if(currentPage==='housework')openHouseworkModal();
-  else if(currentPage==='inventory')invOpenAdd();
+  else if(currentPage==='inventory'){
+    if(invCurrentTab==='shopping')shopOpenAdd();
+    else invOpenAdd();
+  }
   else if(currentPage==='todo'){twOpenDropDay=todayStr;twRender();}
   else openTaskModal();
 }
 function closeModal(id){document.getElementById(id).classList.remove('open')}
-function closeAllPopups(){document.querySelectorAll('.popup-menu').forEach(p=>{p.classList.remove('show','flip-up');p.style.position='';p.style.top='';p.style.bottom='';p.style.right='';});document.getElementById('inv-global-popup')?.remove();}
+function closeAllPopups(){document.querySelectorAll('.popup-menu').forEach(p=>{p.classList.remove('show','flip-up');p.style.position='';p.style.top='';p.style.bottom='';p.style.right='';});document.getElementById('inv-global-popup')?.remove();shopCloseGlobalDd();shopOpenDotId=null;}
 
 // ── TASK MODAL ────────────────────────────────────────────
 function onTaskFreqTypeChange(){
@@ -1484,7 +1681,7 @@ function renderHouseworkRow(h){
   </div>`;
 }
 function renderHouseworkPage(){
-  const allAreas=[...new Set(housework.map(h=>h.area))];
+  const allAreas=[...new Set(housework.map(h=>h.area))].sort((a,b)=>{if(a==='所有空間')return 1;if(b==='所有空間')return -1;return a.localeCompare(b,'zh-TW');});
   const tabBar=document.getElementById('hw-area-tab-bar');
   if(tabBar)tabBar.innerHTML=[null,...allAreas].map(a=>{const isAll=a===null,sel=(isAll&&!hwAreaFilter)||(hwAreaFilter===a),cnt=isAll?housework.length:housework.filter(h=>h.area===a).length,col=isAll?null:areaColor(a);
     return `<button class="area-tab ${sel?'active':''}" onclick="toggleAreaFilter(${a===null?'null':`'${a}'`})" style="${sel&&!isAll?`background:${col.dot};`:''}">
@@ -1553,6 +1750,26 @@ function invSwitchTab(tab,btn){
   // 待注意子篩選列只在 alert tab 時顯示
   const alertBar=document.getElementById('inv-alert-sub-bar');
   if(alertBar)alertBar.style.display=tab==='alert'?'block':'none';
+  // 購物清單 panel 只在 shopping tab 時顯示
+  const shopPanel=document.getElementById('inv-shopping-panel');
+  const invContent=document.getElementById('inv-content');
+  const invFilterPanel=document.getElementById('inv-filter-panel');
+  const invLocFilterPanel=document.getElementById('inv-loc-filter-panel');
+  const invAlertStrip=document.getElementById('inv-alert-strip');
+  if(tab==='shopping'){
+    if(shopPanel)shopPanel.style.display='block';
+    if(invContent)invContent.style.display='none';
+    if(invFilterPanel)invFilterPanel.style.display='none';
+    if(invLocFilterPanel)invLocFilterPanel.style.display='none';
+    if(invAlertStrip)invAlertStrip.style.display='none';
+    // 同步待補貨並渲染
+    shopSyncRestock();
+    if(shopSubTab==='restock'){shopRenderRestock();}else{shopRender();}
+    return;
+  } else {
+    if(shopPanel)shopPanel.style.display='none';
+    if(invContent)invContent.style.display='';
+  }
   if(tab==='alert'){
     invAlertSubMode='all'; // 預設「全部待注意」
     _syncAlertSubBtns();
@@ -3258,6 +3475,309 @@ function fpEndDrag() {
   saveLocations();
   renderLocMgrPage();
 }
+
+// ══ SHOPPING LIST ════════════════════════════════════════════════════════
+let shopList=[];
+let shopSubTab='buy',shopSortMode='prio',shopFilterPrio='all',shopFilterCat='all',shopDoneSearch='',shopDoneCat='all';
+let shopOpenCardId=null,shopOpenDotId=null;
+let shopActiveDdId=null,shopActiveDdField=null;
+let shopEditingId=null,shopFormPrio=1,shopFormSrc='蝦皮';
+let shopFilterOpen=true,shopReviewStar=3;
+const SHOP_CATS=['日常用品','保養品','糧食/飲品','藥品保健','清潔用品','文具工具','調味料','其他'];
+const SHOP_SRCS=['蝦皮','momo','全聯','實體店','其他'];
+const SHOP_PRIO_LABEL=['高','中','低'];
+const SHOP_PRIO_ICON=['🔴','🟡','🟢'];
+const SHOP_PRIO_CLS=['shop-b-high','shop-b-mid','shop-b-low'];
+
+function saveShopList(){localStorage.setItem('app_shoplist',JSON.stringify(shopList));}
+function loadShopList(){const s=localStorage.getItem('app_shoplist');shopList=s?JSON.parse(s):[];}
+
+function shopSyncRestock(){
+  const restockItems=inventory.filter(it=>{
+    if(!it.restock)return false;
+    if(it.qtyMode==='ratio')return(it.ratio??100)<=(it.ratioThr??25);
+    return(it.qty??0)<=(it.threshold??1);
+  });
+  const newCnt=restockItems.filter(inv=>!shopList.some(s=>s.restockId===inv.id&&!s.done)).length;
+  const badge=document.getElementById('shop-restock-badge');
+  const mainBadge=document.getElementById('shop-restock-new-cnt');
+  if(badge){badge.textContent=newCnt;badge.style.display=newCnt?'inline':'none';}
+  if(mainBadge){mainBadge.textContent=newCnt;mainBadge.style.display=newCnt?'inline':'none';}
+}
+
+function shopRenderRestock(){
+  const restockItems=inventory.filter(it=>{
+    if(!it.restock)return false;
+    if(it.qtyMode==='ratio')return(it.ratio??100)<=(it.ratioThr??25);
+    return(it.qty??0)<=(it.threshold??1);
+  });
+  const el=document.getElementById('shop-restock-list');
+  if(!el)return;
+  if(!restockItems.length){
+    el.innerHTML='<div style="text-align:center;padding:32px 16px;color:var(--text-muted);font-size:13px">目前沒有待補貨項目</div>';
+    return;
+  }
+  el.innerHTML=restockItems.map(inv=>{
+    const already=shopList.some(s=>s.restockId===inv.id&&!s.done);
+    const col=areaColor(inv.area||'')||{bg:'#f1f5f9',dot:'#6b7280',icon:'📦'};
+    const qty=inv.qtyMode==='ratio'?`${inv.ratio??100}%`:`${inv.qty??0} 件`;
+    return `<div style="display:flex;align-items:center;gap:10px;padding:11px 14px;margin:0 14px 7px;background:var(--surface);border-radius:12px;border:1px solid var(--border-light)">
+      <span style="font-size:20px">${col.icon}</span>
+      <div style="flex:1;min-width:0">
+        <div style="font-size:14px;font-weight:600;color:var(--text-primary)">${inv.name}</div>
+        <div style="font-size:11px;color:var(--text-muted);margin-top:2px">${inv.area||'未分區'}${inv.location?' ・ '+inv.location:''} ・ 剩 ${qty}</div>
+      </div>
+      ${already
+        ? `<span style="font-size:11px;color:var(--primary);font-weight:600;padding:5px 11px;border-radius:999px;border:1px solid var(--primary)">已加入</span>`
+        : `<button onclick="shopAddFromRestock('${inv.id}')" style="font-size:12px;font-weight:600;color:#fff;background:var(--primary);border:none;padding:6px 13px;border-radius:999px;cursor:pointer;white-space:nowrap">＋ 加入</button>`
+      }
+    </div>`;
+  }).join('');
+}
+
+function shopAddFromRestock(invId){
+  const inv=inventory.find(i=>i.id===invId);
+  if(!inv)return;
+  if(shopList.some(s=>s.restockId===invId&&!s.done)){showToast('已在購物清單中');return;}
+  shopList.push({id:'shop-'+Date.now()+'-'+Math.random().toString(36).slice(2,5),
+    name:inv.name,prio:1,cat:inv.category||'日常用品',src:inv.source||'',price:'',link:'',note:'',
+    done:false,restock:true,restockId:invId,
+    date:todayStr,stars:0,reviewNote:'',reviewPrice:''});
+  saveShopList();
+  shopSyncRestock();
+  shopRenderRestock();
+  showToast(inv.name+' 已加入購物清單 ✓');
+}
+
+function shopParsePrice(s){const n=parseInt((s||'').replace(/[^0-9]/g,''));return isNaN(n)?0:n;}
+
+function shopRender(){
+  const isDone=shopSubTab==='done';
+  let list=shopList.filter(i=>i.done===isDone);
+  if(!isDone){
+    if(shopFilterPrio!=='all') list=list.filter(i=>i.prio===shopFilterPrio);
+    if(shopFilterCat!=='all') list=list.filter(i=>i.cat===shopFilterCat);
+    if(shopSortMode==='prio') list.sort((a,b)=>a.prio-b.prio);
+    else if(shopSortMode==='price-asc') list.sort((a,b)=>shopParsePrice(a.price)-shopParsePrice(b.price));
+    else if(shopSortMode==='price-desc') list.sort((a,b)=>shopParsePrice(b.price)-shopParsePrice(a.price));
+  } else {
+    if(shopDoneSearch){const q=shopDoneSearch.toLowerCase();list=list.filter(i=>i.name.toLowerCase().includes(q)||i.note?.toLowerCase().includes(q));}
+    if(shopDoneCat!=='all') list=list.filter(i=>i.cat===shopDoneCat);
+    list.sort((a,b)=>(b.date||'').localeCompare(a.date||'')); // newest first
+  }
+  const el=document.getElementById(isDone?'shop-done-list':'shop-buy-list');
+  if(!el)return;
+  if(!list.length){el.innerHTML=`<div style="text-align:center;padding:32px 16px;color:var(--text-muted);font-size:13px">${isDone?'還沒有購買紀錄！':'清單空空的，點右上角新增吧！'}</div>`;return;}
+  el.innerHTML=list.map(it=>{
+    const open=shopOpenCardId===it.id;
+    const dotOpen=shopOpenDotId===it.id;
+    const subline=[it.price,it.note].filter(Boolean).join('・');
+    const starsHtml=it.stars?'⭐'.repeat(it.stars):'';
+    return `<div class="shop-card" id="shop-card-${it.id}">
+      <div class="shop-card-top" onclick="shopToggleCard('${it.id}',event)">
+        <div class="shop-cb ${it.done?'checked':''}" onclick="shopHandleCb('${it.id}',event)"></div>
+        <div style="flex:1;min-width:0">
+          <div style="display:flex;align-items:center;gap:5px;flex-wrap:wrap">
+            <span style="font-size:14px;font-weight:600;color:${it.done?'var(--text-muted)':'var(--text-primary)'};${it.done?'text-decoration:line-through;':''}">${it.name}</span>
+            ${it.restock?'<span class="badge shop-b-restock" style="font-size:9px">📦補貨</span>':''}
+          </div>
+          ${subline?`<div style="font-size:11px;color:var(--text-muted);margin-top:2px">${subline}</div>`:''}
+        </div>
+        <div style="display:flex;align-items:center;gap:3px">
+          <span class="badge ${SHOP_PRIO_CLS[it.prio]}" style="font-size:9px">${SHOP_PRIO_LABEL[it.prio]}</span>
+          <button class="shop-dot-btn" onclick="shopToggleDot('${it.id}',event)"><span class="material-symbols-outlined" style="font-size:18px;color:#94a3b8">more_vert</span></button>
+        </div>
+      </div>
+      <div class="shop-expand ${open?'open':''}" id="shop-expand-${it.id}" onclick="event.stopPropagation()">
+        <div class="shop-field-row">
+          <span class="shop-field-label">優先度</span>
+          <div class="shop-field-val" onclick="shopOpenDd('prio','${it.id}',this,event)">${SHOP_PRIO_ICON[it.prio]} ${SHOP_PRIO_LABEL[it.prio]}<span class="shop-field-arr">▾</span></div>
+        </div>
+        <div class="shop-field-row">
+          <span class="shop-field-label">分類</span>
+          <div class="shop-field-val" onclick="shopOpenDd('cat','${it.id}',this,event)">${it.cat}<span class="shop-field-arr">▾</span></div>
+        </div>
+        <div class="shop-field-row">
+          <span class="shop-field-label">購買來源</span>
+          <div class="shop-field-val" onclick="shopOpenDd('src','${it.id}',this,event)">${it.src||'未設定'}<span class="shop-field-arr">▾</span></div>
+        </div>
+        ${it.link?`<div class="shop-field-row"><span class="shop-field-label">連結</span><a href="${it.link}" target="_blank" style="font-size:12px;color:var(--primary);text-decoration:none;display:flex;align-items:center;gap:3px"><span class="material-symbols-outlined" style="font-size:13px">open_in_new</span>開啟連結</a></div>`:''}
+        ${starsHtml?`<div class="shop-field-row"><span class="shop-field-label">評價</span><span style="font-size:13px">${starsHtml}</span></div>`:''}
+        ${it.reviewNote?`<div class="shop-field-row"><span class="shop-field-label">心得</span><span style="font-size:12px;color:var(--text-secondary)">${it.reviewNote}</span></div>`:''}
+      </div>
+      <div class="shop-dot-menu ${dotOpen?'open':''}" id="shop-dot-${it.id}" onclick="event.stopPropagation()">
+        <button onclick="shopOpenEdit('${it.id}')"><span class="material-symbols-outlined" style="font-size:16px;color:var(--primary)">edit</span>修改</button>
+        <button onclick="shopDelete('${it.id}')"><span class="material-symbols-outlined" style="font-size:16px">delete</span>刪除</button>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function shopToggleCard(id,e){
+  if(e.target.closest('.shop-dot-btn')||e.target.closest('.shop-dot-menu')||e.target.closest('.shop-cb'))return;
+  shopCloseGlobalDd();
+  shopOpenCardId=shopOpenCardId===id?null:id; shopRender();
+}
+function shopHandleCb(id,e){
+  e.stopPropagation();
+  const it=shopList.find(x=>x.id===id); if(!it||it.done)return;
+  it.done=true; shopOpenCardId=null; saveShopList(); shopRender();
+  document.getElementById('shop-review-id').value=id;
+  shopReviewStar=3; shopSyncStars();
+  document.getElementById('shop-review-price').value='';
+  document.getElementById('shop-review-note').value='';
+  document.getElementById('shop-review-qty').value='';
+  // qty row: only show for restock items
+  const invItem=it.restockId?inventory.find(x=>x.id===it.restockId):null;
+  const qtyRow=document.getElementById('shop-review-qty-row');
+  const qtyLabel=document.getElementById('shop-review-qty-label');
+  const qtyMode=invItem?.qtyMode||'qty';
+  document.getElementById('shop-review-restock-inv-id').value=invItem?invItem.id:'';
+  document.getElementById('shop-review-qty-mode').value=qtyMode;
+  if(invItem){
+    qtyRow.style.display='block';
+    qtyLabel.textContent=qtyMode==='ratio'?'補充後庫存（%）':'補充數量（件）';
+    document.getElementById('shop-review-qty').placeholder=qtyMode==='ratio'?'例：80（代表80%）':'購買了幾件？';
+  } else {
+    qtyRow.style.display='none';
+  }
+  document.getElementById('shopReviewModal').classList.add('open');
+}
+function shopToggleDot(id,e){
+  e.stopPropagation(); shopCloseGlobalDd();
+  shopOpenDotId=shopOpenDotId===id?null:id; shopRender();
+}
+function shopDelete(id){
+  shopOpenDotId=null; shopRender();
+  appConfirm('刪除項目','確定要刪除這個購物項目嗎？',()=>{shopList=shopList.filter(x=>x.id!==id);saveShopList();shopRender();});
+}
+function shopOpenDd(field,id,trigEl,e){
+  e.stopPropagation();
+  const dd=document.getElementById('shop-global-dd');
+  const rect=trigEl.getBoundingClientRect();
+  shopActiveDdId=id; shopActiveDdField=field;
+  const it=shopList.find(x=>x.id===id); if(!it)return;
+  let opts=[];
+  if(field==='prio') opts=SHOP_PRIO_ICON.map((ic,i)=>({label:ic+' '+SHOP_PRIO_LABEL[i],val:i,sel:it.prio===i}));
+  else if(field==='cat') opts=SHOP_CATS.map(c=>({label:c,val:c,sel:it.cat===c}));
+  else if(field==='src') opts=SHOP_SRCS.map(s=>({label:s,val:s,sel:it.src===s}));
+  dd.innerHTML=opts.map(o=>`<div class="dd-opt ${o.sel?'sel':''}" onclick="shopApplyDd(${JSON.stringify(o.val)},event)">${o.label}</div>`).join('');
+  dd.style.right=(window.innerWidth-rect.right)+'px';
+  const spaceBelow=window.innerHeight-rect.bottom-100;
+  if(spaceBelow<130){dd.style.bottom=(window.innerHeight-rect.top)+'px';dd.style.top='auto';}
+  else{dd.style.top=(rect.bottom+4)+'px';dd.style.bottom='auto';}
+  dd.classList.add('open');
+}
+function shopApplyDd(val,e){
+  e.stopPropagation();
+  const it=shopList.find(x=>x.id===shopActiveDdId); if(!it)return;
+  if(shopActiveDdField==='prio') it.prio=val;
+  else if(shopActiveDdField==='cat') it.cat=val;
+  else if(shopActiveDdField==='src') it.src=val;
+  saveShopList(); shopCloseGlobalDd(); shopRender();
+}
+function shopCloseGlobalDd(){
+  shopActiveDdId=null; shopActiveDdField=null;
+  const dd=document.getElementById('shop-global-dd'); if(dd)dd.classList.remove('open');
+}
+function shopOpenAdd(){
+  shopEditingId=null; shopFormPrio=1; shopFormSrc='蝦皮';
+  document.getElementById('shop-modal-title').textContent='新增購物項目';
+  document.getElementById('shop-edit-id').value='';
+  ['shop-f-name','shop-f-link','shop-f-price','shop-f-note'].forEach(id=>document.getElementById(id).value='');
+  document.getElementById('shop-f-cat').value='日常用品';
+  document.querySelectorAll('#shop-form-prio-seg button').forEach((b,i)=>b.classList.toggle('on',i===1));
+  document.querySelectorAll('#shop-form-src-row .shop-chip').forEach((b,i)=>b.classList.toggle('on',i===0));
+  document.getElementById('shopItemModal').classList.add('open');
+}
+function shopOpenEdit(id){
+  const it=shopList.find(x=>x.id===id); if(!it)return;
+  shopEditingId=id; shopFormPrio=it.prio; shopFormSrc=it.src||'蝦皮';
+  shopOpenDotId=null;
+  document.getElementById('shop-modal-title').textContent='修改項目';
+  document.getElementById('shop-edit-id').value=id;
+  document.getElementById('shop-f-name').value=it.name;
+  document.getElementById('shop-f-link').value=it.link||'';
+  document.getElementById('shop-f-price').value=it.price||'';
+  document.getElementById('shop-f-note').value=it.note||'';
+  document.getElementById('shop-f-cat').value=it.cat||'其他';
+  document.querySelectorAll('#shop-form-prio-seg button').forEach((b,i)=>b.classList.toggle('on',i===shopFormPrio));
+  document.querySelectorAll('#shop-form-src-row .shop-chip').forEach(b=>b.classList.toggle('on',b.textContent.trim()===shopFormSrc));
+  document.getElementById('shopItemModal').classList.add('open');
+  shopRender();
+}
+function shopSetFormPrio(v,btn){shopFormPrio=v;document.querySelectorAll('#shop-form-prio-seg button').forEach((b,i)=>b.classList.toggle('on',i===v));}
+function shopSetFormSrc(btn){shopFormSrc=btn.textContent.trim();document.querySelectorAll('#shop-form-src-row .shop-chip').forEach(b=>b.classList.toggle('on',b===btn));}
+function shopSaveItem(){
+  const name=document.getElementById('shop-f-name').value.trim(); if(!name){showToast('請輸入商品名稱','error');return;}
+  const price=document.getElementById('shop-f-price').value.trim();
+  if(shopEditingId){
+    const it=shopList.find(x=>x.id===shopEditingId);
+    if(it){it.name=name;it.prio=shopFormPrio;it.src=shopFormSrc;it.cat=document.getElementById('shop-f-cat').value;it.link=document.getElementById('shop-f-link').value.trim();it.price=price;it.note=document.getElementById('shop-f-note').value.trim();}
+  } else {
+    shopList.unshift({id:'shop-'+Date.now()+'-'+Math.random().toString(36).slice(2,5),name,prio:shopFormPrio,cat:document.getElementById('shop-f-cat').value,src:shopFormSrc,link:document.getElementById('shop-f-link').value.trim(),price,note:document.getElementById('shop-f-note').value.trim(),done:false,restock:false,restockId:null,date:todayStr,stars:0,reviewNote:'',reviewPrice:''});
+  }
+  saveShopList(); closeModal('shopItemModal'); shopRender();
+  showToast(shopEditingId?'已更新':'已新增購物項目');
+}
+function shopSyncStars(){document.querySelectorAll('#shop-stars-row .shop-star').forEach((s,i)=>{s.style.color=i<shopReviewStar?'#f59e0b':'#e2e8f0';});}
+function shopSetStar(n){shopReviewStar=n;shopSyncStars();}
+function shopSaveReview(){
+  const id=document.getElementById('shop-review-id').value;
+  const it=shopList.find(x=>x.id===id);
+  if(it){it.stars=shopReviewStar;it.reviewNote=document.getElementById('shop-review-note').value.trim();it.reviewPrice=document.getElementById('shop-review-price').value.trim();}
+  // sync qty back to inventory
+  const invId=document.getElementById('shop-review-restock-inv-id').value;
+  const qtyVal=parseInt(document.getElementById('shop-review-qty').value||'');
+  if(invId&&!isNaN(qtyVal)&&qtyVal>0){
+    const invItem=inventory.find(x=>x.id===invId);
+    if(invItem){
+      if(invItem.qtyMode==='ratio'){
+        invItem.ratio=Math.min(100,qtyVal);
+      } else {
+        invItem.qty=(invItem.qty??0)+qtyVal;
+      }
+      saveInv();
+      shopSyncRestock();
+      if(currentPage==='inventory')renderInventoryPage();
+      showToast('庫存已更新 ✓');
+    }
+  } else {
+    showToast('評價已儲存');
+  }
+  saveShopList(); closeModal('shopReviewModal'); shopRender();
+}
+function shopSetDoneSearch(q){shopDoneSearch=q;shopRender();}
+function shopSetDoneCat(val,btn){
+  shopDoneCat=val;
+  document.querySelectorAll('#shop-done-cat-chips .shop-chip').forEach(c=>c.classList.remove('on'));
+  if(btn)btn.classList.add('on');
+  shopRender();
+}
+function shopSetFilter(type,val,btn){
+  if(type==='prio'){shopFilterPrio=val;document.querySelectorAll('#shop-prio-filter-chips .shop-chip').forEach(c=>c.classList.remove('on'));}
+  else{shopFilterCat=val;document.querySelectorAll('#shop-cat-filter-chips .shop-chip').forEach(c=>c.classList.remove('on'));}
+  btn.classList.add('on'); shopRender();
+}
+function shopSetSort(m,btn){shopSortMode=m;document.querySelectorAll('#shop-sort-chips .shop-chip').forEach(c=>c.classList.remove('on'));btn.classList.add('on');shopRender();}
+function shopToggleFilter(){
+  shopFilterOpen=!shopFilterOpen;
+  document.getElementById('shop-filter-body').classList.toggle('open',shopFilterOpen);
+  const arr=document.getElementById('shop-filter-arrow');
+  if(arr)arr.textContent=shopFilterOpen?'expand_less':'expand_more';
+}
+function shopSetSub(mode){
+  shopSubTab=mode; shopOpenCardId=null; shopCloseGlobalDd();
+  if(mode!=='done'){shopDoneSearch='';shopDoneCat='all';}
+  document.getElementById('shop-st-buy').classList.toggle('on',mode==='buy');
+  document.getElementById('shop-st-done').classList.toggle('on',mode==='done');
+  const stR=document.getElementById('shop-st-restock');if(stR)stR.classList.toggle('on',mode==='restock');
+  document.getElementById('shop-buy-panel').style.display=mode==='buy'?'flex':'none';
+  document.getElementById('shop-done-panel').style.display=mode==='done'?'block':'none';
+  const rPanel=document.getElementById('shop-restock-panel');if(rPanel)rPanel.style.display=mode==='restock'?'block':'none';
+  if(mode==='restock'){shopRenderRestock();}else{shopRender();}
+}
+// ══ END SHOPPING LIST ═══════════════════════════════════════════════════
 
 // ── INIT ──────────────────────────────────────────────────
 loadData();renderAll();
