@@ -869,6 +869,8 @@
         <button class="shop-chip" onclick="shopSetFormSrc(this)">實體店</button>
         <button class="shop-chip" onclick="shopSetFormSrc(this)">其他</button>
       </div>
+      <input type="text" id="shop-f-store" placeholder="店家名稱（如：Gracegift、寶雅…）"
+        style="display:none;margin-top:8px;width:100%;padding:10px 12px;border:1.5px solid var(--border);border-radius:var(--radius-sm);font-size:14px;outline:none;background:var(--surface);font-family:'Noto Sans TC',sans-serif;color:var(--text-primary)">
     </div>
     <div class="form-group"><label>購買連結（選填）</label><input type="text" id="shop-f-link" placeholder="https://..."></div>
     <div class="form-group"><label>預算（選填）</label><input type="text" id="shop-f-price" placeholder="NT$..."></div>
@@ -2777,6 +2779,8 @@ function twRenderProg(days){
   const pct=total?Math.round(done/total*100):0;
   const ovCnt=sched.filter(s=>s.status==='pending'&&s.date<todayStr).length;
   const r=13,circ=2*Math.PI*r,col=pct===100?'#10b981':'var(--primary)';
+  const highShop=typeof shopList!=='undefined'?shopList.filter(s=>!s.done&&s.prio===0).length:0;
+  const shopChip=highShop>0?`<button onclick="const nb=document.querySelector('.nav-item:nth-child(4)');switchPage('inventory',nb);setTimeout(()=>{const t=document.getElementById('inv-tab-shopping');if(t)invSwitchTab('shopping',t);},80)" style="display:flex;align-items:center;gap:3px;background:#fef2f2;border:1px solid #fecaca;border-radius:99px;padding:2px 8px;font-size:10px;font-weight:700;color:#dc2626;cursor:pointer;font-family:'Noto Sans TC',sans-serif;flex-shrink:0"><span class=\"material-symbols-outlined\" style=\"font-size:12px\">shopping_cart</span>${highShop}</button>`:'';
   const dash=circ*pct/100,gap=circ-dash;
   // 右側資訊：done/total ＋ 逾期 chip（只在有逾期時才出現）
   const countTxt=total>0?`<span style="font-size:12px;font-weight:700;color:var(--text-primary)">${done}<span style="font-weight:400;color:var(--text-muted)">/${total}</span></span>`:`<span style="font-size:11px;color:var(--text-muted)">尚未安排</span>`;
@@ -2795,7 +2799,7 @@ function twRenderProg(days){
         <button onclick="twProgMode='day';twRender()" style="padding:2px 8px;border-radius:5px;border:none;background:${twProgMode==='day'?'#fff':'transparent'};font-size:10px;font-weight:700;color:${twProgMode==='day'?'var(--primary)':'#7c6fd0'};cursor:pointer;font-family:'Noto Sans TC',sans-serif;box-shadow:${twProgMode==='day'?'0 1px 3px rgba(0,0,0,.1)':'none'}">今日</button>
         <button onclick="twProgMode='week';twRender()" style="padding:2px 8px;border-radius:5px;border:none;background:${twProgMode==='week'?'#fff':'transparent'};font-size:10px;font-weight:700;color:${twProgMode==='week'?'var(--primary)':'#7c6fd0'};cursor:pointer;font-family:'Noto Sans TC',sans-serif;box-shadow:${twProgMode==='week'?'0 1px 3px rgba(0,0,0,.1)':'none'}">本週</button>
       </div>
-      ${countTxt}${ovChip}${doneChip}
+      ${countTxt}${ovChip}${doneChip}${shopChip}
     </div>`;
 }
 
@@ -3709,7 +3713,16 @@ function shopOpenEdit(id){
   shopRender();
 }
 function shopSetFormPrio(v,btn){shopFormPrio=v;document.querySelectorAll('#shop-form-prio-seg button').forEach((b,i)=>b.classList.toggle('on',i===v));}
-function shopSetFormSrc(btn){shopFormSrc=btn.textContent.trim();document.querySelectorAll('#shop-form-src-row .shop-chip').forEach(b=>b.classList.toggle('on',b===btn));}
+function shopUpdateStore(id,val){
+  const it=shopList.find(x=>x.id===id);if(!it)return;
+  it.store=val.trim();saveShopList();
+}
+function shopSetFormSrc(btn){
+  shopFormSrc=btn.textContent.trim();
+  document.querySelectorAll('#shop-form-src-row .shop-chip').forEach(b=>b.classList.toggle('on',b===btn));
+  const storeInput=document.getElementById('shop-f-store');
+  if(storeInput)storeInput.style.display=(shopFormSrc==='實體店'||shopFormSrc==='其他')?'block':'none';
+}
 function shopSaveItem(){
   const name=document.getElementById('shop-f-name').value.trim(); if(!name){showToast('請輸入商品名稱','error');return;}
   const price=document.getElementById('shop-f-price').value.trim();
