@@ -813,22 +813,44 @@
   </div>
   <div id="shop-done-panel" style="display:none">
     <div style="padding:10px 14px 6px;max-width:640px;margin:0 auto">
-      <div style="display:flex;align-items:center;gap:8px;background:var(--surface);border:1px solid var(--border-light);border-radius:10px;padding:8px 12px;margin-bottom:8px">
-        <span class="material-symbols-outlined" style="font-size:16px;color:var(--text-muted)">search</span>
+      <div style="display:flex;align-items:center;gap:6px;background:var(--surface);border:1px solid var(--border-light);border-radius:10px;padding:5px 10px;margin-bottom:8px">
+        <span class="material-symbols-outlined" style="font-size:15px;color:var(--text-muted)">search</span>
         <input type="text" id="shop-done-search" placeholder="搜尋購買紀錄…" oninput="shopSetDoneSearch(this.value)"
-          style="border:none;outline:none;background:transparent;flex:1;font-size:13px;color:var(--text-primary)">
+          style="border:none;outline:none;background:transparent;flex:1;font-size:12px;color:var(--text-primary)">
       </div>
-      <div style="overflow-x:auto;white-space:nowrap;padding-bottom:4px" class="shop-chips-wrap" id="shop-done-cat-chips">
-        <button class="shop-chip on" onclick="shopSetDoneCat('all',this)">全部</button>
-            <button class="shop-chip" onclick="shopSetDoneCat('日常用品',this)">日常用品</button>
-            <button class="shop-chip" onclick="shopSetDoneCat('保養品',this)">保養品</button>
-            <button class="shop-chip" onclick="shopSetDoneCat('化妝品',this)">化妝品</button>
-            <button class="shop-chip" onclick="shopSetDoneCat('糧食/飲品',this)">糧食/飲品</button>
-            <button class="shop-chip" onclick="shopSetDoneCat('藥品保健',this)">藥品保健</button>
-            <button class="shop-chip" onclick="shopSetDoneCat('清潔用品',this)">清潔用品</button>
-            <button class="shop-chip" onclick="shopSetDoneCat('文具工具',this)">文具工具</button>
-            <button class="shop-chip" onclick="shopSetDoneCat('調味料',this)">調味料</button>
-            <button class="shop-chip" onclick="shopSetDoneCat('其他',this)">其他</button>
+      <div class="shop-filter-box">
+        <div class="shop-filter-header" onclick="shopToggleDoneFilter()">
+          <div class="shop-filter-header-left">
+            <span class="material-symbols-outlined" style="font-size:15px;color:var(--text-muted)">tune</span>篩選
+          </div>
+          <span class="material-symbols-outlined" id="shop-done-filter-arrow" style="font-size:18px;color:var(--text-muted)">expand_more</span>
+        </div>
+        <div class="shop-filter-body" id="shop-done-filter-body">
+          <div class="shop-filter-row" style="align-items:center">
+            <span class="shop-filter-row-label">分類</span>
+            <div style="display:flex;align-items:center;gap:6px">
+              <button class="shop-chip on" id="shop-done-cat-all-btn" onclick="shopSetDoneCatAll()">全部</button>
+              <select id="shop-done-cat-select" onchange="shopSetDoneCatDd(this.value)"
+                style="height:28px;padding:0 28px 0 10px;font-size:12px;border:1px solid var(--border-light);border-radius:20px;background:var(--surface);color:var(--text-primary);cursor:pointer;appearance:none;-webkit-appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24'%3E%3Cpath fill='%2394a3b8' d='M7 10l5 5 5-5z'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 8px center;min-width:90px">
+                <option value="">選擇分類</option>
+                <option>日常用品</option><option>保養品</option><option>化妝品</option>
+                <option>糧食/飲品</option><option>藥品保健</option><option>清潔用品</option>
+                <option>文具工具</option><option>調味料</option><option>其他</option>
+              </select>
+            </div>
+          </div>
+          <div class="shop-filter-row" style="align-items:center">
+            <span class="shop-filter-row-label">日期</span>
+            <div style="display:flex;align-items:center;gap:4px;flex-wrap:nowrap">
+              <input type="date" id="shop-done-date-from" onchange="shopRender()"
+                style="height:28px;padding:0 6px;font-size:11px;border:1px solid var(--border-light);border-radius:8px;background:var(--surface);color:var(--text-primary);outline:none;max-width:130px">
+              <span style="font-size:11px;color:var(--text-muted);white-space:nowrap">至</span>
+              <input type="date" id="shop-done-date-to" onchange="shopRender()"
+                style="height:28px;padding:0 6px;font-size:11px;border:1px solid var(--border-light);border-radius:8px;background:var(--surface);color:var(--text-primary);outline:none;max-width:130px">
+              <button onclick="shopClearDateFilter()" style="font-size:11px;color:var(--text-muted);background:none;border:none;cursor:pointer;padding:2px 4px;white-space:nowrap">清除</button>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
     <div class="shop-body" style="padding-top:0">
@@ -903,7 +925,13 @@
     </div>
     <div class="form-group"><label>實際花費</label><input type="text" id="shop-review-price" placeholder="NT$..."></div>
     <div class="form-group"><label>心得備註</label><input type="text" id="shop-review-note" placeholder="品質如何？值得嗎？"></div>
-    <div class="flex gap-3 mt-4"><button class="btn-secondary flex-1" onclick="closeModal('shopReviewModal')">略過</button><button class="btn-primary flex-1" onclick="shopSaveReview()">儲存評價</button></div>
+    <div style="display:flex;flex-direction:column;gap:8px;margin-top:16px">
+      <div style="display:flex;gap:8px">
+        <button class="btn-secondary flex-1" onclick="closeModal('shopReviewModal')">略過</button>
+        <button class="btn-primary flex-1" onclick="shopSaveReview()">儲存評價</button>
+      </div>
+      <button onclick="shopCancelBuy()" style="width:100%;padding:10px;border:1px solid #fca5a5;border-radius:10px;background:#fff5f5;color:#ef4444;font-size:13px;font-weight:600;cursor:pointer">取消購買（回到待購買）</button>
+    </div>
   </div>
 </div>
 
@@ -3500,7 +3528,7 @@ function fpEndDrag() {
 
 // ══ SHOPPING LIST ════════════════════════════════════════════════════════
 let shopList=[];
-let shopSubTab='buy',shopSortMode='prio',shopFilterPrio='all',shopFilterCat='all',shopDoneSearch='',shopDoneCat='all';
+let shopSubTab='buy',shopSortMode='prio',shopFilterPrio='all',shopFilterCat='all',shopDoneSearch='',shopDoneCat='all',shopDoneDateFrom='',shopDoneDateTo='';
 let shopOpenCardId=null,shopOpenDotId=null;
 let shopActiveDdId=null,shopActiveDdField=null;
 let shopEditingId=null,shopFormPrio=1,shopFormSrc='蝦皮';
@@ -3585,6 +3613,10 @@ function shopRender(){
   } else {
     if(shopDoneSearch){const q=shopDoneSearch.toLowerCase();list=list.filter(i=>i.name.toLowerCase().includes(q)||i.note?.toLowerCase().includes(q));}
     if(shopDoneCat!=='all') list=list.filter(i=>i.cat===shopDoneCat);
+    const dfFrom=document.getElementById('shop-done-date-from')?.value||'';
+    const dfTo=document.getElementById('shop-done-date-to')?.value||'';
+    if(dfFrom) list=list.filter(i=>i.buyDate&&i.buyDate>=dfFrom);
+    if(dfTo)   list=list.filter(i=>i.buyDate&&i.buyDate<=dfTo);
     list.sort((a,b)=>(b.date||'').localeCompare(a.date||'')); // newest first
   }
   const el=document.getElementById(isDone?'shop-done-list':'shop-buy-list');
@@ -3601,11 +3633,12 @@ function shopRender(){
         <div style="flex:1;min-width:0">
           <div style="display:flex;align-items:center;gap:5px;flex-wrap:wrap">
             <span style="font-size:14px;font-weight:600;color:${it.done?'var(--text-muted)':'var(--text-primary)'};${it.done?'text-decoration:line-through;':''}">${it.name}</span>
-            ${it.restock?'<span class="badge shop-b-restock" style="font-size:9px">📦補貨</span>':''}
+            ${it.done&&it.buyDate?`<span style="font-size:10px;color:var(--text-muted);font-weight:400">${it.buyDate.slice(5).replace('-','/')}</span>`:''}
           </div>
           ${subline?`<div style="font-size:11px;color:var(--text-muted);margin-top:2px">${subline}</div>`:''}
         </div>
         <div style="display:flex;align-items:center;gap:3px">
+          ${it.restock?'<span class="badge shop-b-restock" style="font-size:9px">📦補貨</span>':''}
           <span class="badge ${SHOP_PRIO_CLS[it.prio]}" style="font-size:9px">${SHOP_PRIO_LABEL[it.prio]}</span>
           <button class="shop-dot-btn" onclick="shopToggleDot('${it.id}',event)"><span class="material-symbols-outlined" style="font-size:18px;color:#94a3b8">more_vert</span></button>
         </div>
@@ -3644,7 +3677,7 @@ function shopToggleCard(id,e){
 function shopHandleCb(id,e){
   e.stopPropagation();
   const it=shopList.find(x=>x.id===id); if(!it||it.done)return;
-  it.done=true; shopOpenCardId=null; saveShopList(); shopRender();
+  it.done=true; it.buyDate=todayStr; shopOpenCardId=null; saveShopList(); shopRender();
   document.getElementById('shop-review-id').value=id;
   shopReviewStar=3; shopSyncStars();
   document.getElementById('shop-review-price').value='';
@@ -3780,6 +3813,31 @@ function shopSaveReview(){
   saveShopList(); closeModal('shopReviewModal'); shopRender();
 }
 function shopSetDoneSearch(q){shopDoneSearch=q;shopRender();}
+function shopSetDoneCatAll(){
+  shopDoneCat='all';
+  document.getElementById('shop-done-cat-all-btn').classList.add('on');
+  document.getElementById('shop-done-cat-select').value='';
+  shopRender();
+}
+function shopSetDoneCatDd(val){
+  if(!val){shopSetDoneCatAll();return;}
+  shopDoneCat=val;
+  document.getElementById('shop-done-cat-all-btn').classList.remove('on');
+  shopRender();
+}
+function shopClearDateFilter(){
+  const f=document.getElementById('shop-done-date-from');
+  const t=document.getElementById('shop-done-date-to');
+  if(f)f.value=''; if(t)t.value='';
+  shopRender();
+}
+function shopCancelBuy(){
+  const id=document.getElementById('shop-review-id').value;
+  const it=shopList.find(x=>x.id===id); if(!it)return;
+  it.done=false; it.buyDate='';
+  saveShopList(); closeModal('shopReviewModal'); shopRender();
+  showToast('已取消購買，移回待購買');
+}
 function shopSetDoneCat(val,btn){
   shopDoneCat=val;
   document.querySelectorAll('#shop-done-cat-chips .shop-chip').forEach(c=>c.classList.remove('on'));
@@ -3804,6 +3862,13 @@ function shopSetFilter(type,val,btn){
   btn.classList.add('on'); shopRender();
 }
 function shopSetSort(m,btn){shopSortMode=m;document.querySelectorAll('#shop-sort-chips .shop-chip').forEach(c=>c.classList.remove('on'));btn.classList.add('on');shopRender();}
+function shopToggleDoneFilter(){
+  const body=document.getElementById('shop-done-filter-body');
+  const arrow=document.getElementById('shop-done-filter-arrow');
+  if(!body)return;
+  const open=body.classList.toggle('open');
+  if(arrow)arrow.textContent=open?'expand_less':'expand_more';
+}
 function shopToggleFilter(){
   shopFilterOpen=!shopFilterOpen;
   document.getElementById('shop-filter-body').classList.toggle('open',shopFilterOpen);
