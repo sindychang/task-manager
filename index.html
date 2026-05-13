@@ -706,8 +706,7 @@
   <!-- 待注意子篩選列（只在 alert tab 時顯示） -->
   <div id="inv-alert-sub-bar" style="display:none;padding:8px 14px 0;max-width:640px;margin:0 auto">
     <div style="display:flex;background:var(--border-light);border-radius:var(--radius-sm);padding:3px;gap:3px">
-      <button id="alertsub-btn-all" class="lmgr-tab on" onclick="invSwitchAlertSub('all')">全部待注意</button>
-      <button id="alertsub-btn-expiry" class="lmgr-tab" onclick="invSwitchAlertSub('expiry')">效期管理</button>
+      <button id="alertsub-btn-expiry" class="lmgr-tab on" onclick="invSwitchAlertSub('expiry')">效期管理</button>
       <button id="alertsub-btn-restock" class="lmgr-tab" onclick="invSwitchAlertSub('restock')">補貨追蹤</button>
     </div>
   </div>
@@ -762,7 +761,6 @@
   </div>
   </div>
   <div class="inv-content" id="inv-content"></div>
-</div>
 <!-- ── SHOPPING LIST PANEL ── -->
 <div id="inv-shopping-panel" style="display:none">
   <div class="shop-sub-tabs">
@@ -778,7 +776,7 @@
         </div>
         <span class="material-symbols-outlined" id="shop-filter-arrow" style="font-size:18px;color:var(--text-muted)">expand_less</span>
       </div>
-      <div class="shop-filter-body open" id="shop-filter-body">
+      <div class="shop-filter-body" id="shop-filter-body">
         <div class="shop-filter-row">
           <span class="shop-filter-row-label">優先度</span>
           <div class="shop-chips-wrap" id="shop-prio-filter-chips">
@@ -794,6 +792,7 @@
             <button class="shop-chip on" onclick="shopSetFilter('cat','all',this)">全部</button>
             <button class="shop-chip" onclick="shopSetFilter('cat','日常用品',this)">日常用品</button>
             <button class="shop-chip" onclick="shopSetFilter('cat','保養品',this)">保養品</button>
+            <button class="shop-chip" onclick="shopSetFilter('cat','化妝品',this)">化妝品</button>
             <button class="shop-chip" onclick="shopSetFilter('cat','糧食/飲品',this)">糧食/飲品</button>
             <button class="shop-chip" onclick="shopSetFilter('cat','藥品保健',this)">藥品保健</button>
             <button class="shop-chip" onclick="shopSetFilter('cat','清潔用品',this)">清潔用品</button>
@@ -825,6 +824,7 @@
         <button class="shop-chip on" onclick="shopSetDoneCat('all',this)">全部</button>
             <button class="shop-chip" onclick="shopSetDoneCat('日常用品',this)">日常用品</button>
             <button class="shop-chip" onclick="shopSetDoneCat('保養品',this)">保養品</button>
+            <button class="shop-chip" onclick="shopSetDoneCat('化妝品',this)">化妝品</button>
             <button class="shop-chip" onclick="shopSetDoneCat('糧食/飲品',this)">糧食/飲品</button>
             <button class="shop-chip" onclick="shopSetDoneCat('藥品保健',this)">藥品保健</button>
             <button class="shop-chip" onclick="shopSetDoneCat('清潔用品',this)">清潔用品</button>
@@ -842,6 +842,7 @@
   </div>
 </div>
 <div id="shop-global-dd"></div>
+</div>
 
 
 <!-- ── SHOPPING LIST: ADD/EDIT MODAL ── -->
@@ -860,7 +861,7 @@
         <button onclick="shopSetFormPrio(2,this)">🟢 低</button>
       </div>
     </div>
-    <div class="form-group"><label>分類</label><select id="shop-f-cat"><option  selected>日常用品</option><option>保養品</option><option>糧食/飲品</option><option>藥品保健</option><option>清潔用品</option><option>文具工具</option><option>調味料</option><option>其他</option></select></div>
+    <div class="form-group"><label>分類</label><select id="shop-f-cat"><option  selected>日常用品</option><option>保養品</option><option>化妝品</option><option>糧食/飲品</option><option>藥品保健</option><option>清潔用品</option><option>文具工具</option><option>調味料</option><option>其他</option></select></div>
     <div class="form-group"><label>購買來源</label>
       <div class="shop-src-row" id="shop-form-src-row">
         <button class="shop-chip on" onclick="shopSetFormSrc(this)">蝦皮</button>
@@ -1071,7 +1072,7 @@
     <div class="form-group" id="inv-f-subloc-group"><label>細分位置 <span style="font-size:10px;color:var(--text-muted);font-weight:400">（選填）</span></label><select id="inv-f-subloc"><option value="">未設定</option></select></div>
     <div class="form-group"><label>物品類別</label>
       <select id="inv-f-category" onchange="invOnCatChange()">
-        <option>日常用品</option><option>保養品</option><option>糧食/飲品</option>
+        <option>日常用品</option><option>保養品</option><option>化妝品</option><option>糧食/飲品</option>
         <option>藥品保健</option><option>清潔用品</option><option>文具工具</option>
         <option>調味料</option><option>其他</option>
         <option value="__custom">✏️ 自訂…</option>
@@ -1081,7 +1082,15 @@
     <div class="form-group"><label>備註</label><input type="text" id="inv-f-note" placeholder="品牌、規格…（選填）"></div>
     <!-- 有效期限 -->
     <div class="icond" id="inv-g-expiry">
-      <div class="form-group"><label>到期日</label><input type="date" id="inv-f-expiry"><p style="font-size:11px;color:var(--text-muted);margin-top:5px">到期前 14 天自動提醒</p></div>
+      <div class="form-group"><label>到期日</label><input type="date" id="inv-f-expiry"></div>
+      <div class="form-group"><label>提醒時間</label>
+        <select id="inv-f-remind-days" style="width:100%;padding:10px 12px;border:1.5px solid var(--border);border-radius:var(--radius-sm);font-size:14px;outline:none;background:var(--surface);font-family:'Noto Sans TC',sans-serif;color:var(--text-primary)">
+          <option value="7">到期前 7 天</option>
+          <option value="14" selected>到期前 14 天</option>
+          <option value="30">到期前 30 天（約 1 個月）</option>
+          <option value="60">到期前 60 天（約 2 個月）</option>
+        </select>
+      </div>
     </div>
     <!-- 補貨追蹤開關 -->
     <div class="inv-toggle-row">
@@ -1711,9 +1720,11 @@ function invExpiryStatus(it){
   
   if(!it.expiryDate)return null;
   const d=daysBetween(todayStr,it.expiryDate);
+  const remind=it.reminderDays||14;
+  const urgentAt=Math.max(1,Math.floor(remind/2));
   if(d<0)return{cls:'red',urgent:true,rowCls:'row-danger'};
-  if(d<=7)return{cls:'red',urgent:true,rowCls:'row-danger'};
-  if(d<=14)return{cls:'orange',urgent:false,rowCls:'row-warn'};
+  if(d<=urgentAt)return{cls:'red',urgent:true,rowCls:'row-danger'};
+  if(d<=remind)return{cls:'orange',urgent:false,rowCls:'row-warn'};
   return{cls:'muted',urgent:false,rowCls:''};
 }
 function invRestockStatus(it){
@@ -1740,7 +1751,7 @@ let invLocFilter=null,invCatFilter=null,invSrcFilter=null,invDateFrom=null,invDa
 let invQtyMode='qty',invRestockOn=false,invFilterOpen=false,invLocFilterOpen=false,invPendingImport=[];
 
 let invLocMode='list'; // 'list' or 'fp'
-let invAlertSubMode='restock'; // 固定只顯示補貨追蹤（數量不足）
+let invAlertSubMode='expiry'; // 預設效期管理
 
 function invSwitchTab(tab,btn){
   invCurrentTab=tab;invLocFilter=null;invCatFilter=null;invSrcFilter=null;invDateFrom=null;invDateTo=null;
@@ -1773,7 +1784,7 @@ function invSwitchTab(tab,btn){
     if(invContent)invContent.style.display='';
   }
   if(tab==='alert'){
-    invAlertSubMode='restock'; // 只顯示補貨追蹤
+    invAlertSubMode='expiry'; // 預設效期管理
     _syncAlertSubBtns();
     renderInventoryPage();return;
   }
@@ -1796,7 +1807,7 @@ function invSwitchAlertSub(mode){
 }
 
 function _syncAlertSubBtns(){
-  ['all','expiry','restock'].forEach(m=>{
+  ['expiry','restock'].forEach(m=>{
     const b=document.getElementById('alertsub-btn-'+m);
     if(b)b.classList.toggle('on',invAlertSubMode===m);
   });
@@ -1897,12 +1908,14 @@ function invRenderFilterPanel(){
 function invFilterByTab(){
   if(invCurrentTab==='all')return inventory;
   if(invCurrentTab==='alert'){
-    // 只顯示數量不足（補貨追蹤）項目
-    return inventory.filter(it=>{
+    if(invAlertSubMode==='expiry')return inventory.filter(it=>it.type==='expiry');
+    if(invAlertSubMode==='restock')return inventory.filter(it=>{
       if(!it.restock)return false;
       if(it.qtyMode==='ratio')return(it.ratio??100)<=(it.ratioThr??25);
       return(it.qty??0)<=(it.threshold??1);
     });
+    // all: 效期 ∪ 補貨
+    return inventory.filter(it=>it.type==='expiry'||it.restock);
   }
   if(invCurrentTab==='expiry')return inventory.filter(it=>it.type==='expiry');
   if(invCurrentTab==='restock')return inventory.filter(it=>it.restock);
@@ -1929,7 +1942,7 @@ function renderInventoryPage(){
   const cntLocEl=document.getElementById('inv-cnt-loc');if(cntLocEl)cntLocEl.textContent=inventory.length;
   // 確保進入頁面時 alert sub-bar 在 alert 頁簽下顯示
   const _alertBar=document.getElementById('inv-alert-sub-bar');
-  if(_alertBar)_alertBar.style.display='none'; // sub-bar hidden: 待注意固定顯示補貨追蹤
+  if(_alertBar)_alertBar.style.display=invCurrentTab==='alert'?'block':'none';
 
   invRenderFilterPanel();
 
@@ -2400,7 +2413,7 @@ function invOpenEdit(id){
   document.getElementById('inv-modal-title').textContent='修改物品';document.getElementById('inv-edit-id').value=id;
   document.getElementById('inv-f-name').value=it.name;document.getElementById('inv-f-note').value=it.note||'';
   document.getElementById('inv-f-location').value=it.location;
-  const knownCats=['日常用品','保養品','糧食/飲品','藥品保健','清潔用品','文具工具','調味料','其他'];
+  const knownCats=['日常用品','保養品','化妝品','糧食/飲品','藥品保健','清潔用品','文具工具','調味料','其他'];
   if(knownCats.includes(it.category||'')){
     document.getElementById('inv-f-category').value=it.category||'其他';
     document.getElementById('inv-f-category-custom').style.display='none';
@@ -2425,6 +2438,8 @@ function invOpenEdit(id){
   if(knownSrc.includes(it.source||'')){document.getElementById('inv-f-source').value=it.source||'';document.getElementById('inv-f-source-custom').style.display='none';}
   else{document.getElementById('inv-f-source').value='__custom';document.getElementById('inv-f-source-custom').style.display='block';document.getElementById('inv-f-source-custom').value=it.source||'';}
   invPopulateSublocDropdown(it.location,it.subLocationId||null);
+  const rdSel=document.getElementById('inv-f-remind-days');
+  if(rdSel)rdSel.value=it.reminderDays||14;
   document.getElementById('invItemModal').classList.add('open');
 }
 function invSaveItem(){
@@ -2444,6 +2459,7 @@ function invSaveItem(){
     category,
     note:document.getElementById('inv-f-note').value.trim(),
     expiryDate:invCurrentType==='expiry'?document.getElementById('inv-f-expiry').value||null:null,
+    reminderDays:invCurrentType==='expiry'?parseInt(document.getElementById('inv-f-remind-days')?.value||'14'):null,
     restock:invRestockOn,qtyMode:invQtyMode,
     qty:invRestockOn&&invQtyMode==='qty'?(rawQty===''?0:parseInt(rawQty)):null,
     threshold:invRestockOn&&invQtyMode==='qty'?(rawThr===''?1:parseInt(rawThr)):null,
@@ -2780,6 +2796,8 @@ function twRenderProg(days){
   const ovCnt=sched.filter(s=>s.status==='pending'&&s.date<todayStr).length;
   const r=13,circ=2*Math.PI*r,col=pct===100?'#10b981':'var(--primary)';
   const highShop=typeof shopList!=='undefined'?shopList.filter(s=>!s.done&&s.prio===0).length:0;
+  const expUrgent=inventory.filter(it=>it.expiryDate&&invExpiryStatus(it)?.urgent).length;
+  const expChip=expUrgent>0?`<button onclick="const nb=document.querySelector('.nav-item:nth-child(4)');switchPage('inventory',nb);setTimeout(()=>{const t=document.querySelector('.inv-tab');if(t){invSwitchTab('alert',t);}invAlertSubMode='expiry';_syncAlertSubBtns();renderInventoryPage();},80)" style="display:flex;align-items:center;gap:3px;background:#fff7ed;border:1px solid #fed7aa;border-radius:99px;padding:2px 8px;font-size:10px;font-weight:700;color:#ea580c;cursor:pointer;font-family:'Noto Sans TC',sans-serif;flex-shrink:0"><span class=\"material-symbols-outlined\" style=\"font-size:12px\">event</span>${expUrgent}</button>`:'';
   const shopChip=highShop>0?`<button onclick="const nb=document.querySelector('.nav-item:nth-child(4)');switchPage('inventory',nb);setTimeout(()=>{const t=document.getElementById('inv-tab-shopping');if(t)invSwitchTab('shopping',t);},80)" style="display:flex;align-items:center;gap:3px;background:#fef2f2;border:1px solid #fecaca;border-radius:99px;padding:2px 8px;font-size:10px;font-weight:700;color:#dc2626;cursor:pointer;font-family:'Noto Sans TC',sans-serif;flex-shrink:0"><span class=\"material-symbols-outlined\" style=\"font-size:12px\">shopping_cart</span>${highShop}</button>`:'';
   const dash=circ*pct/100,gap=circ-dash;
   // 右側資訊：done/total ＋ 逾期 chip（只在有逾期時才出現）
@@ -2799,7 +2817,7 @@ function twRenderProg(days){
         <button onclick="twProgMode='day';twRender()" style="padding:2px 8px;border-radius:5px;border:none;background:${twProgMode==='day'?'#fff':'transparent'};font-size:10px;font-weight:700;color:${twProgMode==='day'?'var(--primary)':'#7c6fd0'};cursor:pointer;font-family:'Noto Sans TC',sans-serif;box-shadow:${twProgMode==='day'?'0 1px 3px rgba(0,0,0,.1)':'none'}">今日</button>
         <button onclick="twProgMode='week';twRender()" style="padding:2px 8px;border-radius:5px;border:none;background:${twProgMode==='week'?'#fff':'transparent'};font-size:10px;font-weight:700;color:${twProgMode==='week'?'var(--primary)':'#7c6fd0'};cursor:pointer;font-family:'Noto Sans TC',sans-serif;box-shadow:${twProgMode==='week'?'0 1px 3px rgba(0,0,0,.1)':'none'}">本週</button>
       </div>
-      ${countTxt}${ovChip}${doneChip}${shopChip}
+      ${countTxt}${ovChip}${doneChip}${expChip}${shopChip}
     </div>`;
 }
 
@@ -3488,8 +3506,8 @@ let shopSubTab='buy',shopSortMode='prio',shopFilterPrio='all',shopFilterCat='all
 let shopOpenCardId=null,shopOpenDotId=null;
 let shopActiveDdId=null,shopActiveDdField=null;
 let shopEditingId=null,shopFormPrio=1,shopFormSrc='蝦皮';
-let shopFilterOpen=true,shopReviewStar=3;
-const SHOP_CATS=['日常用品','保養品','糧食/飲品','藥品保健','清潔用品','文具工具','調味料','其他'];
+let shopFilterOpen=false,shopReviewStar=3;
+const SHOP_CATS=['日常用品','保養品','化妝品','糧食/飲品','藥品保健','清潔用品','文具工具','調味料','其他'];
 const SHOP_SRCS=['蝦皮','momo','全聯','實體店','其他'];
 const SHOP_PRIO_LABEL=['高','中','低'];
 const SHOP_PRIO_ICON=['🔴','🟡','🟢'];
