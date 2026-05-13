@@ -786,19 +786,17 @@
             <button class="shop-chip" onclick="shopSetFilter('prio',2,this)">🟢 低</button>
           </div>
         </div>
-        <div class="shop-filter-row">
+        <div class="shop-filter-row" style="align-items:center">
           <span class="shop-filter-row-label">分類</span>
-          <div class="shop-chips-wrap" id="shop-cat-filter-chips">
-            <button class="shop-chip on" onclick="shopSetFilter('cat','all',this)">全部</button>
-            <button class="shop-chip" onclick="shopSetFilter('cat','日常用品',this)">日常用品</button>
-            <button class="shop-chip" onclick="shopSetFilter('cat','保養品',this)">保養品</button>
-            <button class="shop-chip" onclick="shopSetFilter('cat','化妝品',this)">化妝品</button>
-            <button class="shop-chip" onclick="shopSetFilter('cat','糧食/飲品',this)">糧食/飲品</button>
-            <button class="shop-chip" onclick="shopSetFilter('cat','藥品保健',this)">藥品保健</button>
-            <button class="shop-chip" onclick="shopSetFilter('cat','清潔用品',this)">清潔用品</button>
-            <button class="shop-chip" onclick="shopSetFilter('cat','文具工具',this)">文具工具</button>
-            <button class="shop-chip" onclick="shopSetFilter('cat','調味料',this)">調味料</button>
-            <button class="shop-chip" onclick="shopSetFilter('cat','其他',this)">其他</button>
+          <div style="display:flex;align-items:center;gap:6px">
+            <button class="shop-chip on" id="shop-cat-all-btn" onclick="shopSetCatAll()">全部</button>
+            <select id="shop-cat-select" onchange="shopSetCatDd(this.value)"
+              style="height:28px;padding:0 28px 0 10px;font-size:12px;border:1px solid var(--border-light);border-radius:20px;background:var(--surface);color:var(--text-primary);cursor:pointer;appearance:none;-webkit-appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24'%3E%3Cpath fill='%2394a3b8' d='M7 10l5 5 5-5z'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 8px center;min-width:90px">
+              <option value="">選擇分類</option>
+              <option>日常用品</option><option>保養品</option><option>化妝品</option>
+              <option>糧食/飲品</option><option>藥品保健</option><option>清潔用品</option>
+              <option>文具工具</option><option>調味料</option><option>其他</option>
+            </select>
           </div>
         </div>
         <div class="shop-filter-row">
@@ -3595,7 +3593,7 @@ function shopRender(){
   el.innerHTML=list.map(it=>{
     const open=shopOpenCardId===it.id;
     const dotOpen=shopOpenDotId===it.id;
-    const subline=[it.price,it.note].filter(Boolean).join('・');
+    const subline=[it.store||'',it.price?'$'+it.price:''].filter(Boolean).join('・');
     const starsHtml=it.stars?'⭐'.repeat(it.stars):'';
     return `<div class="shop-card" id="shop-card-${it.id}">
       <div class="shop-card-top" onclick="shopToggleCard('${it.id}',event)">
@@ -3626,6 +3624,7 @@ function shopRender(){
           <div class="shop-field-val" onclick="shopOpenDd('src','${it.id}',this,event)">${it.src||'未設定'}<span class="shop-field-arr">▾</span></div>
         </div>
         ${it.link?`<div class="shop-field-row"><span class="shop-field-label">連結</span><a href="${it.link}" target="_blank" style="font-size:12px;color:var(--primary);text-decoration:none;display:flex;align-items:center;gap:3px"><span class="material-symbols-outlined" style="font-size:13px">open_in_new</span>開啟連結</a></div>`:''}
+        ${it.note?`<div class="shop-field-row"><span class="shop-field-label">備註</span><span style="font-size:12px;color:var(--text-secondary)">${it.note}</span></div>`:''}
         ${starsHtml?`<div class="shop-field-row"><span class="shop-field-label">評價</span><span style="font-size:13px">${starsHtml}</span></div>`:''}
         ${it.reviewNote?`<div class="shop-field-row"><span class="shop-field-label">心得</span><span style="font-size:12px;color:var(--text-secondary)">${it.reviewNote}</span></div>`:''}
       </div>
@@ -3746,9 +3745,9 @@ function shopSaveItem(){
   const price=document.getElementById('shop-f-price').value.trim();
   if(shopEditingId){
     const it=shopList.find(x=>x.id===shopEditingId);
-    if(it){it.name=name;it.prio=shopFormPrio;it.src=shopFormSrc;it.cat=document.getElementById('shop-f-cat').value;it.link=document.getElementById('shop-f-link').value.trim();it.price=price;it.note=document.getElementById('shop-f-note').value.trim();}
+    if(it){it.name=name;it.prio=shopFormPrio;it.src=shopFormSrc;it.cat=document.getElementById('shop-f-cat').value;it.link=document.getElementById('shop-f-link').value.trim();it.price=price;it.note=document.getElementById('shop-f-note').value.trim();it.store=(shopFormSrc==='實體店'||shopFormSrc==='其他')?document.getElementById('shop-f-store').value.trim():'';}
   } else {
-    shopList.unshift({id:'shop-'+Date.now()+'-'+Math.random().toString(36).slice(2,5),name,prio:shopFormPrio,cat:document.getElementById('shop-f-cat').value,src:shopFormSrc,link:document.getElementById('shop-f-link').value.trim(),price,note:document.getElementById('shop-f-note').value.trim(),done:false,restock:false,restockId:null,date:todayStr,stars:0,reviewNote:'',reviewPrice:''});
+    shopList.unshift({id:'shop-'+Date.now()+'-'+Math.random().toString(36).slice(2,5),name,prio:shopFormPrio,cat:document.getElementById('shop-f-cat').value,src:shopFormSrc,store:(shopFormSrc==='實體店'||shopFormSrc==='其他')?document.getElementById('shop-f-store').value.trim():'',link:document.getElementById('shop-f-link').value.trim(),price,note:document.getElementById('shop-f-note').value.trim(),done:false,restock:false,restockId:null,date:todayStr,stars:0,reviewNote:'',reviewPrice:''});
   }
   saveShopList(); closeModal('shopItemModal'); shopRender();
   showToast(shopEditingId?'已更新':'已新增購物項目');
@@ -3785,6 +3784,18 @@ function shopSetDoneCat(val,btn){
   shopDoneCat=val;
   document.querySelectorAll('#shop-done-cat-chips .shop-chip').forEach(c=>c.classList.remove('on'));
   if(btn)btn.classList.add('on');
+  shopRender();
+}
+function shopSetCatAll(){
+  shopFilterCat='all';
+  document.getElementById('shop-cat-all-btn').classList.add('on');
+  document.getElementById('shop-cat-select').value='';
+  shopRender();
+}
+function shopSetCatDd(val){
+  if(!val){shopSetCatAll();return;}
+  shopFilterCat=val;
+  document.getElementById('shop-cat-all-btn').classList.remove('on');
   shopRender();
 }
 function shopSetFilter(type,val,btn){
